@@ -1,0 +1,47 @@
+@import '../../../variables.scss';
+
+.search-field {
+  width: 350px;
+  
+  ::ng-deep {
+    .mdc-text-field {
+      background-color: rgba($white, 0.1) !important;
+      border-radius: 8px;
+    }
+
+    .mdc-text-field__input {
+      color: $white;
+      font-size: 1rem;
+
+      &::placeholder {
+        color: rgba($white, 0.6);
+      }
+    }
+
+    .mat-mdc-form-field-label {
+      color: rgba($white, 0.7) !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: rgba($blue, 0.5) !important;
+    }
+
+    .mdc-text-field--focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: $blue !important;
+      }
+    }
+
+    .mat-mdc-icon-button {
+      color: rgba($white, 0.7);
+
+      &:hover {
+        color: $blue-grey;
+      }
+    }
+  }
+}
