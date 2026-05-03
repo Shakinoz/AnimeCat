@@ -1,6 +1,26 @@
-<mat-form-field appearance="outline" class="search-field">
-  <input matInput class="search-input" type="text" placeholder="Rechercher..." (keyup.enter)="onSearch()" />
-  <button mat-icon-button matSuffix (click)="onSearch()">
-    <mat-icon>search</mat-icon>
-  </button>
-</mat-form-field>
+<!-- <div ariaCombobox focusMode="manual">
+  <div #origin class="material-autocomplete">
+    <span class="search-icon material-symbols-outlined" aria-hidden="true">search</span>
+    <input aria-label="Search anime" placeholder="Search anime" [(ngModel)]="query" ariaComboboxInput />
+  </div>
+
+  <ng-template ariaComboboxPopupContainer>
+    <ng-template [cdkConnectedOverlay]="{origin, usePopover: 'inline', matchWidth: true}"
+      [cdkConnectedOverlayOpen]="true">
+      <div class="popup">
+        @if (animes().length === 0) {
+        <div class="no-results">No results found</div>
+        }
+
+        <div ariaListbox>
+          @for (anime of animes(); track anime) {
+          <div ariaOption>
+            <span class="option-label">{{ anime }}</span>
+            <span class="check-icon material-symbols-outlined" aria-hidden="true">check</span>
+          </div>
+          }
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+</div> -->
