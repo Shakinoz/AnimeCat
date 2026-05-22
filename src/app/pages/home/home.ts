@@ -3,6 +3,8 @@ import { Anime } from '@tutkli/jikan-ts';
 import { JikanService } from '../../services/jikan.service';
 import { SlicePipe } from '@angular/common';
 import { Header } from '../../components/header/header';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-home',
@@ -10,16 +12,15 @@ import { Header } from '../../components/header/header';
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class HomePage implements OnInit {
+export class HomePage{
   trending: Anime[] = [];
   popular: Anime[] = [];
+  isLoading = true;
 
   heroAnime?: Anime;
   heroIndex = 0;
 
-  constructor(private jikan: JikanService) {}
-
-  ngOnInit(): void {
+  constructor(private jikan: JikanService,  private cdr: ChangeDetectorRef ) {
     this.loadData();
   }
 
@@ -27,10 +28,13 @@ export class HomePage implements OnInit {
     this.jikan.getTopAiring(1, 12).subscribe((res) => {
       this.trending = res.data;
       this.heroAnime = this.trending[0];
-    });    
+      this.cdr.markForCheck();
+    });
 
     this.jikan.getMostPopular(1, 12).subscribe((res) => {
       this.popular = res.data;
+      this.isLoading = false;
+      this.cdr.markForCheck();
     });
   }
 

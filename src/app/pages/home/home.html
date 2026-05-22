@@ -1,68 +1,73 @@
 <app-header></app-header>
 <div class="home">
-    <!-- HERO -->
-    @if (heroAnime) {
-    <section class="hero">
-        <div class="hero-content">
-            <h1>{{ title(heroAnime) }}</h1>
-
-            <div class="meta">
-                <span class="rating">{{ heroAnime.score || 'N/A' }}</span>
-                <span>{{ genres(heroAnime) }}</span>
-            </div>
-
-            <p class="synopsis">
-                {{ heroAnime.synopsis | slice:0:180 }}...
-            </p>
-
-            <button class="btn">Plus d'infos</button>
-        </div>
-
-        <div class="hero-image">
-            <img [src]="cover(heroAnime)" />
-        </div>
-
-        <button class="nav prev" (click)="prevHero()">‹</button>
-        <button class="nav next" (click)="nextHero()">›</button>
-    </section>
+    @if (isLoading) {
+        <p class="loading">Chargement...</p>
     }
 
-    @if(trending.length > 0) {
-    <!-- TENDANCES -->
-    <section class="section">
-        <h2>Tendances</h2>
+    @if (!isLoading) {
+        <!-- HERO -->
+        @if (heroAnime) {
+        <section class="hero">
+            <div class="hero-content">
+                <h1>{{ title(heroAnime) }}</h1>
 
-        <div class="carousel">
-            @for (anime of trending; track anime) {
-            <div class="card">
-                <img [src]="cover(anime)" />
-                <div class="card-info">
-                    <h3>{{ title(anime) }}</h3>
-                    <p>{{ genres(anime) }}</p>
+                <div class="meta">
+                    <span class="rating">{{ heroAnime.score || 'N/A' }}</span>
+                    <span>{{ genres(heroAnime) }}</span>
                 </div>
+
+                <p class="synopsis">
+                    {{ heroAnime.synopsis | slice:0:180 }}...
+                </p>
+
+                <button class="btn">Plus d'infos</button>
             </div>
-            }
-        </div>
-    </section>
-    }
 
-    @if(popular.length > 0) {
-    <!-- POPULAIRES -->
-    <section class="section">
-        <h2>Les plus populaires</h2>
+            <div class="hero-image">
+                <img [src]="cover(heroAnime)" />
+            </div>
 
-        <div class="carousel">
-            @for (anime of popular; track anime) {
-            <div class="card">
-                <img [src]="cover(anime)" />
-                <div class="card-info">
-                    <h3>{{ title(anime) }}</h3>
-                    <p>{{ genres(anime) }}</p>
+            <button class="nav prev" (click)="prevHero()">‹</button>
+            <button class="nav next" (click)="nextHero()">›</button>
+        </section>
+        }
+
+        @if(trending.length > 0) {
+        <!-- TENDANCES -->
+        <section class="section">
+            <h2>Tendances</h2>
+
+            <div class="carousel">
+                @for (anime of trending; track anime) {
+                <div class="card">
+                    <img [src]="cover(anime)" />
+                    <div class="card-info">
+                        <h3>{{ title(anime) }}</h3>
+                        <p>{{ genres(anime) }}</p>
+                    </div>
                 </div>
+                }
             </div>
-            }
-        </div>
-    </section>
-    }
+        </section>
+        }
 
+        @if(popular.length > 0) {
+        <!-- POPULAIRES -->
+        <section class="section">
+            <h2>Les plus populaires</h2>
+
+            <div class="carousel">
+                @for (anime of popular; track anime) {
+                <div class="card">
+                    <img [src]="cover(anime)" />
+                    <div class="card-info">
+                        <h3>{{ title(anime) }}</h3>
+                        <p>{{ genres(anime) }}</p>
+                    </div>
+                </div>
+                }
+            </div>
+        </section>
+        }
+    }
 </div>
