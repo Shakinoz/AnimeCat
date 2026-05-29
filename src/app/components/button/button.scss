@@ -1,0 +1,82 @@
+@import '../../../variables.scss';
+
+.btn{
+    cursor:pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    &--primary {
+        background-color: $blue;
+        color: $dark-blue;
+        &:hover{
+            background-color: $blue-grey;
+        }
+        &:active{
+            background-color: $blue;
+        }
+    }
+
+    &--secondary {
+        background-color: $blue-grey;
+        color: $dark-blue;
+        border-color: $blue;
+        &:hover{
+            background-color: $blue;
+        }
+        &:active{
+            background-color: transparent;
+            color: $blue;
+        }
+    }
+    
+    &--ghost {
+        background-color: transparent;
+        color: $blue;
+        border-color: $blue;
+        &:hover{
+            background-color: $blue;
+            color: $dark-blue;
+        }
+        &:active{
+            background-color: transparent;
+            color: $blue;
+        }
+    }
+
+    &--danger{
+        background-color: $danger;
+        color: $white;
+        border-color: $danger;
+        &:hover{
+            background-color: lighten($danger, 10%);
+        }
+        &:active{
+            background-color: $danger;
+        }   
+    }
+    
+    &--sm {
+        padding: $padding-sm;
+        font-size: $font-sm;
+        border-radius: $radius-sm;
+    }
+    
+    &--md {
+        padding: $padding-md;
+        font-size: $font-md;
+        border-radius: $radius-md;
+    }
+    
+    &--lg {
+        padding: $padding-lg;
+        font-size: $font-lg;
+        border-radius: $radius-lg;
+    }
+
+    &:hover{
+        transform: translateY(-1px);
+    }   
+    &:active{
+        transform: translateY(0);
+    }
+    
+}
