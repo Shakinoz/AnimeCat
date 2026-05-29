@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { Anime } from '@tutkli/jikan-ts';
 import { JikanService } from '../../services/jikan.service';
 import { SlicePipe } from '@angular/common';
 import { Header } from '../../components/header/header';
-import { ChangeDetectorRef } from '@angular/core';
-// TODO : use signal instead change detector ref
-import { TRENDING_DATA as trendingData } from '../../data/trending';
-
+import { POPULAR_DATA as popularData } from '../../data/popular-data';
+import { TRENDING_DATA as trendingData } from '../../data/trending-data';
 
 @Component({
   selector: 'app-home',
@@ -14,52 +12,50 @@ import { TRENDING_DATA as trendingData } from '../../data/trending';
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class HomePage{
-  trending: Anime[] = [];
-  popular: Anime[] = [];
-  isLoading = true;
+export class HomePage {
+  trending: WritableSignal<Anime[]> = signal([]);
+  popular: WritableSignal<Anime[]> = signal([]);
+  isLoading = signal(true);
 
   heroAnime?: Anime;
   heroIndex = 0;
 
-  constructor(private jikan: JikanService,  private cdr: ChangeDetectorRef ) {
+  constructor(private jikan: JikanService) {
     this.loadData();
-
   }
 
   loadData() {
-    this.jikan.getTopAiring(1, 12).subscribe((res) => {
-      this.trending = res.data;
-      this.heroAnime = this.trending[0];
-      this.cdr.markForCheck();
+    this.jikan.getTopAiring(1, 12).subscribe({
+      next: (res) => {
+        this.trending.set(res.data);
+        this.heroAnime = this.trending()[0];
+      },
+      error: () => {
+        this.trending.set(trendingData.data as unknown as Anime[]);
+        this.heroAnime = this.trending()[0];
+      },
     });
 
-    this.jikan.getMostPopular(1, 12).subscribe((res) => {
-      this.popular = res.data;
-      this.isLoading = false;
-      this.cdr.markForCheck();
+    this.jikan.getMostPopular(1, 12).subscribe({
+      next: (res) => {
+        this.popular.set(res.data);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.popular.set(popularData.data as unknown as Anime[]);
+        this.isLoading.set(false);
+      },
     });
-
-    this.fillPopularFromTrendingIfEmpty();
-  }
-
-  fillPopularFromTrendingIfEmpty() {
-    setTimeout(() => {
-      if (!this.popular?.length) {
-        this.popular = [...(trendingData.data as unknown as Anime[])];
-        this.cdr.markForCheck();
-      }
-    }, 5000);
   }
 
   nextHero() {
-    this.heroIndex = (this.heroIndex + 1) % this.trending.length;
-    this.heroAnime = this.trending[this.heroIndex];
+    this.heroIndex = (this.heroIndex + 1) % this.trending().length;
+    this.heroAnime = this.trending()[this.heroIndex];
   }
 
   prevHero() {
-    this.heroIndex = (this.heroIndex - 1 + this.trending.length) % this.trending.length;
-    this.heroAnime = this.trending[this.heroIndex];
+    this.heroIndex = (this.heroIndex - 1 + this.trending().length) % this.trending().length;
+    this.heroAnime = this.trending()[this.heroIndex];
   }
 
   cover(anime: Anime) {
