@@ -1,17 +1,28 @@
-export const TRENDING_DATA = [
+export const TRENDING_DATA = {
+  "pagination": {
+    "last_visible_page": 2533,
+    "has_next_page": true,
+    "current_page": 1,
+    "items": {
+      "count": 12,
+      "total": 30387,
+      "per_page": 12
+    }
+  },
+  "data": [
     {
       "mal_id": 16498,
       "url": "https://myanimelist.net/anime/16498/Shingeki_no_Kyojin",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/10/47347.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/10/47347t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/10/47347l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/10/47347.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/10/47347t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/10/47347l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/10/47347.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/10/47347t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/10/47347l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/10/47347.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/10/47347t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/10/47347l.webp"
         }
       },
       "trailer": {
@@ -93,11 +104,11 @@ export const TRENDING_DATA = [
       "duration": "24 min per ep",
       "rating": "R - 17+ (violence & profanity)",
       "score": 8.57,
-      "scored_by": 3062578,
-      "rank": 125,
+      "scored_by": 3071200,
+      "rank": 127,
       "popularity": 1,
-      "members": 4352256,
-      "favorites": 188726,
+      "members": 4366539,
+      "favorites": 189359,
       "synopsis": "Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called Titans, forcing humans to hide in fear behind enormous concentric walls. What makes these giants truly terrifying is that their taste for human flesh is not born out of hunger but what appears to be out of pleasure. To ensure their survival, the remnants of humanity began living within defensive barriers, resulting in one hundred years without a single titan encounter. However, that fragile calm is soon shattered when a colossal Titan manages to breach the supposedly impregnable outer wall, reigniting the fight for survival against the man-eating abominations.\n\nAfter witnessing a horrific personal loss at the hands of the invading creatures, Eren Yeager dedicates his life to their eradication by enlisting into the Survey Corps, an elite military unit that combats the merciless humanoids outside the protection of the walls. Eren, his adopted sister Mikasa Ackerman, and his childhood friend Armin Arlert join the brutal war against the Titans and race to discover a way of defeating them before the last walls are breached.\n\n[Written by MAL Rewrite]",
       "background": "Shingeki no Kyojin adapts content from the first eight volumes of Hajime Isayama's award-winning manga of the same name. The anime won the Animation of the Year in the Television category at the Tokyo Anime Award Festival in 2014.",
       "season": "spring",
@@ -223,14 +234,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/1535/Death_Note",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1079/138100.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1079/138100t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1079/138100l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1079/138100.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1079/138100t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1079/138100l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1079/138100.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1079/138100t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1079/138100l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1079/138100.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1079/138100t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1079/138100l.webp"
         }
       },
       "trailer": {
@@ -295,11 +306,11 @@ export const TRENDING_DATA = [
       "duration": "23 min per ep",
       "rating": "R - 17+ (violence & profanity)",
       "score": 8.62,
-      "scored_by": 3001229,
-      "rank": 97,
+      "scored_by": 3009974,
+      "rank": 99,
       "popularity": 2,
-      "members": 4291004,
-      "favorites": 185486,
+      "members": 4305047,
+      "favorites": 185915,
       "synopsis": "Brutal murders, petty thefts, and senseless violence pollute the human world. In contrast, the realm of death gods is a humdrum, unchanging gambling den. The ingenious 17-year-old Japanese student Light Yagami and sadistic god of death Ryuk share one belief: their worlds are rotten.\n\nFor his own amusement, Ryuk drops his Death Note into the human world. Light stumbles upon it, deeming the first of its rules ridiculous: the human whose name is written in this note shall die. However, the temptation is too great, and Light experiments by writing a felon's name, which disturbingly enacts his first murder.\n\nAware of the terrifying godlike power that has fallen into his hands, Light—under the alias Kira—follows his wicked sense of justice with the ultimate goal of cleansing the world of all evil-doers. The meticulous mastermind detective L is already on his trail, but as Light's brilliance rivals L's, the grand chase for Kira turns into an intense battle of wits that can only end when one of them is dead.\n\n[Written by MAL Rewrite]",
       "background": "",
       "season": "fall",
@@ -389,14 +400,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/5114/Fullmetal_Alchemist__Brotherhood",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1208/94745.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1208/94745t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1208/94745l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1208/94745.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1208/94745t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1208/94745l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1208/94745.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1208/94745t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1208/94745l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1208/94745.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1208/94745t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1208/94745l.webp"
         }
       },
       "trailer": {
@@ -480,11 +491,11 @@ export const TRENDING_DATA = [
       "duration": "24 min per ep",
       "rating": "R - 17+ (violence & profanity)",
       "score": 9.11,
-      "scored_by": 2308260,
+      "scored_by": 2313777,
       "rank": 3,
       "popularity": 3,
-      "members": 3676472,
-      "favorites": 242284,
+      "members": 3687306,
+      "favorites": 242843,
       "synopsis": "After a horrific alchemy experiment goes wrong in the Elric household, brothers Edward and Alphonse are left in a catastrophic new reality. Ignoring the alchemical principle banning human transmutation, the boys attempted to bring their recently deceased mother back to life. Instead, they suffered brutal personal loss: Alphonse's body disintegrated while Edward lost a leg and then sacrificed an arm to keep Alphonse's soul in the physical realm by binding it to a hulking suit of armor.\n\nThe brothers are rescued by their neighbor Pinako Rockbell and her granddaughter Winry. Known as a bio-mechanical engineering prodigy, Winry creates prosthetic limbs for Edward by utilizing \"automail,\" a tough, versatile metal used in robots and combat armor. After years of training, the Elric brothers set off on a quest to restore their bodies by locating the Philosopher's Stone—a powerful gem that allows an alchemist to defy the traditional laws of Equivalent Exchange.\n\nAs Edward becomes an infamous alchemist and gains the nickname \"Fullmetal,\" the boys' journey embroils them in a growing conspiracy that threatens the fate of the world.\n\n[Written by MAL Rewrite]",
       "background": "",
       "season": "spring",
@@ -592,14 +603,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/30276/One_Punch_Man",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/12/76049.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/12/76049t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/12/76049l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/12/76049.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/12/76049t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/12/76049l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/12/76049.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/12/76049t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/12/76049l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/12/76049.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/12/76049t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/12/76049l.webp"
         }
       },
       "trailer": {
@@ -668,12 +679,12 @@ export const TRENDING_DATA = [
       },
       "duration": "24 min per ep",
       "rating": "R - 17+ (violence & profanity)",
-      "score": 8.48,
-      "scored_by": 2420369,
-      "rank": 173,
+      "score": 8.47,
+      "scored_by": 2425292,
+      "rank": 181,
       "popularity": 4,
-      "members": 3514975,
-      "favorites": 66334,
+      "members": 3523814,
+      "favorites": 66346,
       "synopsis": "The seemingly unimpressive Saitama has a rather unique hobby: being a hero. In order to pursue his childhood dream, Saitama relentlessly trained for three years, losing all of his hair in the process. Now, Saitama is so powerful, he can defeat any enemy with just one punch. However, having no one capable of matching his strength has led Saitama to an unexpected problem—he is no longer able to enjoy the thrill of battling and has become quite bored.\n\nOne day, Saitama catches the attention of 19-year-old cyborg Genos, who witnesses his power and wishes to become Saitama's disciple. Genos proposes that the two join the Hero Association in order to become certified heroes that will be recognized for their positive contributions to society. Saitama, who is shocked that no one knows who he is, quickly agrees. Meeting new allies and taking on new foes, Saitama embarks on a new journey as a member of the Hero Association to experience the excitement of battle he once felt.\n\n[Written by MAL Rewrite]",
       "background": "Episodes 1 and 2 were previewed at a screening in Saitama city cultural center (small hall) on September 6, 2015. Regular broadcasting began on October 5, 2015. One Punch Man is based on Yusuke Murata's manga remake of ONE's original web comic. The anime adapts the first seven volumes of the manga.",
       "season": "fall",
@@ -799,14 +810,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/38000/Kimetsu_no_Yaiba",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1286/99889.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1286/99889t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1286/99889l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1286/99889.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1286/99889t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1286/99889l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1286/99889.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1286/99889t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1286/99889l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1286/99889.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1286/99889t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1286/99889l.webp"
         }
       },
       "trailer": {
@@ -882,12 +893,12 @@ export const TRENDING_DATA = [
       },
       "duration": "23 min per ep",
       "rating": "R - 17+ (violence & profanity)",
-      "score": 8.41,
-      "scored_by": 2360658,
-      "rank": 222,
+      "score": 8.4,
+      "scored_by": 2368161,
+      "rank": 232,
       "popularity": 5,
-      "members": 3441186,
-      "favorites": 95167,
+      "members": 3454036,
+      "favorites": 95460,
       "synopsis": "Ever since the death of his father, the burden of supporting the family has fallen upon Tanjirou Kamado's shoulders. Though living impoverished on a remote mountain, the Kamado family are able to enjoy a relatively peaceful and happy life. One day, Tanjirou decides to go down to the local village to make a little money selling charcoal. On his way back, night falls, forcing Tanjirou to take shelter in the house of a strange man, who warns him of the existence of flesh-eating demons that lurk in the woods at night.\n\nWhen he finally arrives back home the next day, he is met with a horrifying sight—his whole family has been slaughtered. Worse still, the sole survivor is his sister Nezuko, who has been turned into a bloodthirsty demon. Consumed by rage and hatred, Tanjirou swears to avenge his family and stay by his only remaining sibling. Alongside the mysterious group calling themselves the Demon Slayer Corps, Tanjirou will do whatever it takes to slay the demons and protect the remnants of his beloved sister's humanity.\n\n[Written by MAL Rewrite]",
       "background": "The anime covers chapters 1 to 53 of the manga. Kimetsu no Yaiba won the Animation of the Year award in the Television category at the Tokyo Anime Award Festival in 2020.",
       "season": "spring",
@@ -977,14 +988,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/31964/Boku_no_Hero_Academia",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/10/78745.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/10/78745t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/10/78745l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/10/78745.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/10/78745t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/10/78745l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/10/78745.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/10/78745t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/10/78745l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/10/78745.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/10/78745t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/10/78745l.webp"
         }
       },
       "trailer": {
@@ -1055,11 +1066,11 @@ export const TRENDING_DATA = [
       "duration": "24 min per ep",
       "rating": "PG-13 - Teens 13 or older",
       "score": 7.83,
-      "scored_by": 2236261,
-      "rank": 1082,
+      "scored_by": 2242129,
+      "rank": 1107,
       "popularity": 6,
-      "members": 3299587,
-      "favorites": 55205,
+      "members": 3310042,
+      "favorites": 55329,
       "synopsis": "The appearance of \"quirks,\" newly discovered super powers, has been steadily increasing over the years, with 80 percent of humanity possessing various abilities from manipulation of elements to shapeshifting. This leaves the remainder of the world completely powerless, and Izuku Midoriya is one such individual.\n\nSince he was a child, the ambitious middle schooler has wanted nothing more than to be a hero. Izuku's unfair fate leaves him admiring heroes and taking notes on them whenever he can. But it seems that his persistence has borne some fruit: Izuku meets the number one hero and his personal idol, All Might. All Might's quirk is a unique ability that can be inherited, and he has chosen Izuku to be his successor!\n\nEnduring many months of grueling training, Izuku enrolls in UA High, a prestigious high school famous for its excellent hero training program, and this year's freshmen look especially promising. With his bizarre but talented classmates and the looming threat of a villainous organization, Izuku will soon learn what it really means to be a hero.\n\n[Written by MAL Rewrite]",
       "background": "Mangaka Kouhei Horikoshi has noted that American superhero comics are the inspiration for the series, and has based character pages on logos for Marvel and DC comic characters.",
       "season": "spring",
@@ -1155,14 +1166,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/11757/Sword_Art_Online",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/11/39717.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/11/39717t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/11/39717l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/11/39717.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/11/39717t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/11/39717l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/11/39717.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/11/39717t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/11/39717l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/11/39717.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/11/39717t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/11/39717l.webp"
         }
       },
       "trailer": {
@@ -1231,12 +1242,12 @@ export const TRENDING_DATA = [
       },
       "duration": "23 min per ep",
       "rating": "PG-13 - Teens 13 or older",
-      "score": 7.22,
-      "scored_by": 2278552,
-      "rank": 3763,
+      "score": 7.23,
+      "scored_by": 2282620,
+      "rank": 3867,
       "popularity": 7,
-      "members": 3295627,
-      "favorites": 71049,
+      "members": 3303450,
+      "favorites": 71152,
       "synopsis": "Ever since the release of the innovative NerveGear, gamers from all around the globe have been given the opportunity to experience a completely immersive virtual reality. Sword Art Online (SAO), one of the most recent games on the console, offers a gateway into the wondrous world of Aincrad, a vivid, medieval landscape where users can do anything within the limits of imagination. With the release of this worldwide sensation, gaming has never felt more lifelike.\n\nHowever, the idyllic fantasy rapidly becomes a brutal nightmare when SAO's creator traps thousands of players inside the game. The \"log-out\" function has been removed, with the only method of escape involving beating all of Aincrad's one hundred increasingly difficult levels. Adding to the struggle, any in-game death becomes permanent, ending the player's life in the real world.\n\nWhile Kazuto \"Kirito\" Kirigaya was fortunate enough to be a beta-tester for the game, he quickly finds that despite his advantages, he cannot overcome SAO's challenges alone. Teaming up with Asuna Yuuki and other talented players, Kirito makes an effort to face the seemingly insurmountable trials head-on. But with difficult bosses and threatening dark cults impeding his progress, Kirito finds that such tasks are much easier said than done.\n\n[Written by MAL Rewrite]",
       "background": "",
       "season": "summer",
@@ -1337,14 +1348,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/11061/Hunter_x_Hunter_2011",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1337/99013.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1337/99013t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1337/99013l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1337/99013.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1337/99013t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1337/99013l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1337/99013.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1337/99013t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1337/99013l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1337/99013.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1337/99013t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1337/99013l.webp"
         }
       },
       "trailer": {
@@ -1421,11 +1432,11 @@ export const TRENDING_DATA = [
       "duration": "23 min per ep",
       "rating": "PG-13 - Teens 13 or older",
       "score": 9.03,
-      "scored_by": 1976494,
+      "scored_by": 1982817,
       "rank": 9,
       "popularity": 8,
-      "members": 3181849,
-      "favorites": 228971,
+      "members": 3193071,
+      "favorites": 229526,
       "synopsis": "Hunters devote themselves to accomplishing hazardous tasks, all from traversing the world's uncharted territories to locating rare items and monsters. Before becoming a Hunter, one must pass the Hunter Examination—a high-risk selection process in which most applicants end up handicapped or worse, deceased.\n\nAmbitious participants who challenge the notorious exam carry their own reason. What drives 12-year-old Gon Freecss is finding Ging, his father and a Hunter himself. Believing that he will meet his father by becoming a Hunter, Gon takes the first step to walk the same path.\n\nDuring the Hunter Examination, Gon befriends the medical student Leorio Paladiknight, the vindictive Kurapika, and ex-assassin Killua Zoldyck. While their motives vastly differ from each other, they band together for a common goal and begin to venture into a perilous world.\n\n[Written by MAL Rewrite]",
       "background": "",
       "season": "fall",
@@ -1508,14 +1519,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/20/Naruto",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1141/142503.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1141/142503t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1141/142503l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1141/142503.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1141/142503t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1141/142503l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1141/142503.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1141/142503t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1141/142503l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1141/142503.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1141/142503t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1141/142503l.webp"
         }
       },
       "trailer": {
@@ -1580,11 +1591,11 @@ export const TRENDING_DATA = [
       "duration": "23 min per ep",
       "rating": "PG-13 - Teens 13 or older",
       "score": 8.02,
-      "scored_by": 2139333,
-      "rank": 723,
+      "scored_by": 2144598,
+      "rank": 729,
       "popularity": 9,
-      "members": 3112393,
-      "favorites": 86369,
+      "members": 3121465,
+      "favorites": 86605,
       "synopsis": "Twelve years ago, a colossal demon fox terrorized the world. During the monster's attack on the Hidden Leaf Village, the Hokage—the village's leader and most powerful ninja—sacrifices himself to seal the beast inside a newborn, relieving civilization from destruction while dooming the baby to a lonely life.\n\nNow, after years of being shunned and bullied, Naruto Uzumaki pesters the village with elaborate pranks and vandalism. Despite these antics, he works hard to achieve his dream: to become the Hokage and earn the acknowledgement of those who have mistreated him for his entire life. Naruto joins Team 7, a ninja squad made up of two of his peers—prodigy Sasuke Uchiha and clever Sakura Haruno.\n\nUnder the aloof Kakashi Hatake's leadership, Team 7 takes on a series of difficult missions, forcing its members to grow in strength and comradery despite their many differences. Naruto strives to stand out in his rivalry with Sasuke and earn the romantic affection of Sakura. But as the trio brush against danger and death, their tragic pasts threaten to tear them apart.\n\n[Written by MAL Rewrite]",
       "background": "Naruto received numerous awards during its airing, including the Best Full-Length Animation Program Award in the third UStv Awards and the 38th Best Animated Show in IGN's Top 100 Animated Series. The anime was released on DVD in 16 volumes by VIZ Media from July 4, 2006, to September 22, 2009. The company rereleased it in eight volumes from October 6, 2009, to December 14, 2010. VIZ Media also made available a Blu-ray version in eight volumes from November 3, 2020, to October 18, 2022. The series adapts the first 27 volumes of the original manga.",
       "season": "fall",
@@ -1668,14 +1679,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/22319/Tokyo_Ghoul",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1498/134443.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1498/134443t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1498/134443l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1498/134443.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1498/134443t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1498/134443l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1498/134443.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1498/134443t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1498/134443l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1498/134443.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1498/134443t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1498/134443l.webp"
         }
       },
       "trailer": {
@@ -1750,11 +1761,11 @@ export const TRENDING_DATA = [
       "duration": "24 min per ep",
       "rating": "R - 17+ (violence & profanity)",
       "score": 7.79,
-      "scored_by": 2000953,
-      "rank": 1207,
+      "scored_by": 2005215,
+      "rank": 1232,
       "popularity": 10,
-      "members": 3051946,
-      "favorites": 53029,
+      "members": 3060002,
+      "favorites": 53110,
       "synopsis": "A sinister threat is invading Tokyo: flesh-eating \"ghouls\" who appear identical to humans and blend into their population. Reserved college student Ken Kaneki buries his nose in books and avoids the news of the growing crisis. However, the appearance of an attractive woman named Rize Kamishiro shatters his solitude when she forwardly asks him on a date.\n\nWhile walking Rize home, Kaneki discovers she isn't as kind as she first appeared, and she has led him on with sinister intent. After a tragic struggle, he later awakens in a hospital to learn his life was saved by transplanting the now deceased Rize's organs into his own body.\n\nKaneki's body begins to change in horrifying ways, and he transforms into a human-ghoul hybrid. As he embarks on his new dreadful journey, Kaneki clings to his humanity in the evolving bloody conflict between society's new monsters and the government agents who hunt them.\n\n[Written by MAL Rewrite]",
       "background": "",
       "season": "summer",
@@ -1862,14 +1873,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/40748/Jujutsu_Kaisen",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/1171/109222.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/1171/109222t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/1171/109222l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1171/109222.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1171/109222t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1171/109222l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/1171/109222.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/1171/109222t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/1171/109222l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/1171/109222.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/1171/109222t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/1171/109222l.webp"
         }
       },
       "trailer": {
@@ -1950,12 +1961,12 @@ export const TRENDING_DATA = [
       },
       "duration": "23 min per ep",
       "rating": "R - 17+ (violence & profanity)",
-      "score": 8.51,
-      "scored_by": 1994855,
-      "rank": 160,
+      "score": 8.5,
+      "scored_by": 2005023,
+      "rank": 165,
       "popularity": 11,
-      "members": 3025921,
-      "favorites": 96146,
+      "members": 3042498,
+      "favorites": 96391,
       "synopsis": "Idly indulging in baseless paranormal activities with the Occult Club, high schooler Yuuji Itadori spends his days at either the clubroom or the hospital, where he visits his bedridden grandfather. However, this leisurely lifestyle soon takes a turn for the strange when he unknowingly encounters a cursed item. Triggering a chain of supernatural occurrences, Yuuji finds himself suddenly thrust into the world of Curses—dreadful beings formed from human malice and negativity—after swallowing the said item, revealed to be a finger belonging to the demon Sukuna Ryoumen, the King of Curses.\n\nYuuji experiences first-hand the threat these Curses pose to society as he discovers his own newfound powers. Introduced to the Tokyo Prefectural Jujutsu High School, he begins to walk down a path from which he cannot return—the path of a Jujutsu sorcerer.\n\n[Written by MAL Rewrite]",
       "background": "Winner of the Anime of the Year (TV Series) at the 2022 Tokyo Anime Award Festival (TAAF).",
       "season": "fall",
@@ -2057,14 +2068,14 @@ export const TRENDING_DATA = [
       "url": "https://myanimelist.net/anime/32281/Kimi_no_Na_wa",
       "images": {
         "jpg": {
-          "image_url": "https://myanimelist.net/images/anime/5/87048.jpg",
-          "small_image_url": "https://myanimelist.net/images/anime/5/87048t.jpg",
-          "large_image_url": "https://myanimelist.net/images/anime/5/87048l.jpg"
+          "image_url": "https://cdn.myanimelist.net/images/anime/5/87048.jpg",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/5/87048t.jpg",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/5/87048l.jpg"
         },
         "webp": {
-          "image_url": "https://myanimelist.net/images/anime/5/87048.webp",
-          "small_image_url": "https://myanimelist.net/images/anime/5/87048t.webp",
-          "large_image_url": "https://myanimelist.net/images/anime/5/87048l.webp"
+          "image_url": "https://cdn.myanimelist.net/images/anime/5/87048.webp",
+          "small_image_url": "https://cdn.myanimelist.net/images/anime/5/87048t.webp",
+          "large_image_url": "https://cdn.myanimelist.net/images/anime/5/87048l.webp"
         }
       },
       "trailer": {
@@ -2135,11 +2146,11 @@ export const TRENDING_DATA = [
       "duration": "1 hr 46 min",
       "rating": "PG-13 - Teens 13 or older",
       "score": 8.82,
-      "scored_by": 2080826,
-      "rank": 35,
+      "scored_by": 2086209,
+      "rank": 37,
       "popularity": 12,
-      "members": 3022072,
-      "favorites": 95356,
+      "members": 3031325,
+      "favorites": 95497,
       "synopsis": "Mitsuha Miyamizu, a high school girl, yearns to live the life of a boy in the bustling city of Tokyo—a dream that stands in stark contrast to her present life in the countryside. Meanwhile in the city, Taki Tachibana lives a busy life as a high school student while juggling his part-time job and hopes for a future in architecture.\n\nOne day, Mitsuha awakens in a room that is not her own and suddenly finds herself living the dream life in Tokyo—but in Taki's body! Elsewhere, Taki finds himself living Mitsuha's life in the humble countryside. In pursuit of an answer to this strange phenomenon, they begin to search for one another.\n\nKimi no Na wa. revolves around Mitsuha and Taki's actions, which begin to have a dramatic impact on each other's lives, weaving them into a fabric held together by fate and circumstance.\n\n[Written by MAL Rewrite]",
       "background": "Kimi no Na wa. won the LAFCA Animation Award in 2016 and the Best Animated Film in 2017 by Mainichi Film Awards. It also won the Grand Prize Award on the 20th Japan Media Arts Festival.",
       "season": null,
@@ -2235,3 +2246,4 @@ export const TRENDING_DATA = [
       "demographics": []
     }
   ]
+}

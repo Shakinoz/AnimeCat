@@ -1,11 +1,15 @@
 <header>
-    <h1 routerLink="/">AnimeCat</h1>
+    <div>
+
+      <img src="assets/logo.png" alt="App Logo">
+      <h1 routerLink="/">AnimeCat</h1>
+    </div>
 
     <app-searchbar></app-searchbar>
 
     <nav>
         <button class="nav-link">Catalogue</button>
         <button class="nav-link">Profil</button>
-        <button class="login">Se connecter</button>
+        <button class="login" routerLink="/sign">Se connecter</button>
     </nav>
 </header>

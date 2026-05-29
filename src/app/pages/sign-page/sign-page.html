@@ -1,0 +1,13 @@
+
+
+<h1>Anime Cat</h1>
+
+<p class="title">Créez un nouveau compte</p>
+
+<form>
+  <app-form-input [label]="'Nom d\'utilisateur'" [id]="'username'" [type]="'text'"></app-form-input>
+  <app-form-input [label]="'Email'" [id]="'email'" [type]="'email'"></app-form-input>
+  <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"></app-form-input>
+
+  <button (click)="handleSign()">S'inscrire</button>
+</form>

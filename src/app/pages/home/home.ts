@@ -4,6 +4,8 @@ import { JikanService } from '../../services/jikan.service';
 import { SlicePipe } from '@angular/common';
 import { Header } from '../../components/header/header';
 import { ChangeDetectorRef } from '@angular/core';
+// TODO : use signal instead change detector ref
+import { TRENDING_DATA as trendingData } from '../../data/trending';
 
 
 @Component({
@@ -22,6 +24,7 @@ export class HomePage{
 
   constructor(private jikan: JikanService,  private cdr: ChangeDetectorRef ) {
     this.loadData();
+
   }
 
   loadData() {
@@ -36,6 +39,17 @@ export class HomePage{
       this.isLoading = false;
       this.cdr.markForCheck();
     });
+
+    this.fillPopularFromTrendingIfEmpty();
+  }
+
+  fillPopularFromTrendingIfEmpty() {
+    setTimeout(() => {
+      if (!this.popular?.length) {
+        this.popular = [...(trendingData.data as unknown as Anime[])];
+        this.cdr.markForCheck();
+      }
+    }, 5000);
   }
 
   nextHero() {
