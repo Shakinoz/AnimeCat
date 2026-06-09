@@ -1,24 +1,33 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import { Component, signal, WritableSignal, ViewChild, ElementRef } from '@angular/core';
 import { Anime } from '@tutkli/jikan-ts';
 import { JikanService } from '../../services/jikan.service';
 import { SlicePipe } from '@angular/common';
 import { Header } from '../../components/header/header';
 import { POPULAR_DATA as popularData } from '../../data/popular-data';
 import { TRENDING_DATA as trendingData } from '../../data/trending-data';
+import { Button } from '../../components/button/button';
 
 @Component({
   selector: 'app-home',
-  imports: [SlicePipe, Header],
+  imports: [SlicePipe, Header, Button],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class HomePage {
+  @ViewChild('trendingCarousel', { read: ElementRef })
+  trendingCarousel!: ElementRef<HTMLDivElement>;
+  @ViewChild('popularCarousel', { read: ElementRef }) popularCarousel!: ElementRef<HTMLDivElement>;
+
   trending: WritableSignal<Anime[]> = signal([]);
   popular: WritableSignal<Anime[]> = signal([]);
   isLoading = signal(true);
 
   heroAnime?: Anime;
   heroIndex = 0;
+
+  get heroDots() {
+    return Array.from({ length: this.trending().length }, (_, index) => index);
+  }
 
   constructor(private jikan: JikanService) {
     this.loadData();
@@ -56,6 +65,25 @@ export class HomePage {
   prevHero() {
     this.heroIndex = (this.heroIndex - 1 + this.trending().length) % this.trending().length;
     this.heroAnime = this.trending()[this.heroIndex];
+  }
+
+  setHeroIndex(index: number) {
+    this.heroIndex = index;
+    this.heroAnime = this.trending()[index];
+  }
+
+  scrollCarousel(section: 'trending' | 'popular', direction: 'left' | 'right') {
+    const carousel =
+      section === 'trending'
+        ? this.trendingCarousel?.nativeElement
+        : this.popularCarousel?.nativeElement;
+    if (!carousel) {
+      return;
+    }
+
+    const distance =
+      direction === 'left' ? -carousel.offsetWidth * 0.75 : carousel.offsetWidth * 0.75;
+    carousel.scrollBy({ left: distance, behavior: 'smooth' });
   }
 
   cover(anime: Anime) {

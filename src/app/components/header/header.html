@@ -6,10 +6,43 @@
 
     <app-searchbar></app-searchbar>
 
-    <nav>
-        <button class="nav-link">Catalogue</button>
-        <button class="nav-link">Swipe</button>
-        <button class="nav-link">Profil</button>
+    <nav class="nav-sect">
+        <button class="nav-link">
+            <mat-icon>apps</mat-icon>
+            Catalogue
+        </button>
+        <button class="nav-link">
+            <mat-icon>swipe</mat-icon>
+            Swipe
+        </button>
+        <button class="nav-link">
+            <mat-icon>person</mat-icon>
+            Profil
+        </button>
         <app-button variant="primary" size="md" label="Se connecter" routerLink="/sign"></app-button>
     </nav>
+
+    <button matIconButton class="menu-button" (click)="showMenu = !showMenu">
+        <mat-icon>menu</mat-icon>
+    </button>
 </header>
+
+@if (showMenu) {
+<div class="mobile-menu">
+    <div class="mobile-links">
+        <button class="nav-link">
+            <mat-icon>apps</mat-icon>
+            Catalogue
+        </button>
+        <button class="nav-link">
+            <mat-icon>swipe</mat-icon>
+            Swipe
+        </button>
+        <button class="nav-link">
+            <mat-icon>person</mat-icon>
+            Profil
+        </button>
+    </div>
+    <app-button variant="primary" size="sm" label="Se connecter" routerLink="/sign"></app-button>
+</div>
+}

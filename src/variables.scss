@@ -1,17 +1,65 @@
+// Colors
 $dark-blue: #02212B;
 $blue-grey: #7BA6B4;
 $blue: #32697C;
 $white: #FFFFFF;
 $danger: #dd391c;
+$surface: #12363b;
+$surface-strong: #0f2a2e;
+$surface-soft: #1a3b44;
+$primary-button: #2f8f9d;
+$primary-button-hover: #3aa0b2;
+$hero-overlay: rgba(15, 42, 46, 0.9);
 
+// Border Radius
+$radius-xs: 4px;
 $radius-sm: 8px;
+$radius-card: 10px;
 $radius-md: 12px;
 $radius-lg: 16px;
+$radius-xl: 20px;
 
+// Spacing
+$space-xxs: 4px;
+$space-xs: 8px;
+$space-sm: 12px;
+$space-md: 16px;
+$space-lg: 24px;
+$space-xl: 32px;
+$space-xxl: 48px;
+
+// Padding
 $padding-sm: 6px 12px;
 $padding-md: 10px 20px;
 $padding-lg: 14px 28px;
 
+// Typography
+$font-xxs: 12px;
+$font-xs: 13px;
 $font-sm: 14px;
-$font-md: 16px;
-$font-lg: 18px;
+$font-base: 16px;
+$font-md: 18px;
+$font-lg: 20px;
+$font-xl: 24px;
+$font-xxl: 30px;
+$font-xxxl: 45px;
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-loose: 1.75;
+$line-height-heading: 1.1;
+
+// Layout sizes
+$hero-image-height: 350px;
+$card-min-width: 160px;
+$card-image-height: 220px;
+$logo-width: 60px;
+$logo-height: 70px;
+
+// Shadows
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// Borders
+$border-thin: 1px;
+$border-soft: rgba(255, 255, 255, 0.08); 

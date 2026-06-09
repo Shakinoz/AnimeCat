@@ -20,7 +20,11 @@
                 {{ heroAnime.synopsis | slice:0:180 }}...
             </p>
 
-            <button class="btn">Plus d'infos</button>
+            <div class="hero-buttons">
+                <app-button [label]="'Plus d\'infos'" [size]="'md'"></app-button>
+                <app-button [label]="'A regarder'" [size]="'md'" [variant]="'ghost'"></app-button>
+            </div>
+
         </div>
 
         <div class="hero-image">

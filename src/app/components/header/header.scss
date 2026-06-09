@@ -1,24 +1,24 @@
-@import '../../../variables.scss';
+@use '../../../variables.scss' as *;
 
 header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.7rem 2rem;
-    border-bottom: $blue 1px solid;
+    padding: $space-sm $space-xl;
+    border-bottom: $blue $border-thin solid;
     background-color: $dark-blue;
     color: $white;
     .nav-logo{
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: $space-xs;
         cursor: pointer;
         img{
-            width: 60px;
-            height: 70px;
+            width: $logo-width;
+            height: $logo-height;
         }
         h1{
-            font-size: 1.5rem;
+            font-size: $font-xl;
             font-weight: bold;
             letter-spacing: 1px;
             &:hover{
@@ -26,21 +26,30 @@ header{
             }
         }
     }
-    nav{
+    .nav-sect{
         display: flex;
-        gap: 1rem;
+        gap: $space-lg;
         button{
             color: $white;
         }
         .nav-link{
             background: none;
             border: none;
+            display: flex;
+            align-items: center;
+            gap: $space-xs;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: $font-base;
             &:hover{
                 color: $blue-grey;
             }
             &:active{
+                color: $blue;
+            }
+            .mat-icon{
+                width: $font-xxl;
+                height: $font-xxl;
+                font-size: $font-xxl;
                 color: $blue;
             }
         }
@@ -48,10 +57,10 @@ header{
             background-color: $blue;
             color: $white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: $space-sm $space-md;
+            border-radius: $radius-xs;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: $font-base;
             transition: all 0.2s ease;
             &:hover{
                 background-color: $blue-grey;
@@ -62,5 +71,62 @@ header{
                 background-color: $blue;
             }
         }
+    }
+    .menu-button{
+        display:none;
+        mat-icon{
+            color: $blue;
+        }
+    }
+}
+
+.mobile-menu{
+    display: none;
+    justify-content: space-between;
+    padding: $padding-lg;
+    background-color: $dark-blue;
+    border-bottom: $blue $border-thin solid;
+    .mobile-links{
+        display: flex;
+        flex-direction: column;
+        gap: $space-md;
+        .nav-link{
+            color: $white;
+            display: flex;
+            align-items: center;
+            gap: $space-xxs;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: $font-base;
+            width: fit-content;
+            &:hover{
+                color: $blue-grey;
+            }
+            &:active{
+                color: $blue;
+            }
+            .mat-icon{
+                width: $font-xxl;
+                height: $font-xxl;
+                font-size: $font-xxl;
+                color: $blue;
+            }
+        }
+    }
+    
+}
+
+@media (max-width: 768px) {
+    header{
+        .nav-sect{
+            display: none;
+        }
+        .menu-button{
+            display:flex;
+        }
+    }
+    .mobile-menu{
+        display: flex;
     }
 }
