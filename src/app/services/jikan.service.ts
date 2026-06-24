@@ -86,7 +86,7 @@ export class JikanService {
   // ─────────────────────────────────────────────────────────
 
   /**
-   * Recherche par nom — SearchBar (suggestions) + page /search
+   * Recherche par nom — SearchBar (suggestions)
    */
   searchByName(query: string, page = 1, limit = 8): Observable<AnimeListResult> {
     return from(this.client.getAnimeSearch({ q: query, page, limit, sfw: true })).pipe(

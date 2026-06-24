@@ -4,7 +4,7 @@
         <h1>AnimeCat</h1>
     </div>
 
-    <app-searchbar></app-searchbar>
+    <app-searchbar class="desktop-search"></app-searchbar>
 
     <nav class="nav-sect">
         <button class="nav-link">
@@ -29,20 +29,23 @@
 
 @if (showMenu) {
 <div class="mobile-menu">
-    <div class="mobile-links">
-        <button class="nav-link">
-            <mat-icon>apps</mat-icon>
-            Catalogue
-        </button>
-        <button class="nav-link">
-            <mat-icon>swipe</mat-icon>
-            Swipe
-        </button>
-        <button class="nav-link">
-            <mat-icon>person</mat-icon>
-            Profil
-        </button>
+    <app-searchbar [format]="'mobile'" class="mobile-search"></app-searchbar>
+    <div class="flex">
+        <div class="mobile-links">
+            <button class="nav-link">
+                <mat-icon>apps</mat-icon>
+                Catalogue
+            </button>
+            <button class="nav-link">
+                <mat-icon>swipe</mat-icon>
+                Swipe
+            </button>
+            <button class="nav-link">
+                <mat-icon>person</mat-icon>
+                Profil
+            </button>
+        </div>
+        <app-button variant="primary" size="sm" label="Se connecter" routerLink="/sign"></app-button>
     </div>
-    <app-button variant="primary" size="sm" label="Se connecter" routerLink="/sign"></app-button>
 </div>
 }

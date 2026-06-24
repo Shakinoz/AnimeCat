@@ -1,90 +1,200 @@
-// @import url('https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined');
-// :host {
-//   display: flex;
-//   justify-content: center;
-//   font-family: var(--inter-font);
-//   --primary: var(--hot-pink);
-// }
-// .material-autocomplete {
-//   display: flex;
-//   position: relative;
-//   align-items: center;
-// }
-// .material-symbols-outlined {
-//   font-size: 1.25rem;
-//   pointer-events: none;
-// }
-// .search-icon {
-//   left: 0.75rem;
-//   position: absolute;
-//   color: var(--quaternary-contrast);
-// }
-// [ngComboboxInput] {
-//   width: 13rem;
-//   font-size: 1rem;
-//   border-radius: 3rem;
-//   padding: 0.75rem 0.5rem 0.75rem 2.5rem;
-//   color: var(--primary-contrast);
-//   outline-color: var(--primary);
-//   border: 1px solid var(--quinary-contrast);
-//   background-color: var(--page-background);
-// }
-// [ngComboboxInput]::placeholder {
-//   color: var(--quaternary-contrast);
-// }
-// [ngCombobox]:focus-within [ngComboboxInput] {
-//   outline: 2px solid var(--primary);
-//   outline-offset: 2px;
-// }
-// [ngCombobox]:has([aria-expanded='false']) .popup {
-//   display: none;
-// }
-// .popup {
-//   width: 100%;
-//   margin-top: 8px;
-//   padding: 0.5rem;
-//   max-height: 11rem;
-//   border-radius: 2rem;
-//   background-color: var(--septenary-contrast);
-//   font-size: 0.9rem;
-// }
-// .no-results {
-//   padding: 1rem;
-// }
-// [ngListbox] {
-//   gap: 2px;
-//   height: 100%;
-//   display: flex;
-//   overflow: auto;
-//   flex-direction: column;
-// }
-// [ngOption] {
-//   display: flex;
-//   cursor: pointer;
-//   align-items: center;
-//   margin: 1px;
-//   padding: 0 1rem;
-//   min-height: 3rem;
-//   border-radius: 3rem;
-// }
-// [ngOption]:hover,
-// [ngOption][data-active='true'] {
-//   background-color: color-mix(in srgb, var(--primary-contrast) 5%, transparent);
-// }
-// [ngOption][data-active='true'] {
-//   outline-offset: -2px;
-//   outline: 2px solid var(--primary);
-// }
-// [ngOption][aria-selected='true'] {
-//   color: var(--primary);
-//   background-color: color-mix(in srgb, var(--primary) 10%, transparent);
-// }
-// [ngOption]:not([aria-selected='true']) .check-icon {
-//   display: none;
-// }
-// .option-label {
-//   flex: 1;
-// }
-// .check-icon {
-//   font-size: 0.9rem;
-// }
+@use '../../../variables.scss' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHAMP DE RECHERCHE
+   ═══════════════════════════════════════════════════════════ */
+.search {
+  position: relative;
+  width: 40%;
+  padding: $padding-md;
+  margin: auto;
+}
+
+.mobile-sc{
+  width: initial;
+  padding: 0;
+  margin-bottom: $space-md;
+}
+
+.search-field {
+  width: 100%;
+  font-family: 'Nunito Sans', sans-serif;
+
+  // Ajustement structurel interne
+  .mat-mdc-form-field-flex {
+    height: 44px;
+    align-items: center;
+  }
+
+  .mat-mdc-form-field-infix {
+    padding: 0;
+    min-height: 0;
+    border: none;
+  }
+
+  .mdc-notched-outline__notch {
+    border-left: none;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+/* Texte / placeholder de l'input */
+.search-field input.mat-mdc-input-element {
+  color: $blue-grey;
+  font-size: $font-sm;
+  caret-color: $blue;
+
+  &::placeholder {
+    color: $muted;
+    opacity: 1;
+  }
+}
+
+/* Icône loupe (prefix) */
+.search-icon {
+  color: $muted;
+  margin-left: $space-sm;
+  margin-right: $space-xxs;
+  flex-shrink: 0;
+}
+
+/* Bouton clear (suffix) */
+.search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: $padding-sm; 
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: $muted;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    color: $blue-grey;
+    background: $border-soft;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTENU D'UNE OPTION (Scopé localement à votre template)
+   ═══════════════════════════════════════════════════════════ */
+.option {
+  display: flex;
+  gap: $font-sm;
+  padding: 12px 10px;
+  align-items: flex-start;
+}
+
+.option-poster {
+  width: 64px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: $surface-soft;
+}
+
+.option-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $padding-sm;
+}
+
+.option-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: $font-sm;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: $white;
+  text-transform: uppercase;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.option-synopsis {
+  font-size: $font-xxs;
+  line-height: 1.6;
+  color: $blue-grey;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ÉTATS (chargement / vide)
+   ═══════════════════════════════════════════════════════════ */
+.state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: $font-sm $space-sm;
+  font-size: $font-xs;
+  color: $muted;
+
+  &--empty {
+    color: $muted;
+  }
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.spinner {
+  width: $font-base;
+  height: $font-base;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: $blue;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — mobile-first
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .option {
+    gap: 10px;
+    padding: 10px 8px;
+  }
+
+  .option-poster {
+    width: 52px;
+    height: 74px;
+  }
+
+  .option-title {
+    font-size: 12.5px;
+  }
+
+  .option-synopsis {
+    font-size: 11.5px;
+    -webkit-line-clamp: 2;
+  }
+}

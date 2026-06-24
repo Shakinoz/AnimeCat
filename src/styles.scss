@@ -8,3 +8,88 @@ body {
   padding-bottom: $space-xxl;
   line-height: $line-height-normal;
 }
+
+body::-webkit-scrollbar,
+.mat-mdc-autocomplete-panel::-webkit-scrollbar {
+  width: $radius-card;
+}
+
+body::-webkit-scrollbar-track,
+.mat-mdc-autocomplete-panel::-webkit-scrollbar-track {
+  background: $surface;
+}
+
+body::-webkit-scrollbar-thumb,
+.mat-mdc-autocomplete-panel::-webkit-scrollbar-thumb {
+  background: $blue;
+  border-radius: $radius-card;
+}
+
+.mat-mdc-text-field-wrapper{
+  background-color: $surface !important;
+  border-radius: $radius-card !important;
+  height: 44px !important;
+}
+
+.mat-focused{
+  outline: $surface !important;
+}
+
+.mdc-text-field{
+  align-items: center !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text{
+  width: 100%;
+}
+
+.search-panel {
+  background: $surface !important; /* $surface */
+  border: 1px solid $hero-overlay; /* $hero-overlay */
+  border-radius: $radius-card !important; /* $radius-card */
+  margin-top: $space-xs;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  max-height: 70vh !important;
+
+  .mat-mdc-autocomplete-panel {
+    padding: $space-xxs;
+    background: transparent;
+  }
+}
+
+.anime-option,
+.state-option {
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: normal !important;
+  white-space: normal !important;
+  padding: 0 !important;
+  border-radius: $radius-sm;
+  margin-bottom: $space-xxs;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.anime-option {
+  &:hover,
+  &.mat-mdc-option-active {
+    background: $surface-soft !important; 
+  }
+}
+
+.state-option {
+  cursor: default;
+  opacity: 1 !important;
+}
+
+.anime-option:not(:last-child) .option {
+  border-bottom: 1px solid $blue; 
+}
+
+@media (max-width: 480px) {
+  .search-panel {
+    max-height: 60vh !important;
+  }
+}
