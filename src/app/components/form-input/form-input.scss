@@ -1,3 +1,26 @@
 @use '../../../variables.scss' as *;
 
-/* Shared form-input variables are available here. */
+:host{
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    text-align: start;
+    label{
+        font-size: $font-base;
+        color: $blue-grey;
+    }
+    input{
+        height: 40px;
+        border: solid 1px $blue-grey;
+        background-color: $dark-blue;
+        border-radius: $radius-sm;
+        color: $blue-grey;
+        font-size: $font-sm;
+        text-indent: $space-sm;
+    }
+    .input-error{
+        color: $error;
+        font-size: $font-sm;
+        min-height:$space-md;
+    }
+}

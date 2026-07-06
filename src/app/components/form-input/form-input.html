@@ -1,2 +1,10 @@
-<label for="{{id()}}">{{label()}}</label>
-<input id="{{id()}}" type="{{type()}}" required/>
+<label [for]="id()">{{ label() }}</label>
+<input [id]="id()" [type]="type()" [formControl]="control()" />
+
+@if (control().invalid && control().touched) {
+<span class="input-error">
+    @if (control().hasError('required')) { Ce champ est requis }
+    @if (control().hasError('email')) { Email invalide }
+    @if (control().hasError('minlength')) { Le mot de passe doit contenir au moins 8 caractères }
+</span>
+}

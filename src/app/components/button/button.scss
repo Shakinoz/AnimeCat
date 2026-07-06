@@ -4,6 +4,7 @@
     cursor:pointer;
     border: 1px solid transparent;
     transition: all 0.2s ease;
+    text-wrap-mode: nowrap;
     &--primary {
         background-color: $blue;
         color: $dark-blue;
@@ -70,6 +71,13 @@
         padding: $padding-lg;
         font-size: $font-lg;
         border-radius: $radius-lg;
+    }
+
+    &--full{
+        padding: $padding-lg;
+        font-size: $font-lg;
+        border-radius: $radius-lg;
+        width: 100%;
     }
 
     &:hover{

@@ -1,13 +1,29 @@
+<app-header></app-header>
 
+<div class="container">
+  <div class="big-logo">
+    <img src="assets/logo.png" alt="App Logo">
+  </div>
 
-<h1>Anime Cat</h1>
+  <div class="title">
+    <h1>Anime Cat</h1>
+    <p class="subtitle">Créez un nouveau compte</p>
+  </div>
 
-<p class="title">Créez un nouveau compte</p>
+  <form class="form" [formGroup]="signupForm">
+    <app-form-input [label]="'Nom d\'utilisateur'" [id]="'username'" [type]="'text'"
+      [control]="signupForm.controls.username" />
 
-<form>
-  <app-form-input [label]="'Nom d\'utilisateur'" [id]="'username'" [type]="'text'"></app-form-input>
-  <app-form-input [label]="'Email'" [id]="'email'" [type]="'email'"></app-form-input>
-  <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"></app-form-input>
+    <app-form-input [label]="'Email'" [id]="'email'" [type]="'email'" [control]="signupForm.controls.email" />
 
-  <button (click)="handleSign()">S'inscrire</button>
-</form>
+    <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"
+      [control]="signupForm.controls.password" />
+
+    <app-button [label]="'S\'inscrire'" [size]="'full'" (click)="handleSign()" />
+
+    <p class="login-sect">
+      Vous avez déjà un compte ?
+      <strong class="login-link" routerLink="/login">Se connecter</strong>
+    </p>
+  </form>
+</div>
