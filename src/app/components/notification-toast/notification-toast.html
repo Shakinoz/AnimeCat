@@ -1,0 +1,6 @@
+@if (notificationService.visible()) {
+<div class="toast" [class.error]="notificationService.isError()" [class.success]="notificationService.isSuccess()">
+    <span class="message">{{ notificationService.message() }}</span>
+    <button type="button" class="close-btn" aria-label="Fermer" (click)="close()">×</button>
+</div>
+}

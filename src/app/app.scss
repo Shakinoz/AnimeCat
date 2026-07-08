@@ -1,2 +1,7 @@
 @use '../variables.scss' as *;
 
+:host {
+  display: block;
+  position: relative;
+}
+

@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NotificationToast } from './components/notification-toast/notification-toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NotificationToast],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

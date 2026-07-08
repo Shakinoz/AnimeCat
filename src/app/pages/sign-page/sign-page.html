@@ -19,6 +19,9 @@
     <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"
       [control]="signupForm.controls.password" />
 
+    <app-form-input [label]="'Valider le Mot de passe'" [id]="'confirmPassword'" [type]="'password'"
+      [control]="signupForm.controls.confirmPassword" />
+
     <app-button [label]="'S\'inscrire'" [size]="'full'" (click)="handleSign()" />
 
     <p class="login-sect">

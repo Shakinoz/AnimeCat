@@ -1,0 +1,59 @@
+@use '../../../variables.scss' as *;
+
+:host {
+  display: block;
+}
+
+.toast {
+  position: fixed;
+  right: $space-md;
+  bottom: $space-md;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  padding: $padding-lg;
+  border-radius: $radius-card;
+  background: $blue;
+  border: solid 1px $dark-blue;
+  color: $dark-blue;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: $font-sm;
+  font-weight: 600;
+  animation: fadeIn 0.2s ease;
+
+  &.error {
+    background: $error;
+    color: white;
+  }
+
+  &.success {
+    background: $success;
+    color: white;
+  }
+}
+
+.message {
+  flex: 1;
+}
+
+.close-btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

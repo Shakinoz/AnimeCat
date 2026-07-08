@@ -19,7 +19,11 @@
             <mat-icon>person</mat-icon>
             Profil
         </button>
-        <app-button variant="primary" size="md" label="Se connecter" routerLink="/sign"></app-button>
+        @if (storageService.isAuthenticated()) {
+        <app-button variant="primary" size="md" label="Se déconnecter" (click)="handleLogout()"></app-button>
+        } @else {
+        <app-button variant="primary" size="md" label="Se connecter" routerLink="/login"></app-button>
+        }
     </nav>
 
     <button matIconButton class="menu-button" (click)="showMenu = !showMenu">
@@ -45,7 +49,11 @@
                 Profil
             </button>
         </div>
-        <app-button variant="primary" size="sm" label="Se connecter" routerLink="/sign"></app-button>
+        @if (storageService.isAuthenticated()) {
+        <app-button variant="primary" size="sm" label="Se déconnecter" (click)="handleLogout()"></app-button>
+        } @else {
+        <app-button variant="primary" size="sm" label="Se connecter" routerLink="/login"></app-button>
+        }
     </div>
 </div>
 }
