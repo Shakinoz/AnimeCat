@@ -4,10 +4,19 @@
   width: 100%;
   overflow-x: hidden;
 
-  .loading {
-    text-align: center;
-    padding: $space-xxl;
-    font-size: $font-md;
+  .loading-sect{
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin:auto;
+    height:90vh;
+    .loading {
+      text-align: center;
+      padding: $space-xxl;
+      font-size: $font-md;
+      color: $muted;
+    }
   }
 }
 

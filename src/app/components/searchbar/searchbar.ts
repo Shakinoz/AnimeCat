@@ -25,6 +25,7 @@ import {
 } from 'rxjs/operators';
 import { JikanService } from '../../services/jikan.service';
 import { Anime } from '@tutkli/jikan-ts';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const MIN_CHARS = 2;
 const DEBOUNCE_MS = 300;
@@ -39,6 +40,7 @@ const MAX_RESULTS = 6;
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './searchbar.html',
   styleUrl: './searchbar.scss',
@@ -88,7 +90,7 @@ export class Searchbar {
   // ── Sélection d'un résultat → fiche détail ───────────────
   onSelect(event: MatAutocompleteSelectedEvent): void {
     const anime = event.option.value as Anime;
-    this.router.navigate(['/detail', anime.mal_id]);
+    this.router.navigate(['/detail?id=', anime.mal_id]);
     this.results.set([]);
     this.hasSearched.set(false);
   }

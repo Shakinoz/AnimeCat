@@ -10,7 +10,7 @@
    ═══════════════════════════════════════════════════════════ */
 .search {
   position: relative;
-  width: 40%;
+  width: 60%;
   padding: $padding-md;
   margin: auto;
 }
@@ -159,14 +159,11 @@
   }
 }
 
-.spinner {
-  width: $font-base;
-  height: $font-base;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-top-color: $blue;
-  border-radius: 50%;
-  animation: spin 0.65s linear infinite;
-  flex-shrink: 0;
+.state{
+  mat-spinner {
+    width: $font-base !important;
+    height: $font-base !important;
+  }
 }
 
 @keyframes spin {

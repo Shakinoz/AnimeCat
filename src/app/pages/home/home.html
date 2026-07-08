@@ -1,7 +1,10 @@
 <app-header></app-header>
 <div class="home">
     @if (isLoading()) {
-    <p class="loading">Chargement...</p>
+    <div class="loading-sect">
+        <mat-spinner></mat-spinner>
+        <p class="loading">Chargement...</p>
+    </div>
     }
 
     @if (!isLoading()) {

@@ -6,10 +6,11 @@ import { Header } from '../../components/header/header';
 import { POPULAR_DATA as popularData } from '../../data/popular-data';
 import { TRENDING_DATA as trendingData } from '../../data/trending-data';
 import { Button } from '../../components/button/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
-  imports: [SlicePipe, Header, Button],
+  imports: [SlicePipe, Header, Button, MatProgressSpinnerModule],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
