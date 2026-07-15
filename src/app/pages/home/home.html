@@ -24,8 +24,9 @@
             </p>
 
             <div class="hero-buttons">
-                <app-button [label]="'Plus d\'infos'" [size]="'md'"></app-button>
-                <app-button [label]="'A regarder'" [size]="'md'" [variant]="'ghost'"></app-button>
+                <app-button [label]="'Plus d\'infos'" [size]="'md'" routerLink="detail/{{ heroAnime.mal_id }}"></app-button>
+                <app-button [icon]="heroAnime.userStatus === 'plan_to_watch' ? 'bookmark_added' : 'bookmark_add' " [label]="'A regarder'" [size]="'md'" [variant]="'ghost'" (click)="toggleStatus(heroAnime.mal_id, 'plan_to_watch')"></app-button>
+                <app-button [icon]="heroAnime.userStatus === 'seen' ? 'visibility_off' : 'visibility' " [size]="'md'" [variant]="'ghost'" (click)="toggleStatus(heroAnime.mal_id, 'seen')"></app-button>
             </div>
 
         </div>

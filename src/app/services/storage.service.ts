@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import { IUser } from './../models/user.interface';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { AnimeStatus } from '../models/user-anime.interface';
 
-interface AuthUser {
-  username: string;
-  email: string;
-  password: string;
-}
+type AuthUser = Pick<IUser, 'username' | 'email' | 'password'>;
 
 interface AuthResult {
   success: boolean;
@@ -15,6 +14,7 @@ interface AuthResult {
 export class StorageService {
   private readonly storageKey = 'anime-cat-users';
   private readonly currentUserKey = 'anime-cat-current-user';
+  private readonly router = inject(Router);
 
   register(user: AuthUser): AuthResult {
     const users = this.getUsers();
@@ -29,14 +29,18 @@ export class StorageService {
       return { success: false, message: 'Compte déjà existant pour cet email' };
     }
 
-    users.push({
+    const newUser: IUser = {
       username: user.username.trim(),
       email: user.email.trim().toLowerCase(),
       password: user.password,
-    });
+      animeList: [],
+      tierList: { S: [], A: [], B: [], C: [] },
+    };
+
+    users.push(newUser);
 
     localStorage.setItem(this.storageKey, JSON.stringify(users));
-    localStorage.setItem(this.currentUserKey, JSON.stringify(users[users.length - 1]));
+    localStorage.setItem(this.currentUserKey, JSON.stringify(newUser));
 
     return { success: true, message: 'Compte créé avec succès' };
   }
@@ -62,19 +66,67 @@ export class StorageService {
 
   logout(): void {
     localStorage.removeItem(this.currentUserKey);
+    this.router.navigate(['/']);
   }
 
   isAuthenticated(): boolean {
     return !!this.getCurrentUser();
   }
 
-  getCurrentUser(): AuthUser | null {
+  getCurrentUser(): IUser | null {
     const value = localStorage.getItem(this.currentUserKey);
-    return value ? JSON.parse(value) : null;
+    return value ? (JSON.parse(value) as IUser) : null;
   }
 
-  private getUsers(): AuthUser[] {
+  private getUsers(): IUser[] {
     const value = localStorage.getItem(this.storageKey);
-    return value ? (JSON.parse(value) as AuthUser[]) : [];
+    return value ? (JSON.parse(value) as IUser[]) : [];
+  }
+
+  private saveCurrentUser(user: IUser): void {
+    localStorage.setItem(this.currentUserKey, JSON.stringify(user));
+
+    const users = this.getUsers();
+    const index = users.findIndex((u) => u.email === user.email);
+
+    if (index !== -1) {
+      users[index] = user;
+      localStorage.setItem(this.storageKey, JSON.stringify(users));
+    }
+  }
+
+  updateAnimeStatus(animeId: number, status: AnimeStatus): void {
+    const user = this.getCurrentUser();
+
+    if (!user) return;
+
+    const anime = user.animeList.find((a) => a.animeId === animeId);
+
+    if (anime) {
+      anime.status = status;
+    } else {
+      user.animeList.push({
+        animeId,
+        status,
+      });
+    }
+
+    this.saveCurrentUser(user);
+  }
+
+  removeAnime(animeId: number): void {
+    const user = this.getCurrentUser();
+
+    if (!user) return;
+
+    user.animeList = user.animeList.filter((a) => a.animeId !== animeId);
+
+    this.saveCurrentUser(user);
+  }
+
+  getAnimeStatus(mal_id: number): AnimeStatus | null {
+    const user = this.getCurrentUser();
+
+    return user?.animeList.find(anime => anime.animeId === mal_id)?.status ?? null;
   }
 }

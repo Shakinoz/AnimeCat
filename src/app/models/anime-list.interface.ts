@@ -6,3 +6,4 @@ export interface AnimeListResult {
   currentPage: number;
   total: number;
 }
+
