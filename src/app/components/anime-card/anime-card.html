@@ -1,0 +1,29 @@
+<article class="anime-card" [routerLink]="['/detail', anime()?.mal_id]">
+  <img
+    [src]="
+      anime()?.images?.webp?.large_image_url ??
+      anime()?.images?.jpg?.large_image_url ??
+      'assets/img/placeholder.webp'
+    "
+    alt="{{ anime()?.title }}"
+  />
+
+  <div class="anime-card-body">
+    <div class="anime-card-title">
+      <h3>{{ anime()?.title_english?.trim() || anime()?.title }}</h3>
+      @if (anime()?.userStatus) {
+        <span class="badge {{ anime()?.userStatus }}">
+          {{
+            anime()?.userStatus === 'plan_to_watch'
+              ? 'Watchlist'
+              : anime()?.userStatus === 'seen'
+                ? 'Terminé'
+                : 'En cours'
+          }}
+        </span>
+      }
+    </div>
+
+    <p>{{ anime()?.genres?.slice(0, 4) }}</p>
+  </div>
+</article>

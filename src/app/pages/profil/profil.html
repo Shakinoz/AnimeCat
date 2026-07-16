@@ -1,3 +1,78 @@
 <app-header></app-header>
 
-<h1>{{user}}</h1>
+<div class="profil-page">
+  <section class="profil-hero">
+    <div>
+      <h1>{{ currentUser?.username }}</h1>
+      <p>Mes listes d'animes</p>
+    </div>
+
+    <div class="tabs">
+      <app-button
+        [label]="'Watchlist'"
+        [variant]="selectedTab() === 'watchlist' ? 'secondary' : 'primary'"
+        [size]="'sm'"
+        (click)="selectTab('watchlist')"
+      >
+      </app-button>
+
+      <app-button
+        [label]="'Terminés'"
+        [variant]="selectedTab() === 'seen' ? 'secondary' : 'primary'"
+        [size]="'sm'"
+        (click)="selectTab('seen')"
+      >
+      </app-button>
+
+      <app-button
+        [label]="'TierList'"
+        [variant]="selectedTab() === 'tierlist' ? 'secondary' : 'primary'"
+        [size]="'sm'"
+        (click)="selectTab('tierlist')"
+      >
+      </app-button>
+    </div>
+  </section>
+
+  <section class="anime-grid-section">
+    @if (isLoading()) {
+      <p class="empty-state">Chargement de vos animés...</p>
+    } @else {
+      @if (selectedTab() === 'watchlist') {
+        @if (watchlist().length) {
+          <div class="anime-grid">
+            @for (anime of watchlist(); track anime.mal_id) {
+              <app-anime-card [anime]="anime"></app-anime-card>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">Aucun animé à regarder pour le moment.</p>
+        }
+      }
+
+      @if (selectedTab() === 'seen') {
+        @if (seen().length) {
+          <div class="anime-grid">
+            @for (anime of seen(); track anime.mal_id) {
+              <app-anime-card [anime]="anime"></app-anime-card>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">Aucun animé terminé pour le moment.</p>
+        }
+      }
+
+      @if (selectedTab() === 'tierlist') {
+        @if (tierlist().length) {
+          <div class="anime-grid">
+            @for (anime of tierlist(); track anime.mal_id) {
+              <app-anime-card [anime]="anime"></app-anime-card>
+            }
+          </div>
+        } @else {
+          <p class="empty-state">Aucun animé terminé pour le moment.</p>
+        }
+      }
+    }
+  </section>
+</div>

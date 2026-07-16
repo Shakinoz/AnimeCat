@@ -10,11 +10,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StorageService } from '../../services/storage.service';
 import { RouterLink } from "@angular/router";
 import { AnimeStatus, HomeAnime } from '../../models/user-anime.interface';
+import { AnimeCard } from '../../components/anime-card/anime-card';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-home',
-  imports: [SlicePipe, Header, Button, MatProgressSpinnerModule, RouterLink],
+  imports: [SlicePipe, Header, Button, MatProgressSpinnerModule, RouterLink, AnimeCard],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

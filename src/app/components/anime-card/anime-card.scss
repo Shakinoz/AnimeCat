@@ -1,0 +1,108 @@
+@use '../../../variables.scss' as *;
+
+.anime-card {
+  min-width: $card-min-width;
+  background: $surface;
+  border-radius: $radius-card;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  img {
+    width: 100%;
+    height: $card-image-height;
+    object-fit: cover;
+  }
+
+  .anime-card-body {
+    padding: $space-sm;
+    display: flex;
+    flex-direction: column;
+    gap: $space-xxs;
+
+    .anime-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $space-xs;
+
+      h3 {
+        font-size: $font-sm;
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      .badge {
+        font-size: $font-xxs;
+        padding: $space-xxs $space-xs;
+        border-radius: $radius-sm;
+        text-transform: uppercase;
+      }
+
+      .plan_to_watch {
+        background: rgba($blue, 0.12);
+        color: $blue;
+      }
+
+      .seen {
+        background: rgba($blue-grey, 0.12);
+        color: $blue-grey;
+      }
+
+      .watching {
+        background: rgba($error, 0.12);
+        color: $error;
+      }
+    }
+
+    p {
+      font-size: $font-xs;
+      opacity: 0.7;
+      margin: 0;
+      min-height: 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    min-width: 150px;
+
+    img {
+      height: 200px;
+    }
+
+    .anime-card-body {
+      padding: $space-xs;
+
+      h3 {
+        font-size: $font-xs;
+      }
+
+      p {
+        font-size: $font-xxs;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    min-width: 130px;
+
+    img {
+      height: 180px;
+    }
+
+    .anime-card-body {
+      padding: $space-xs;
+
+      p {
+        display: none;
+      }
+    }
+  }
+}

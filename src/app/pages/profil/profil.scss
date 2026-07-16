@@ -1,0 +1,73 @@
+@use '../../../variables.scss' as *;
+
+.profil-page {
+  padding: $space-md $space-xl;
+
+  .profil-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-md;
+    margin-bottom: $space-lg;
+
+    h1 {
+      margin: 0;
+    }
+
+    p {
+      margin: $space-xxs 0 0;
+      opacity: 0.8;
+    }
+  }
+
+  .tabs {
+    display: flex;
+    gap: $space-xs;
+    flex-wrap: wrap;
+
+    .tab {
+      border: 1px solid $surface-strong;
+      background: $surface;
+      color: $blue;
+      padding: $space-xs $space-sm;
+      border-radius: $radius-sm;
+      cursor: pointer;
+      transition:
+        background 0.2s,
+        border-color 0.2s;
+
+      &.active {
+        background: $blue !important;
+        color: white !important;
+        border-color: $blue !important;
+      }
+    }
+  }
+
+  .anime-grid-section {
+    .empty-state {
+      color: $muted;
+      text-align: center;
+      padding: $space-lg 0;
+    }
+
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: $space-sm;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: $space-md $space-md;
+  }
+
+  @media (max-width: 480px) {
+    padding: $space-md $space-sm;
+
+    .profil-hero {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}
