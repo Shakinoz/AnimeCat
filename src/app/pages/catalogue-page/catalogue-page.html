@@ -1,0 +1,114 @@
+<app-header></app-header>
+
+<div class="catalogue-container">
+    <!-- En-tête de la page avec un titre mis en avant pour refléter le style global du site. -->
+    <header class="catalogue-header">
+        <div class="catalogue-title-group">
+            <p class="eyebrow">Catalogue</p>
+            <h1>Rechercher un anime</h1>
+        </div>
+    </header>
+
+    <div class="catalogue-content">
+        <!-- Colonne latérale contenant tous les filtres disponibles pour la recherche. -->
+        <aside class="filters-sidebar" aria-label="Filtres de recherche">
+            <h2>Filtres</h2>
+
+            <!-- Champ libre pour chercher par nom d'anime. -->
+            <div class="filter-group">
+                <label for="anime-search">Recherche</label>
+                <input id="anime-search" type="text" class="search-input" [value]="searchQuery"
+                    (input)="handleSearchInput($event)" placeholder="Nom de l'anime..." />
+            </div>
+
+            <!-- Sélecteur de type d'anime, par exemple TV, Film ou OVA. -->
+            <div class="filter-group">
+                <label for="anime-type">Type</label>
+                <select id="anime-type" class="filter-select" [value]="selectedType"
+                    (change)="handleTypeChange($event)">
+                    @for (option of typeOptions; track option.value) {
+                    <option [value]="option.value">
+                        {{ option.label }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Sélecteur du statut de diffusion. -->
+            <div class="filter-group">
+                <label for="anime-status">Statut</label>
+                <select id="anime-status" class="filter-select" [value]="selectedStatus"
+                    (change)="handleStatusChange($event)">
+                    @for (option of statusOptions; track option.value) {
+                    <option [value]="option.value">
+                        {{ option.label }}
+                    </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Liste de genres sous forme de cases à cocher pour une sélection multiple. -->
+            <div class="filter-group">
+                <label>Genres</label>
+                <div class="genres-container">
+                    @for (genre of genreOptions; track genre.id) {
+                    <div class="genre-checkbox">
+                        <input type="checkbox" [id]="'genre-' + genre.id" [value]="genre.id"
+                            [checked]="selectedGenres.includes(genre.id)" (change)="toggleGenreSelection(genre.id)" />
+                        <label [for]="'genre-' + genre.id">{{ genre.label }}</label>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Sélecteur de tri pour modifier l'ordre d’affichage des cartes. -->
+            <div class="filter-group">
+                <label for="anime-sort">Trier par</label>
+                <select id="anime-sort" class="filter-select" [value]="sortBy" (change)="handleSortChange($event)">
+                    @for (option of sortOptions; track option.value) {
+                    <option [value]="option.value">
+                        {{ option.label }}
+                    </option>
+                    }
+                </select>
+            </div>
+        </aside>
+
+        <!-- Zone principale où les cartes des animes sont affichées. -->
+        <main class="catalogue-main">
+            <!-- État de chargement affiché pendant la requête réseau. -->
+            @if (isLoading) {
+            <div class="loading">Chargement...</div>
+            }
+
+            <!-- Grille de résultats lorsque des animes sont disponibles. -->
+            @if (!isLoading && filteredAnimes.length > 0) {
+            <div class="anime-grid">
+                @for (anime of filteredAnimes; track anime.mal_id) {
+                <app-anime-card [anime]="anime"></app-anime-card>
+                }
+            </div>
+            }
+
+            <!-- État vide affiché quand aucun résultat ne correspond aux filtres. -->
+            @if (!isLoading && filteredAnimes.length === 0) {
+            <div class="empty-state">
+                Aucun anime trouvé avec ces filtres.
+            </div>
+            }
+
+            <!-- Navigation de pagination pour passer aux pages suivantes ou précédentes. -->
+            @if (!isLoading && filteredAnimes.length > 0) {
+            <div class="pagination">
+                <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+                    Précédent
+                </button>
+                <span class="page-info">Page {{ currentPage }}</span>
+                <button class="pagination-btn" (click)="nextPage()" [disabled]="!hasNextPage">
+                    Suivant
+                </button>
+            </div>
+            }
+        </main>
+    </div>
+</div>

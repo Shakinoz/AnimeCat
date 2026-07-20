@@ -6,6 +6,13 @@
     " alt="{{ anime()?.title }}" />
 
   <div class="anime-card-body">
+    <div class="anime-rating">
+      @if (anime()?.score) {
+      <span class="score">★ {{ anime()?.score }}</span>
+      }
+      <span class="type-badge">{{ anime()?.type }}</span>
+    </div>
+
     <div class="anime-card-title">
       <h3>
         {{ title() | slice:0:32 }}
@@ -35,9 +42,6 @@
     </div>
 
     <div class="actions-buttons">
-      @if(anime()?.score){
-      <span class="score">{{ anime()?.score }}</span>
-      }
       <app-button [icon]="visibleStatus() === 'plan_to_watch' ? 'bookmark_added' : 'bookmark_add'" [size]="'sm'"
         [variant]="visibleStatus() === 'plan_to_watch' ? 'primary' : 'ghost'"
         (click)="$event.preventDefault(); $event.stopPropagation(); toggleStatus(anime()?.mal_id!, 'plan_to_watch')"></app-button>

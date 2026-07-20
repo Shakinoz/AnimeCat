@@ -1,0 +1,184 @@
+<!-- ─────────────────────────────────────────────────────────
+     anime-swipe.component.html
+     ───────────────────────────────────────────────────────── -->
+
+<div class="swipe-page">
+
+    <!-- ══ ÉTAT : CHARGEMENT ══════════════════════════════════ -->
+    @if (isLoading()) {
+    <div class="swipe-page__loader">
+        <div class="loader-spinner"></div>
+        <p class="loader-text">Chargement des animés…</p>
+    </div>
+    }
+
+    <!-- ══ ÉTAT : ERREUR ══════════════════════════════════════ -->
+    @else if (error()) {
+    <div class="swipe-page__error">
+        <span class="error-icon">⚠️</span>
+        <p class="error-msg">{{ error() }}</p>
+        <button class="btn-retry" (click)="loadBatch()">Réessayer</button>
+    </div>
+    }
+
+    <!-- ══ ÉTAT : PLUS D'ANIMÉS ═══════════════════════════════ -->
+    @else if (!currentAnime() && !isLoading()) {
+    <div class="swipe-page__empty">
+        <span class="empty-icon">🐱</span>
+        <p class="empty-title">Tu as tout vu !</p>
+        <p class="empty-sub">Reviens plus tard pour de nouveaux animés.</p>
+    </div>
+    }
+
+    <!-- ══ SWIPE PRINCIPAL ════════════════════════════════════ -->
+    @else if (currentAnime(); as anime) {
+    <div class="swipe-wrapper">
+
+        <!-- Carte swipeable -->
+        <div class="swipe-card" [class.swipe-card--like]="decision() === 'like'"
+            [class.swipe-card--dislike]="decision() === 'dislike'" [class.swipe-card--unseen]="decision() === 'unseen'"
+            (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)"
+            (pointerup)="onPointerUp($event)" (pointercancel)="onPointerUp($event)">
+            <!-- ── Indicateurs de feedback drag ────────────────── -->
+            <div class="swipe-card__like">
+                <span class="feedback-label feedback-label--like">LIKE 💖</span>
+            </div>
+            <div class="swipe-card__dislike">
+                <span class="feedback-label feedback-label--dislike">NOPE ✕</span>
+            </div>
+
+            <!-- ── Image de couverture ─────────────────────────── -->
+            <div class="swipe-card__poster">
+                <img [src]="cover(anime)" [alt]="title(anime)" (error)="onImgError($event)" draggable="false" />
+                <!-- Gradient bottom -->
+                <div class="swipe-card__gradient"></div>
+            </div>
+
+            <!-- ── Infos de l'animé ────────────────────────────── -->
+            <div class="swipe-card__info">
+
+                <div class="swipe-card__meta">
+                    @if (anime.rating) {
+                    <span class="pill pill--rating">{{ anime.rating === 'R - 17+' ? '16+' : anime.rating }}</span>
+                    }
+                    @for (genre of anime.genres.slice(0, 4); track genre.mal_id) {
+                    <span class="pill pill--genre">{{ genre.name }}</span>
+                    }
+                </div>
+
+                <h2 class="swipe-card__title">{{ title(anime) | uppercase }}</h2>
+
+                @if (anime.synopsis) {
+                <p class="swipe-card__synopsis">{{ anime.synopsis | slice:0:220 }}…</p>
+                }
+
+                <a [routerLink]="['/detail', anime.mal_id]" class="btn-info" (click)="$event.stopPropagation()">
+                    Plus d'infos
+                </a>
+
+            </div>
+        </div>
+
+        <!-- ── Boutons d'action ────────────────────────────────── -->
+        <div class="swipe-actions">
+            <button class="action-btn action-btn--dislike" (click)="decide('dislike')" [disabled]="decision() !== null"
+                aria-label="Je n'aime pas">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round">
+                    <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z" />
+                </svg>
+            </button>
+
+            <button class="action-btn action-btn--unseen" (click)="decide('unseen')" [disabled]="decision() !== null"
+                aria-label="Jamais vu">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                    <line x1="3" y1="3" x2="21" y2="21" />
+                </svg>
+            </button>
+
+            <button class="action-btn action-btn--like" (click)="decide('like')" [disabled]="decision() !== null"
+                aria-label="J'aime">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round">
+                    <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- ── Indicateur de points (debug / UX) ─────────────── -->
+        @if (topGenres().length > 0) {
+        <div class="genre-scores">
+            @for (g of topGenres(); track g.id) {
+            <span class="genre-score-pill">{{ g.name }} <strong>+{{ g.points }}</strong></span>
+            }
+        </div>
+        }
+
+    </div>
+    }
+
+    <!-- ══ OVERLAY RECOMMANDATIONS ════════════════════════════ -->
+    @if (showReco()) {
+    <div class="reco-overlay" (click)="$event.stopPropagation()">
+        <div class="reco-panel">
+
+            <button class="reco-close" (click)="closeReco()" aria-label="Fermer">✕</button>
+
+            <div class="reco-header">
+                <span class="reco-icon">✨</span>
+                <div>
+                    <h3 class="reco-title">Recommandés pour toi</h3>
+                    <p class="reco-sub">
+                        Basé sur tes genres préférés :
+                        @for (g of topGenres(); track g.id) {
+                        <span class="reco-genre-tag">{{ g.name }}</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            @if (isLoadingReco()) {
+            <div class="reco-loading">
+                <div class="loader-spinner loader-spinner--sm"></div>
+            </div>
+            } @else {
+            <div class="reco-list">
+                @for (anime of recoList(); track anime.mal_id) {
+                <a class="reco-item" [routerLink]="['/detail', anime.mal_id]" (click)="closeReco()">
+                    <img class="reco-item__poster" [src]="cover(anime)" [alt]="title(anime)"
+                        (error)="onImgError($event)" />
+                    <div class="reco-item__info">
+                        <p class="reco-item__title">{{ title(anime) }}</p>
+                        <div class="reco-item__meta">
+                            @if (anime.score) {
+                            <span class="pill pill--score">★ {{ anime.score | number:'1.1-1' }}</span>
+                            }
+                            @for (genre of anime.genres.slice(0, 2); track genre.mal_id) {
+                            <span class="pill pill--genre">{{ genre.name }}</span>
+                            }
+                        </div>
+                        @if (anime.synopsis) {
+                        <p class="reco-item__synopsis">{{ anime.synopsis | slice:0:100 }}…</p>
+                        }
+                    </div>
+                    <svg class="reco-item__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                }
+            </div>
+
+            <button class="btn-continue" (click)="closeReco()">
+                Continuer à swiper →
+            </button>
+            }
+
+        </div>
+    </div>
+    }
+
+</div>

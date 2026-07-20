@@ -1,0 +1,313 @@
+@use '../../../variables.scss' as *;
+
+/* Conteneur principal de la page de catalogue. */
+.catalogue-container {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba($primary-button, 0.18), transparent 32%),
+    linear-gradient(135deg, $dark-blue 0%, $surface-strong 100%);
+  color: $white;
+  padding-bottom: $space-xl;
+}
+
+/* En-tête de la page avec un titre mis en avant pour refléter le style global du site. */
+.catalogue-header {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: $space-xl $space-xl 0;
+
+  .catalogue-title-group {
+    display: inline-flex;
+    flex-direction: column;
+    gap: $space-xxs;
+    padding: $space-md $space-lg;
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-size: $font-xs;
+    letter-spacing: 0.24rem;
+    text-transform: uppercase;
+    color: $blue-grey;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: $font-xxl;
+    line-height: $line-height-heading;
+    color: $white;
+  }
+}
+
+/* Structure en deux colonnes : sidebar de filtres + zone principale de résultats. */
+.catalogue-content {
+  display: flex;
+  gap: $space-xl;
+  padding: $space-xl;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Sidebar de filtres avec fond plus sombre pour créer un panneau distinct. */
+.filters-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  padding: $space-lg;
+  border-radius: $radius-lg;
+  border: $border-thin solid $border-soft;
+  background: rgba($surface, 0.95);
+  box-shadow: $shadow-md;
+
+  h2 {
+    font-size: $font-lg;
+    margin: 0 0 $space-lg 0;
+    color: $white;
+  }
+}
+
+/* Groupe de filtre : espace vertical et libellé propre. */
+.filter-group {
+  margin-bottom: $space-lg;
+
+  label {
+    display: block;
+    font-size: $font-sm;
+    margin-bottom: $space-xs;
+    font-weight: 600;
+    color: $blue-grey;
+  }
+
+  .search-input,
+  .filter-select {
+    width: 100%;
+    padding: $space-xs 0;
+    text-indent: $space-sm;
+    background-color: $surface-soft;
+    border: $border-thin solid rgba($white, 0.12);
+    color: $white;
+    border-radius: $radius-sm;
+    font-size: $font-sm;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-button;
+      box-shadow: 0 0 0 2px rgba($primary-button, 0.14);
+    }
+  }
+
+  /* Liste des genres avec barre de défilement propre. */
+  .genres-container {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: $space-xs;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba($surface-soft, 0.7);
+      border-radius: $radius-xs;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba($primary-button, 0.55);
+      border-radius: $radius-xs;
+
+      &:hover {
+        background: rgba($primary-button-hover, 0.8);
+      }
+    }
+  }
+
+  .genre-checkbox {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: $primary-button;
+    }
+
+    label {
+      margin: 0;
+      font-weight: 400;
+      cursor: pointer;
+      font-size: $font-sm;
+      flex: 1;
+      color: $white;
+    }
+  }
+}
+
+/* Zone principale où s’affichent les cartes et les états de chargement. */
+.catalogue-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: $space-xl;
+  font-size: $font-md;
+  color: $muted;
+}
+
+.empty-state {
+  text-align: center;
+  padding: $space-xxl $space-lg;
+  font-size: $font-sm;
+  color: $blue-grey;
+  border: $border-thin dashed rgba($white, 0.15);
+  border-radius: $radius-lg;
+  background: rgba($surface-soft, 0.35);
+}
+
+/* Grille des cartes d’anime. */
+.anime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: $space-lg;
+  margin-bottom: $space-lg;
+}
+
+/* Carte individuelle d’anime avec effet hover simple et qui suit le style des cartes du site. */
+.anime-card {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  border-radius: $radius-card;
+  overflow: hidden;
+  background: rgba($surface, 0.9);
+  border: $border-thin solid $border-soft;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.anime-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background-color: $surface-soft;
+}
+
+.anime-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.anime-info {
+  padding: $space-sm $space-sm $space-md;
+}
+
+.anime-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $space-xs;
+  font-size: $font-xs;
+
+  .score {
+    font-weight: 600;
+    color: #ffd700;
+  }
+
+  .type-badge {
+    background-color: rgba($primary-button, 0.18);
+    padding: $space-xxs $space-xs;
+    border-radius: $radius-xs;
+    font-size: $font-xxs;
+    text-transform: uppercase;
+    color: $blue-grey;
+  }
+}
+
+.anime-title {
+  margin: 0;
+  font-size: $font-sm;
+  line-height: $line-height-normal;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: $white;
+}
+
+/* Pagination en bas de la grille pour garder le parcours de navigation clair. */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $space-md;
+  margin-top: $space-lg;
+  padding-top: $space-lg;
+  border-top: $border-thin solid rgba($white, 0.1);
+}
+
+.pagination-btn {
+  padding: $space-xs $space-md;
+  background-color: $surface-soft;
+  border: $border-thin solid rgba($white, 0.12);
+  color: $white;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-size: $font-sm;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-button;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.page-info {
+  font-size: $font-sm;
+  color: $blue-grey;
+}
+
+/* Adaptation mobile pour conserver une lecture confortable sur petit écran. */
+@media (max-width: 768px) {
+  .catalogue-header {
+    padding: $space-lg $space-md 0;
+  }
+
+  .catalogue-content {
+    flex-direction: column;
+    gap: $space-lg;
+    padding: $space-md;
+  }
+
+  .filters-sidebar {
+    width: 100%;
+  }
+
+  .anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: $space-sm;
+  }
+}

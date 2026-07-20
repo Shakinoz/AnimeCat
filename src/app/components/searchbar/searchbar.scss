@@ -15,7 +15,7 @@
   margin: auto;
 }
 
-.mobile-sc{
+.mobile-sc {
   width: initial;
   padding: 0;
   margin-bottom: $space-md;
@@ -24,6 +24,8 @@
 .search-field {
   width: 100%;
   font-family: 'Nunito Sans', sans-serif;
+  border: $border-thin solid $blue;
+  border-radius: $radius-lg;
 
   // Ajustement structurel interne
   .mat-mdc-form-field-flex {
@@ -73,7 +75,7 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  margin-right: $padding-sm; 
+  margin-right: $padding-sm;
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -159,7 +161,7 @@
   }
 }
 
-.state{
+.state {
   mat-spinner {
     width: $font-base !important;
     height: $font-base !important;

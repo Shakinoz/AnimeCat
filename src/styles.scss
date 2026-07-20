@@ -1,7 +1,13 @@
 @use './variables.scss' as *;
 
 body {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   background: linear-gradient(180deg, $surface-strong, #081a1d) no-repeat fixed;
   color: $white;
   min-height: 100vh;
@@ -24,22 +30,28 @@ body::-webkit-scrollbar-thumb,
   border-radius: $radius-card;
 }
 
-.mat-mdc-text-field-wrapper{
+.mat-mdc-text-field-wrapper {
   background-color: $surface !important;
-  border-radius: $radius-card !important;
+  border-radius: $radius-lg !important;
   height: 44px !important;
 }
 
-.mat-focused{
-  outline: $surface !important;
+.mat-focused {
+  outline: none;
+  border-color: $blue;
+  box-shadow: 0 0 0 2px rgba($blue, 0.14);
 }
 
-.mdc-text-field{
+.mdc-text-field {
   align-items: center !important;
 }
 
-.mat-mdc-option .mdc-list-item__primary-text{
+.mat-mdc-option .mdc-list-item__primary-text {
   width: 100%;
+}
+
+.mat-mdc-notch-piece {
+  border: none !important;
 }
 
 .search-panel {
@@ -74,7 +86,7 @@ body::-webkit-scrollbar-thumb,
 .anime-option {
   &:hover,
   &.mat-mdc-option-active {
-    background: $surface-soft !important; 
+    background: $surface-soft !important;
   }
 }
 
@@ -84,7 +96,7 @@ body::-webkit-scrollbar-thumb,
 }
 
 .anime-option:not(:last-child) .option {
-  border-bottom: 1px solid $blue; 
+  border-bottom: 1px solid $blue;
 }
 
 @media (max-width: 480px) {
