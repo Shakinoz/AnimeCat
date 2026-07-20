@@ -23,7 +23,7 @@ import {
   tap,
   catchError,
 } from 'rxjs/operators';
-import { JikanService } from '../../services/jikan.service';
+import { TenraiService } from '../../services/tenrai.service';
 import { Anime } from '@tutkli/jikan-ts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -47,7 +47,7 @@ const MAX_RESULTS = 6;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Searchbar {
-  private jikan = inject(JikanService);
+  private tenrai = inject(TenraiService);
   private router = inject(Router);
   public readonly format = input<string>('desktop');
 
@@ -76,7 +76,7 @@ export class Searchbar {
         distinctUntilChanged(),
         filter((value) => value.trim().length >= MIN_CHARS),
         switchMap((value) =>
-          this.jikan
+          this.tenrai
             .searchByName(value.trim(), 1, MAX_RESULTS)
             .pipe(catchError(() => of({ data: [], hasNextPage: false, currentPage: 1, total: 0 }))),
         ),
@@ -107,10 +107,10 @@ export class Searchbar {
 
   // ── Helpers template ──────────────────────────────────────
   cover(anime: Anime): string {
-    return this.jikan.getCoverUrl(anime);
+    return this.tenrai.getCoverUrl(anime);
   }
   title(anime: Anime): string {
-    return this.jikan.getDisplayTitle(anime);
+    return this.tenrai.getDisplayTitle(anime);
   }
 
   onImgError(e: Event): void {

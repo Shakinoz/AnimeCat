@@ -1,6 +1,7 @@
 import { IUser } from './../models/user.interface';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 import { AnimeStatus } from '../models/user-anime.interface';
 
 type AuthUser = Pick<IUser, 'username' | 'email' | 'password'>;
@@ -15,6 +16,12 @@ export class StorageService {
   private readonly storageKey = 'anime-cat-users';
   private readonly currentUserKey = 'anime-cat-current-user';
   private readonly router = inject(Router);
+  private readonly animeStatusChangedSubject = new Subject<void>();
+  readonly animeStatusChanged$: Observable<void> = this.animeStatusChangedSubject.asObservable();
+
+  constructor() {
+    this.patchStorageEvents();
+  }
 
   register(user: AuthUser): AuthResult {
     const users = this.getUsers();
@@ -93,6 +100,8 @@ export class StorageService {
       users[index] = user;
       localStorage.setItem(this.storageKey, JSON.stringify(users));
     }
+
+    this.notifyStatusChanged();
   }
 
   updateAnimeStatus(animeId: number, status: AnimeStatus): void {
@@ -124,9 +133,50 @@ export class StorageService {
     this.saveCurrentUser(user);
   }
 
+  private notifyStatusChanged(): void {
+    this.animeStatusChangedSubject.next();
+  }
+
+  private patchStorageEvents(): void {
+    const relevantKeys = new Set([this.storageKey, this.currentUserKey]);
+    const originalSetItem = Storage.prototype.setItem;
+    const originalRemoveItem = Storage.prototype.removeItem;
+
+    const hasAlreadyPatched = (window as Window & { __animeCatStoragePatched?: boolean })
+      .__animeCatStoragePatched;
+    if (hasAlreadyPatched) {
+      return;
+    }
+
+    Storage.prototype.setItem = function (this: Storage, key: string, value: string) {
+      const result = originalSetItem.call(this, key, value);
+      if (relevantKeys.has(key)) {
+        window.dispatchEvent(new CustomEvent('anime-cat-storage-changed', { detail: { key } }));
+      }
+      return result;
+    };
+
+    Storage.prototype.removeItem = function (this: Storage, key: string) {
+      const result = originalRemoveItem.call(this, key);
+      if (relevantKeys.has(key)) {
+        window.dispatchEvent(new CustomEvent('anime-cat-storage-changed', { detail: { key } }));
+      }
+      return result;
+    };
+
+    window.addEventListener('anime-cat-storage-changed', () => {
+      this.notifyStatusChanged();
+    });
+    window.addEventListener('storage', () => {
+      this.notifyStatusChanged();
+    });
+
+    (window as Window & { __animeCatStoragePatched?: boolean }).__animeCatStoragePatched = true;
+  }
+
   getAnimeStatus(mal_id: number): AnimeStatus | null {
     const user = this.getCurrentUser();
 
-    return user?.animeList.find(anime => anime.animeId === mal_id)?.status ?? null;
+    return user?.animeList.find((anime) => anime.animeId === mal_id)?.status ?? null;
   }
 }

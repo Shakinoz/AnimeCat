@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Searchbar } from '../searchbar/searchbar';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Button } from '../button/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,10 +19,12 @@ export class Header {
   constructor(
     public readonly storageService: StorageService,
     private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   public handleLogout() {
     this.storageService.logout();
     this.notificationService.show('Vous êtes déconnecté.', false, true);
+    this.router.navigate(['/']);
   }
 }

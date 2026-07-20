@@ -7,18 +7,20 @@
     <app-searchbar class="desktop-search"></app-searchbar>
 
     <nav class="nav-sect">
-        <button class="nav-link">
+        <button class="nav-link" routerLink="/catalog">
             <mat-icon>apps</mat-icon>
             Catalogue
         </button>
-        <button class="nav-link">
+        <button class="nav-link" routerLink="/swipe">
             <mat-icon>swipe</mat-icon>
             Swipe
         </button>
+        @if (storageService.isAuthenticated()) {
         <button class="nav-link" routerLink="/profil">
             <mat-icon>person</mat-icon>
             Profil
         </button>
+        }
         @if (storageService.isAuthenticated()) {
         <app-button variant="primary" size="md" label="Se déconnecter" (click)="handleLogout()"></app-button>
         } @else {
@@ -36,18 +38,20 @@
     <app-searchbar [format]="'mobile'" class="mobile-search"></app-searchbar>
     <div class="flex">
         <div class="mobile-links">
-            <button class="nav-link">
+            <button class="nav-link" routerLink="/catalog">
                 <mat-icon>apps</mat-icon>
                 Catalogue
             </button>
-            <button class="nav-link">
+            <button class="nav-link" routerLink="/swipe">
                 <mat-icon>swipe</mat-icon>
                 Swipe
             </button>
-            <button class="nav-link">
+            @if (storageService.isAuthenticated()) {
+            <button class="nav-link" routerLink="/profil">
                 <mat-icon>person</mat-icon>
                 Profil
             </button>
+            }
         </div>
         @if (storageService.isAuthenticated()) {
         <app-button variant="primary" size="sm" label="Se déconnecter" (click)="handleLogout()"></app-button>

@@ -3,7 +3,7 @@ import { forkJoin, map, of } from 'rxjs';
 import { Header } from '../../components/header/header';
 import { AnimeCard } from '../../components/anime-card/anime-card';
 import { StorageService } from './../../services/storage.service';
-import { JikanService } from '../../services/jikan.service';
+import { TenraiService } from '../../services/tenrai.service';
 import { AnimeStatus, HomeAnime } from '../../models/user-anime.interface';
 import { IUser } from '../../models/user.interface';
 import { Button } from '../../components/button/button';
@@ -24,7 +24,7 @@ export class ProfilPage {
 
   constructor(
     private storageService: StorageService,
-    private jikan: JikanService,
+    private tenrai: TenraiService,
   ) {
     this.currentUser = this.storageService.getCurrentUser();
     this.loadLists();
@@ -79,7 +79,7 @@ export class ProfilPage {
       return of([] as HomeAnime[]);
     }
 
-    return forkJoin(animeIds.map((animeId) => this.jikan.getById(animeId))).pipe(
+    return forkJoin(animeIds.map((animeId) => this.tenrai.getById(animeId))).pipe(
       map((animes) =>
         animes.map((anime) => ({
           ...anime,

@@ -1,7 +1,7 @@
 @use '../../../variables.scss' as *;
 
 .anime-card {
-  min-width: $card-min-width;
+  width: $card-width;
   background: $surface;
   border-radius: $radius-card;
   overflow: hidden;
@@ -25,18 +25,18 @@
     padding: $space-sm;
     display: flex;
     flex-direction: column;
-    gap: $space-xxs;
+    gap: $space-xs;
 
     .anime-card-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: $space-xs;
 
       h3 {
         font-size: $font-sm;
         line-height: 1.2;
         margin: 0;
+        min-height: $space-xl;
       }
 
       .badge {
@@ -62,12 +62,27 @@
       }
     }
 
-    p {
-      font-size: $font-xs;
-      opacity: 0.7;
-      margin: 0;
-      min-height: 40px;
+    .actions-buttons{
+      margin-top: $space-xs;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+
+      .score{
+        min-width: $space-lg;
+        color: $blue-grey;
+        font-weight: bold;
+      }
     }
+
+    .genre-sect{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      color: $muted;
+      font-size: $font-xs;
+    }
+    
   }
 
   @media (max-width: 768px) {
