@@ -45,15 +45,6 @@ export class SignPage {
 
     this.notificationService.show(result.message, !result.success, result.success);
 
-    const loginResult = this.storageService.login({
-      email: this.signupForm.value.email ?? '',
-      password: this.signupForm.value.password ?? '',
-    });
-
-    if (!loginResult.success) {
-      this.notificationService.show(loginResult.message, !loginResult.success, loginResult.success);
-    }
-
     if (result.success) {
       this.router.navigate(['/']);
     }
