@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TenraiService } from '../../services/tenrai.service';
 import { Anime } from '@tutkli/jikan-ts';
@@ -13,7 +13,7 @@ import { AnimeCard } from '../../components/anime-card/anime-card';
   templateUrl: './catalogue-page.html',
   styleUrl: './catalogue-page.scss',
 })
-export class CataloguePage implements OnInit {
+export class CataloguePage {
   // Liste brute retournée par l'API avant toute transformation locale.
   animes: Anime[] = [];
 
@@ -21,7 +21,7 @@ export class CataloguePage implements OnInit {
   filteredAnimes: Anime[] = [];
 
   // Indicateur de chargement utilisé par le template pour afficher un état de progression.
-  isLoading = false;
+  isLoading = signal(false);
 
   // État des filtres de recherche et de navigation.
   searchQuery = '';
@@ -92,16 +92,14 @@ export class CataloguePage implements OnInit {
     { id: 35, label: 'Tragédie' },
   ];
 
-  constructor(private readonly tenraiService: TenraiService) {}
-
   // Chargement initial de la page au démarrage du composant.
-  ngOnInit(): void {
+  constructor(private readonly tenraiService: TenraiService) {
     this.loadAnimes();
   }
 
   // Appel au service pour récupérer les animes selon les filtres actifs.
   loadAnimes(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.filteredAnimes = [];
 
     const params = {
@@ -128,11 +126,11 @@ export class CataloguePage implements OnInit {
 
         // Après chaque réception, on applique le tri local et on met à jour la grille.
         this.applyLocalFilters();
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Erreur lors du chargement des animes:', err);
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }

@@ -52,8 +52,8 @@
     }
 
     .anime-grid {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: $space-sm;
     }
   }
@@ -68,6 +68,10 @@
     .profil-hero {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    .anime-grid {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
     }
   }
 }

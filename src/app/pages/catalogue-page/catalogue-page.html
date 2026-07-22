@@ -77,12 +77,12 @@
         <!-- Zone principale où les cartes des animes sont affichées. -->
         <main class="catalogue-main">
             <!-- État de chargement affiché pendant la requête réseau. -->
-            @if (isLoading) {
+            @if (isLoading()) {
             <div class="loading">Chargement...</div>
             }
 
             <!-- Grille de résultats lorsque des animes sont disponibles. -->
-            @if (!isLoading && filteredAnimes.length > 0) {
+            @if (!isLoading() && filteredAnimes.length > 0) {
             <div class="anime-grid">
                 @for (anime of filteredAnimes; track anime.mal_id) {
                 <app-anime-card [anime]="anime"></app-anime-card>
@@ -91,14 +91,14 @@
             }
 
             <!-- État vide affiché quand aucun résultat ne correspond aux filtres. -->
-            @if (!isLoading && filteredAnimes.length === 0) {
+            @if (!isLoading() && filteredAnimes.length === 0) {
             <div class="empty-state">
                 Aucun anime trouvé avec ces filtres.
             </div>
             }
 
             <!-- Navigation de pagination pour passer aux pages suivantes ou précédentes. -->
-            @if (!isLoading && filteredAnimes.length > 0) {
+            @if (!isLoading() && filteredAnimes.length > 0) {
             <div class="pagination">
                 <button class="pagination-btn" (click)="prevPage()" [disabled]="currentPage === 1">
                     Précédent

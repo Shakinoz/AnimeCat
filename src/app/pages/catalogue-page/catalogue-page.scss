@@ -167,9 +167,6 @@
   padding: $space-xxl $space-lg;
   font-size: $font-sm;
   color: $blue-grey;
-  border: $border-thin dashed rgba($white, 0.15);
-  border-radius: $radius-lg;
-  background: rgba($surface-soft, 0.35);
 }
 
 /* Grille des cartes d’anime. */
@@ -304,6 +301,7 @@
 
   .filters-sidebar {
     width: 100%;
+    box-sizing: border-box;
   }
 
   .anime-grid {

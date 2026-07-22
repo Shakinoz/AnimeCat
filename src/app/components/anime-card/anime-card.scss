@@ -2,6 +2,7 @@
 
 .anime-card {
   min-width: $card-width;
+  width: auto;
   background: $surface;
   border-radius: $radius-card;
   overflow: hidden;
@@ -129,8 +130,6 @@
   }
 
   @media (max-width: 480px) {
-    min-width: 130px;
-
     img {
       height: 180px;
     }
