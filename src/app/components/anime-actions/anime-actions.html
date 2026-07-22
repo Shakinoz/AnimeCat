@@ -1,0 +1,11 @@
+<div class="actions-buttons">
+  <!-- Ajouter l'anime à ma watchlist -->
+  <app-button [icon]="status === 'plan_to_watch' ? 'bookmark_added' : 'bookmark_add'" [size]="'sm'"
+    [variant]="status === 'plan_to_watch' ? 'primary' : 'ghost'"
+    (click)="$event.preventDefault(); $event.stopPropagation();togglePlan()"></app-button>
+
+  <!-- Ajouter l'anime à ma liste d'anime terminés -->
+  <app-button [icon]="status === 'seen' ? 'visibility_off' : 'visibility'" [size]="'sm'"
+    [variant]="status === 'seen' ? 'primary' : 'ghost'"
+    (click)="$event.preventDefault(); $event.stopPropagation();toggleSeen()"></app-button>
+</div>

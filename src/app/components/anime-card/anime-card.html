@@ -1,53 +1,29 @@
 <article class="anime-card" [routerLink]="['/detail', anime()?.mal_id]">
-  <img [src]="
-      anime()?.images?.webp?.large_image_url ??
-      anime()?.images?.jpg?.large_image_url ??
-      'assets/img/placeholder.webp'
-    " alt="{{ anime()?.title }}" />
+  <img [src]="cover()" alt="{{ anime()?.title }}" />
 
   <div class="anime-card-body">
     <div class="anime-rating">
       @if (anime()?.score) {
-      <span class="score">★ {{ anime()?.score }}</span>
+        <span class="score">★ {{ anime()?.score }}</span>
       }
       <span class="type-badge">{{ anime()?.type }}</span>
     </div>
 
     <div class="anime-card-title">
       <h3>
-        {{ title() | slice:0:32 }}
+        {{ title() | slice: 0 : 32 }}
         @if (title().length > 32) {
-        ...
+          ...
         }
       </h3>
     </div>
 
     <div class="genre-sect">
-      @for (genre of (anime()?.genres | slice:0:2); track genre.name; let last = $last) {
-      <span class="genre-name">
-        {{ genre.name | slice:0:9 }}
-      </span>
-
-      @if (!last) {
-      <span class="separator">·</span>
-      }
-      }
-
-      @if ((anime()?.genres?.length ?? 0) > 2) {
-      <span class="separator">·</span>
-      <span class="genre-more">
-        +{{ (anime()?.genres?.length ?? 0) - 2 }}
-      </span>
-      }
+      <span class="genre-name">{{ genresShort(2) }}</span>
     </div>
 
     <div class="actions-buttons">
-      <app-button [icon]="visibleStatus() === 'plan_to_watch' ? 'bookmark_added' : 'bookmark_add'" [size]="'sm'"
-        [variant]="visibleStatus() === 'plan_to_watch' ? 'primary' : 'ghost'"
-        (click)="$event.preventDefault(); $event.stopPropagation(); toggleStatus(anime()?.mal_id!, 'plan_to_watch')"></app-button>
-      <app-button [icon]="visibleStatus() === 'seen' ? 'visibility_off' : 'visibility'" [size]="'sm'"
-        [variant]="visibleStatus() === 'seen' ? 'primary' : 'ghost'"
-        (click)="$event.preventDefault(); $event.stopPropagation(); toggleStatus(anime()?.mal_id!, 'seen')"></app-button>
+      <app-anime-actions [animeId]="anime()?.mal_id" [status]="visibleStatus()"></app-anime-actions>
     </div>
   </div>
 </article>

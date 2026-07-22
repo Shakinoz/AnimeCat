@@ -1,100 +1,100 @@
 @use '../../../variables.scss' as *;
+@use 'sass:color';
 
-.btn{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $space-xs;
-    cursor:pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
-    text-wrap-mode: nowrap;
-    &--primary {
-        background-color: $blue;
-        color: $dark-blue;
-        &:hover{
-            background-color: $blue-grey;
-        }
-        &:active{
-            background-color: $blue;
-        }
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-xs;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  text-wrap-mode: nowrap;
+  &--primary {
+    background-color: $blue;
+    color: $dark-blue;
+    &:hover {
+      background-color: $blue-grey;
     }
+    &:active {
+      background-color: $blue;
+    }
+  }
 
-    &--secondary {
-        background-color: $blue-grey;
-        color: $dark-blue;
-        border-color: $blue;
-        &:hover{
-            background-color: $blue;
-        }
-        &:active{
-            background-color: transparent;
-            color: $blue;
-        }
+  &--secondary {
+    background-color: $blue-grey;
+    color: $dark-blue;
+    border-color: $blue;
+    &:hover {
+      background-color: $blue;
     }
+    &:active {
+      background-color: transparent;
+      color: $blue;
+    }
+  }
 
-    &--ghost {
-        background-color: transparent;
-        color: $blue;
-        border-color: $blue;
-        &:hover{
-            background-color: $blue;
-            color: $dark-blue;
-        }
-        &:active{
-            background-color: transparent;
-            color: $blue;
-        }
+  &--ghost {
+    background-color: transparent;
+    color: $blue;
+    border-color: $blue;
+    &:hover {
+      background-color: $blue;
+      color: $dark-blue;
     }
+    &:active {
+      background-color: transparent;
+      color: $blue;
+    }
+  }
 
-    &--danger{
-        background-color: $danger;
-        color: $white;
-        border-color: $danger;
-        &:hover{
-            background-color: lighten($danger, 10%);
-        }
-        &:active{
-            background-color: $danger;
-        }
+  &--danger {
+    background-color: $danger;
+    color: $white;
+    border-color: $danger;
+    &:hover {
+      background-color: color.adjust($danger, $lightness: 10%);
     }
+    &:active {
+      background-color: $danger;
+    }
+  }
 
-    &--sm {
-        padding: $padding-sm;
-        font-size: $font-sm;
-        border-radius: $radius-sm;
-    }
+  &--sm {
+    padding: $padding-sm;
+    font-size: $font-sm;
+    border-radius: $radius-sm;
+  }
 
-    &--md {
-        padding: $padding-md;
-        font-size: $font-md;
-        border-radius: $radius-md;
-    }
+  &--md {
+    padding: $padding-md;
+    font-size: $font-md;
+    border-radius: $radius-md;
+  }
 
-    &--lg {
-        padding: $padding-lg;
-        font-size: $font-lg;
-        border-radius: $radius-lg;
-    }
+  &--lg {
+    padding: $padding-lg;
+    font-size: $font-lg;
+    border-radius: $radius-lg;
+  }
 
-    &--full{
-        padding: $padding-lg;
-        font-size: $font-lg;
-        border-radius: $radius-lg;
-        width: 100%;
-    }
+  &--full {
+    padding: $padding-lg;
+    font-size: $font-lg;
+    border-radius: $radius-lg;
+    width: 100%;
+  }
 
-    &:hover{
-        transform: translateY(-1px);
-    }
-    &:active{
-        transform: translateY(0);
-    }
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
 
-    mat-icon{
-      height: 21px;
-      width: 21px;
-      font-size: 21px;
-    }
-
+  mat-icon {
+    height: 21px;
+    width: 21px;
+    font-size: 21px;
+  }
 }

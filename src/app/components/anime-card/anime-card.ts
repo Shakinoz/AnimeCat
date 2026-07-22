@@ -2,19 +2,25 @@ import { Component, computed, input, signal, OnInit, OnDestroy } from '@angular/
 import { RouterLink } from '@angular/router';
 import { AnimeStatus, HomeAnime } from '../../models/user-anime.interface';
 import { SlicePipe } from '@angular/common';
-import { Button } from '../button/button';
+import { AnimeActions } from '../anime-actions/anime-actions';
 import { StorageService } from '../../services/storage.service';
 import { NotificationService } from '../../services/notification.service';
+import { TenraiService } from '../../services/tenrai.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-anime-card',
   standalone: true,
-  imports: [RouterLink, SlicePipe, Button],
+  imports: [RouterLink, SlicePipe, AnimeActions],
   templateUrl: './anime-card.html',
   styleUrl: './anime-card.scss',
 })
 export class AnimeCard implements OnInit, OnDestroy {
+  /**
+   * Composant `AnimeCard` — affiche une carte réutilisable pour un anime.
+   * - expose des helpers `title`, `cover()` et `genresShort()` pour le template
+   * - synchronise le statut utilisateur via `StorageService` et `animeStatusChanged$`
+   */
   public anime = input<HomeAnime>();
   private readonly localStatus = signal<AnimeStatus | null>(null);
   private readonly subscription = new Subscription();
@@ -23,7 +29,10 @@ export class AnimeCard implements OnInit, OnDestroy {
   constructor(
     private storageService: StorageService,
     private notificationService: NotificationService,
+    private tenrai: TenraiService,
   ) {}
+
+  /** Affiche le titre utilisable dans le template (anglais en priorité). */
 
   ngOnInit(): void {
     this.refreshStatus();
@@ -37,6 +46,18 @@ export class AnimeCard implements OnInit, OnDestroy {
   }
 
   title = computed(() => this.anime()?.title_english?.trim() || this.anime()?.title || '');
+
+  /** Retourne l'URL de couverture canonique via TenraiService. */
+  cover(): string {
+    const a = this.anime();
+    return a ? this.tenrai.getCoverUrl(a) : 'assets/img/placeholder.webp';
+  }
+
+  /** Retourne une chaîne de genres limitée pour l'affichage compact. */
+  genresShort(max = 2): string {
+    const a = this.anime();
+    return a ? this.tenrai.getGenresLabel(a, max) : '';
+  }
 
   toggleStatus(animeId: number, status: AnimeStatus): void {
     if (!this.storageService.isAuthenticated()) {

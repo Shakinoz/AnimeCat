@@ -1,8 +1,8 @@
 <button [type]="type()" [class]="`btn btn--${this.variant()} btn--${this.size()}`">
-  @if(icon()){
+  @if (icon()) {
     <mat-icon>{{ icon() }}</mat-icon>
   }
-  @if(label()){
+  @if (label()) {
     {{ label() }}
   }
 </button>
