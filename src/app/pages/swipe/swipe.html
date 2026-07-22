@@ -24,9 +24,10 @@
             </div>
 
             <div class="controls">
-                <app-button [icon]="'favorite'" [swipe]="true" (click)="like()"></app-button>
-                <app-button [icon]="'visibility'" [swipe]="true" (click)="skip()"></app-button>
                 <app-button [icon]="'heart_broken'" [swipe]="true" (click)="dislike()"></app-button>
+                <app-button [icon]="'visibility'" [swipe]="true" (click)="skip()"></app-button>
+                <app-button [icon]="'favorite'" [swipe]="true" (click)="like()"></app-button>
+
                 <app-button class="undo" [icon]="'undo'" [swipe]="true" (click)="undo()"
                     [disabled]="historyLength === 0"></app-button>
 

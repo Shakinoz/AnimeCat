@@ -6,12 +6,14 @@ import { SignPage } from './pages/sign-page/sign-page';
 import { DetailPage } from './pages/detail-page/detail-page';
 import { userNotLoggedGuard } from './guards/user-not-logged-guard';
 import { CataloguePage } from './pages/catalogue-page/catalogue-page';
+import { SwipePage } from './pages/swipe/swipe';
 
 export const routes: Routes = [
   { path: '', component: HomePage },
   { path: 'sign', component: SignPage },
   { path: 'login', component: LoginPage },
   { path: 'catalog', component: CataloguePage },
+  { path: 'swipe', component: SwipePage },
   { path: 'detail/:id', component: DetailPage },
   { path: 'profil', component: ProfilPage, canActivate: [userNotLoggedGuard] },
   { path: '**', redirectTo: '' },

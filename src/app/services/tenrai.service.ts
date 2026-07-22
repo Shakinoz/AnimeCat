@@ -5,8 +5,8 @@
 // ─────────────────────────────────────────────────────────────
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, from, of } from 'rxjs';
+import { catchError, map, mergeMap, tap, toArray } from 'rxjs/operators';
 import type { Anime } from '@tutkli/jikan-ts';
 import { AnimeListResult } from '../models/anime-list.interface';
 import { SearchParams } from '../models/search-param.interface';
@@ -35,6 +35,8 @@ interface TenraiEnvelope<T> {
 export class TenraiService {
   /** URL de base de l'API. Changer ici pour pointer vers un autre miroir. */
   private readonly baseUrl = 'https://api.tenrai.org/v1';
+  /** Cache en mémoire des détails anime déjà chargés. */
+  private readonly animeCache = new Map<string, Anime>();
 
   constructor(private readonly http: HttpClient) {}
 
@@ -169,13 +171,53 @@ export class TenraiService {
    * Essaie d'abord l'endpoint /full (plus de données),
    * avec fallback sur l'endpoint standard en cas d'erreur.
    */
-  getById(id: number): Observable<Anime> {
-    return this.http.get<TenraiEnvelope<Anime>>(`${this.baseUrl}/anime/${id}/full`).pipe(
-      map((res) => this.extractData(res) as Anime),
-      catchError(() =>
-        this.http
-          .get<TenraiEnvelope<Anime>>(`${this.baseUrl}/anime/${id}`)
-          .pipe(map((inner) => this.extractData(inner) as Anime)),
+  getById(id: number, full = true): Observable<Anime> {
+    const cacheKey = `${full ? 'full' : 'summary'}:${id}`;
+    const cached = this.animeCache.get(cacheKey);
+
+    if (cached) {
+      return of(cached);
+    }
+
+    const request$ = this.http
+      .get<TenraiEnvelope<Anime>>(`${this.baseUrl}/anime/${id}${full ? '/full' : ''}`)
+      .pipe(
+        map((res) => this.extractData(res) as Anime),
+        tap((anime) => this.animeCache.set(cacheKey, anime)),
+      );
+
+    if (full) {
+      return request$.pipe(catchError(() => this.getById(id, false)));
+    }
+
+    return request$;
+  }
+
+  /**
+   * Récupère plusieurs animés en limitant le nombre de requêtes simultanées.
+   * Les erreurs individuelles sont ignorées pour éviter de vider toute la liste.
+   */
+  getByIds(ids: number[], full = false, concurrency = 2): Observable<Anime[]> {
+    const uniqueIds = [...new Set(ids)];
+
+    if (!uniqueIds.length) {
+      return of([]);
+    }
+
+    return from(uniqueIds).pipe(
+      mergeMap(
+        (animeId) =>
+          this.getById(animeId, full).pipe(
+            map((anime) => ({ anime, animeId })),
+            catchError(() => of(null)),
+          ),
+        concurrency,
+      ),
+      toArray(),
+      map((entries) =>
+        entries
+          .filter((entry): entry is { anime: Anime; animeId: number } => entry !== null)
+          .map((entry) => entry.anime),
       ),
     );
   }

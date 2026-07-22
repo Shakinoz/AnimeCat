@@ -1,10 +1,9 @@
 import { Component, signal, WritableSignal } from '@angular/core';
-import { forkJoin, map, of } from 'rxjs';
 import { Header } from '../../components/header/header';
 import { AnimeCard } from '../../components/anime-card/anime-card';
 import { StorageService } from './../../services/storage.service';
 import { TenraiService } from '../../services/tenrai.service';
-import { AnimeStatus, HomeAnime } from '../../models/user-anime.interface';
+import { HomeAnime } from '../../models/user-anime.interface';
 import { IUser } from '../../models/user.interface';
 import { Button } from '../../components/button/button';
 
@@ -59,14 +58,30 @@ export class ProfilPage {
     const seenIds = this.currentUser.animeList
       .filter((entry) => entry.status === 'seen')
       .map((entry) => entry.animeId);
+    const uniqueIds = [...new Set([...watchlistIds, ...seenIds])];
 
     this.isLoading.set(true);
 
-    forkJoin({
-      watchlist: this.fetchAnimeList(watchlistIds, 'plan_to_watch'),
-      seen: this.fetchAnimeList(seenIds, 'seen'),
-    }).subscribe({
-      next: ({ watchlist, seen }) => {
+    this.tenrai.getByIds(uniqueIds, false, 2).subscribe({
+      next: (animes) => {
+        const animeById = new Map(animes.map((anime) => [anime.mal_id, anime]));
+
+        const watchlist = watchlistIds
+          .map((animeId) => animeById.get(animeId))
+          .filter((anime): anime is HomeAnime => !!anime)
+          .map((anime) => ({
+            ...anime,
+            userStatus: 'plan_to_watch' as const,
+          }));
+
+        const seen = seenIds
+          .map((animeId) => animeById.get(animeId))
+          .filter((anime): anime is HomeAnime => !!anime)
+          .map((anime) => ({
+            ...anime,
+            userStatus: 'seen' as const,
+          }));
+
         this.watchlist.set(watchlist);
         this.seen.set(seen);
         this.tierlist.set(seen);
@@ -75,23 +90,9 @@ export class ProfilPage {
       error: () => {
         this.watchlist.set([]);
         this.seen.set([]);
+        this.tierlist.set([]);
         this.isLoading.set(false);
       },
     });
-  }
-
-  private fetchAnimeList(animeIds: number[], status: AnimeStatus) {
-    if (!animeIds.length) {
-      return of([] as HomeAnime[]);
-    }
-
-    return forkJoin(animeIds.map((animeId) => this.tenrai.getById(animeId))).pipe(
-      map((animes) =>
-        animes.map((anime) => ({
-          ...anime,
-          userStatus: status,
-        })),
-      ),
-    );
   }
 }
