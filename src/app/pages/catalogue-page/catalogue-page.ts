@@ -5,15 +5,38 @@ import { Anime } from '@tutkli/jikan-ts';
 import { AnimeListResult } from '../../models/anime-list.interface';
 import { Header } from '../../components/header/header';
 import { AnimeCard } from '../../components/anime-card/anime-card';
+import { FilterGroup } from '../../components/filter-group/filter-group';
+import { GenreCheckboxList } from '../../components/genre-checkbox-list/genre-checkbox-list';
+import { PaginationControls } from '../../components/pagination-controls/pagination-controls';
+import { SelectFilter } from '../../components/select-filter/select-filter';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-catalogue',
   standalone: true,
-  imports: [CommonModule, Header, AnimeCard],
+  imports: [
+    CommonModule,
+    Header,
+    AnimeCard,
+    MatProgressSpinner,
+    FilterGroup,
+    GenreCheckboxList,
+    PaginationControls,
+    SelectFilter,
+  ],
   templateUrl: './catalogue-page.html',
   styleUrl: './catalogue-page.scss',
 })
 export class CataloguePage {
+  /**
+   * Page Catalogue — affichage et recherche paginée d'animes.
+   *
+   * Responsable de :
+   * - construire les paramètres de recherche
+   * - appeler `TenraiService` pour récupérer des listes
+   * - appliquer le tri local et filtrer les résultats
+   * - gérer la pagination et l'état de chargement utilisé par le template
+   */
   // Liste brute retournée par l'API avant toute transformation locale.
   animes: Anime[] = [];
 
@@ -96,6 +119,12 @@ export class CataloguePage {
   constructor(private readonly tenraiService: TenraiService) {
     this.loadAnimes();
   }
+
+  /**
+   * Charge la première page de résultats au démarrage du composant.
+   * Cette méthode construit les paramètres à envoyer au service
+   * et met à jour l'état local (`animes`, `filteredAnimes`, `hasNextPage`).
+   */
 
   // Appel au service pour récupérer les animes selon les filtres actifs.
   loadAnimes(): void {
@@ -228,6 +257,12 @@ export class CataloguePage {
     this.onSortChange();
   }
 
+  // Variante pour les composants qui émettent directement une string (ex: SelectFilter).
+  handleSortValueChange(value: string): void {
+    this.sortBy = (value as typeof this.sortBy) ?? 'score-desc';
+    this.onSortChange();
+  }
+
   // Passe à la page suivante si elle existe.
   nextPage(): void {
     if (this.hasNextPage) {
@@ -246,10 +281,6 @@ export class CataloguePage {
 
   // Retourne l'URL de l'image de couverture de l'anime, avec un fallback propre.
   getImageUrl(anime: Anime): string {
-    return (
-      anime.images?.jpg?.large_image_url ||
-      anime.images?.jpg?.image_url ||
-      '/assets/placeholder.jpg'
-    );
+    return this.tenraiService.getCoverUrl(anime);
   }
 }

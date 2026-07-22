@@ -1,0 +1,8 @@
+<div class="select-filter">
+  <label *ngIf="label" [for]="id">{{ label }}</label>
+  <select [id]="id" class="filter-select" [value]="value" (change)="onChange($event)">
+    @for (opt of options; track opt.value) {
+      <option [value]="opt.value">{{ opt.label }}</option>
+    }
+  </select>
+</div>

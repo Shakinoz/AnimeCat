@@ -65,101 +65,23 @@
   }
 }
 
-/* Groupe de filtre : espace vertical et libellé propre. */
-.filter-group {
-  margin-bottom: $space-lg;
-
-  label {
-    display: block;
-    font-size: $font-sm;
-    margin-bottom: $space-xs;
-    font-weight: 600;
-    color: $blue-grey;
-  }
-
-  .search-input,
-  .filter-select {
-    width: 100%;
-    padding: $space-xs 0;
-    text-indent: $space-sm;
-    background-color: $surface-soft;
-    border: $border-thin solid rgba($white, 0.12);
-    color: $white;
-    border-radius: $radius-sm;
-    font-size: $font-sm;
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-button;
-      box-shadow: 0 0 0 2px rgba($primary-button, 0.14);
-    }
-  }
-
-  /* Liste des genres avec barre de défilement propre. */
-  .genres-container {
-    display: flex;
-    flex-direction: column;
-    gap: $space-xs;
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: $space-xs;
-
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: rgba($surface-soft, 0.7);
-      border-radius: $radius-xs;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba($primary-button, 0.55);
-      border-radius: $radius-xs;
-
-      &:hover {
-        background: rgba($primary-button-hover, 0.8);
-      }
-    }
-  }
-
-  .genre-checkbox {
-    display: flex;
-    align-items: center;
-    gap: $space-xs;
-
-    input[type='checkbox'] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-      accent-color: $primary-button;
-    }
-
-    label {
-      margin: 0;
-      font-weight: 400;
-      cursor: pointer;
-      font-size: $font-sm;
-      flex: 1;
-      color: $white;
-    }
-  }
-}
-
 /* Zone principale où s’affichent les cartes et les états de chargement. */
 .catalogue-main {
   flex: 1;
   min-width: 0;
 }
 
-.loading {
-  text-align: center;
-  padding: $space-xl;
-  font-size: $font-md;
-  color: $muted;
+.loading-sect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .loading {
+    text-align: center;
+    padding: $space-xxl;
+    font-size: $font-md;
+    color: $muted;
+  }
 }
 
 .empty-state {

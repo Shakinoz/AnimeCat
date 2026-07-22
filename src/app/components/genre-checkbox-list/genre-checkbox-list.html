@@ -1,0 +1,14 @@
+<div class="genres-container">
+  @for (genre of genres; track genre.id) {
+    <div class="genre-checkbox">
+      <input
+        type="checkbox"
+        [id]="'genre-' + genre.id"
+        [value]="genre.id"
+        [checked]="selected.includes(genre.id)"
+        (change)="toggle(genre.id)"
+      />
+      <label [for]="'genre-' + genre.id">{{ genre.label }}</label>
+    </div>
+  }
+</div>

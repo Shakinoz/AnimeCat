@@ -1,0 +1,17 @@
+.pagination-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0;
+}
+.pagination-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: inherit;
+}
+.page-info {
+  font-weight: 600;
+}

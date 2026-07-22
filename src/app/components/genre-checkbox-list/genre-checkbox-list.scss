@@ -1,0 +1,10 @@
+.genres-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.genre-checkbox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
