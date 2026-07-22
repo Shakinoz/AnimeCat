@@ -1,140 +1,139 @@
 @use '../../../variables.scss' as *;
 
-header{
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $space-sm $space-xl;
+  border-bottom: $blue $border-thin solid;
+  background-color: $dark-blue;
+  color: $white;
+  .nav-logo {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: $space-sm $space-xl;
-    border-bottom: $blue $border-thin solid;
-    background-color: $dark-blue;
-    color: $white;
-    .nav-logo{
-        display: flex;
-        align-items: center;
-        gap: $space-xs;
-        cursor: pointer;
-        img{
-            width: $logo-width;
-            height: $logo-height;
-        }
-        h1{
-            font-size: $font-xl;
-            font-weight: bold;
-            letter-spacing: 1px;
-            &:hover{
-                color: $blue-grey;
-            }
-        }
+    gap: $space-xs;
+    cursor: pointer;
+    img {
+      width: $logo-width;
+      height: $logo-height;
     }
-    .nav-sect{
-        display: flex;
-        gap: $space-lg;
-        button{
-            color: $white;
-        }
-        .nav-link{
-            background: none;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: $space-xs;
-            cursor: pointer;
-            font-size: $font-base;
-            &:hover{
-                color: $blue-grey;
-            }
-            &:active{
-                color: $blue;
-            }
-            .mat-icon{
-                width: $font-xxl;
-                height: $font-xxl;
-                font-size: $font-xxl;
-                color: $blue;
-            }
-        }
-        .login{
-            background-color: $blue;
-            color: $white;
-            border: none;
-            padding: $space-sm $space-md;
-            border-radius: $radius-xs;
-            cursor: pointer;
-            font-size: $font-base;
-            transition: all 0.2s ease;
-            &:hover{
-                background-color: $blue-grey;
-                transform: translateY(-2px);
-            }   
-            &:active{
-                transform: translateY(0);
-                background-color: $blue;
-            }
-        }
+    h1 {
+      font-size: $font-xl;
+      font-weight: bold;
+      letter-spacing: 1px;
+      &:hover {
+        color: $blue-grey;
+      }
     }
-    .menu-button{
-        display:none;
-        mat-icon{
-            color: $blue;
-        }
+  }
+  .nav-sect {
+    display: flex;
+    gap: $space-lg;
+    button {
+      color: $white;
     }
+    .nav-link {
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: $space-xs;
+      cursor: pointer;
+      font-size: $font-base;
+      &:hover {
+        color: $blue-grey;
+      }
+      &:active {
+        color: $blue;
+      }
+      .mat-icon {
+        width: $font-xxl;
+        height: $font-xxl;
+        font-size: $font-xxl;
+        color: $blue;
+      }
+    }
+    .login {
+      background-color: $blue;
+      color: $white;
+      border: none;
+      padding: $space-sm $space-md;
+      border-radius: $radius-xs;
+      cursor: pointer;
+      font-size: $font-base;
+      transition: all 0.2s ease;
+      &:hover {
+        background-color: $blue-grey;
+        transform: translateY(-2px);
+      }
+      &:active {
+        transform: translateY(0);
+        background-color: $blue;
+      }
+    }
+  }
+  .menu-button {
+    display: none;
+    mat-icon {
+      color: $blue;
+    }
+  }
 }
 
-.mobile-menu{
-    display: none;
+.mobile-menu {
+  display: none;
+  justify-content: space-between;
+  padding: $padding-lg;
+  background-color: $dark-blue;
+  border-bottom: $blue $border-thin solid;
+  .flex {
+    display: flex;
     justify-content: space-between;
-    padding: $padding-lg;
-    background-color: $dark-blue;
-    border-bottom: $blue $border-thin solid;
-    .flex{
+    .mobile-links {
+      display: flex;
+      flex-direction: column;
+      gap: $space-md;
+      .nav-link {
+        color: $white;
         display: flex;
-        justify-content: space-between;
-        .mobile-links{
-            display: flex;
-            flex-direction: column;
-            gap: $space-md;
-            .nav-link{
-                color: $white;
-                display: flex;
-                align-items: center;
-                gap: $space-xxs;
-                background: none;
-                padding: 0;
-                border: none;
-                cursor: pointer;
-                font-size: $font-base;
-                width: fit-content;
-                &:hover{
-                    color: $blue-grey;
-                }
-                &:active{
-                    color: $blue;
-                }
-                .mat-icon{
-                    width: $font-xxl;
-                    height: $font-xxl;
-                    font-size: $font-xxl;
-                    color: $blue;
-                }
-            }
+        align-items: center;
+        gap: $space-xxs;
+        background: none;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+        font-size: $font-base;
+        width: fit-content;
+        &:hover {
+          color: $blue-grey;
         }
+        &:active {
+          color: $blue;
+        }
+        .mat-icon {
+          width: $font-xxl;
+          height: $font-xxl;
+          font-size: $font-xxl;
+          color: $blue;
+        }
+      }
     }
-    
+  }
 }
 
 @media (max-width: 768px) {
-    header{
-        .nav-sect{
-            display: none;
-        }
-        .menu-button{
-            display:flex;
-        }
-        .desktop-search{
-            display: none;
-        }
+  header {
+    .nav-sect {
+      display: none;
     }
-    .mobile-menu{
-        display: block;
+    .menu-button {
+      display: flex;
     }
+    .desktop-search {
+      display: none;
+    }
+  }
+  .mobile-menu {
+    display: block;
+  }
 }

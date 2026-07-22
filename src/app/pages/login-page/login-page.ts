@@ -14,6 +14,12 @@ import { NotificationService } from '../../services/notification.service';
   styleUrl: './login-page.scss',
 })
 export class LoginPage {
+  /**
+   * Page Login — gère le formulaire de connexion local.
+   *
+   * Valide les champs via `ReactiveFormsModule` puis délègue
+   * l'authentification à `StorageService` (mock/local).
+   */
   public loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),

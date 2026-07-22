@@ -22,6 +22,7 @@ export class Header {
     private readonly router: Router,
   ) {}
 
+  /** Déconnecte l'utilisateur et affiche une notification. */
   public handleLogout() {
     this.storageService.logout();
     this.notificationService.show('Vous êtes déconnecté.', false, true);

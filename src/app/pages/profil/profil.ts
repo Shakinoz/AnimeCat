@@ -15,6 +15,12 @@ import { Button } from '../../components/button/button';
   styleUrl: './profil.scss',
 })
 export class ProfilPage {
+  /**
+   * Page Profil — affiche les listes utilisateur (watchlist, seen, tierlist).
+   *
+   * Utilise `StorageService` pour récupérer l'utilisateur courant et
+   * `TenraiService` pour récupérer les données des animés par ID.
+   */
   public currentUser: IUser | null;
   public selectedTab: WritableSignal<'watchlist' | 'seen' | 'tierlist'> = signal('watchlist');
   public watchlist: WritableSignal<HomeAnime[]> = signal([]);

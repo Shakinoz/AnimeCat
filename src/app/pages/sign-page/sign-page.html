@@ -2,7 +2,7 @@
 
 <div class="container">
   <div class="big-logo">
-    <img src="assets/logo.png" alt="App Logo">
+    <img src="assets/logo.png" alt="App Logo" />
   </div>
 
   <div class="title">
@@ -11,16 +11,33 @@
   </div>
 
   <form class="form" [formGroup]="signupForm">
-    <app-form-input [label]="'Nom d\'utilisateur'" [id]="'username'" [type]="'text'"
-      [control]="signupForm.controls.username" />
+    <app-form-input
+      [label]="'Nom d\'utilisateur'"
+      [id]="'username'"
+      [type]="'text'"
+      [control]="signupForm.controls.username"
+    />
 
-    <app-form-input [label]="'Email'" [id]="'email'" [type]="'email'" [control]="signupForm.controls.email" />
+    <app-form-input
+      [label]="'Email'"
+      [id]="'email'"
+      [type]="'email'"
+      [control]="signupForm.controls.email"
+    />
 
-    <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"
-      [control]="signupForm.controls.password" />
+    <app-form-input
+      [label]="'Mot de passe'"
+      [id]="'password'"
+      [type]="'password'"
+      [control]="signupForm.controls.password"
+    />
 
-    <app-form-input [label]="'Valider le Mot de passe'" [id]="'confirmPassword'" [type]="'password'"
-      [control]="signupForm.controls.confirmPassword" />
+    <app-form-input
+      [label]="'Valider le Mot de passe'"
+      [id]="'confirmPassword'"
+      [type]="'password'"
+      [control]="signupForm.controls.confirmPassword"
+    />
 
     <app-button [label]="'S\'inscrire'" [size]="'full'" (click)="handleSign()" />
 

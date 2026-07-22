@@ -29,6 +29,14 @@ import { Subscription } from 'rxjs';
   styleUrl: './home.scss',
 })
 export class HomePage implements OnInit, OnDestroy {
+  /**
+   * Page Home — tableau de bord présentant les sections `trending` et `popular`.
+   *
+   * Comportements clés :
+   * - charge des listes via `TenraiService` (top airing, popular)
+   * - enrichit les items avec le `userStatus` provenant de `StorageService`
+   * - fournit des helpers `cover`, `title`, `genres` pour le template
+   */
   @ViewChild('trendingCarousel', { read: ElementRef })
   trendingCarousel!: ElementRef<HTMLDivElement>;
   @ViewChild('popularCarousel', { read: ElementRef }) popularCarousel!: ElementRef<HTMLDivElement>;

@@ -14,6 +14,11 @@ import { NotificationService } from '../../services/notification.service';
   styleUrl: './sign-page.scss',
 })
 export class SignPage {
+  /**
+   * Page Sign-up — gère l'inscription locale d'un nouvel utilisateur.
+   *
+   * Effectue la validation des champs et appelle `StorageService.register`.
+   */
   public signupForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),

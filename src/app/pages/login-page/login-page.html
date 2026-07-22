@@ -1,26 +1,35 @@
 <app-header></app-header>
 
 <div class="container">
-    <div class="big-logo">
-        <img src="assets/logo.png" alt="App Logo">
-    </div>
+  <div class="big-logo">
+    <img src="assets/logo.png" alt="App Logo" />
+  </div>
 
-    <div class="title">
-        <h1>Anime Cat</h1>
-        <p class="subtitle">Connectez-vous à votre compte</p>
-    </div>
+  <div class="title">
+    <h1>Anime Cat</h1>
+    <p class="subtitle">Connectez-vous à votre compte</p>
+  </div>
 
-    <form class="form" [formGroup]="loginForm">
-        <app-form-input [label]="'Email'" [id]="'email'" [type]="'email'" [control]="loginForm.controls.email" />
+  <form class="form" [formGroup]="loginForm">
+    <app-form-input
+      [label]="'Email'"
+      [id]="'email'"
+      [type]="'email'"
+      [control]="loginForm.controls.email"
+    />
 
-        <app-form-input [label]="'Mot de passe'" [id]="'password'" [type]="'password'"
-            [control]="loginForm.controls.password" />
+    <app-form-input
+      [label]="'Mot de passe'"
+      [id]="'password'"
+      [type]="'password'"
+      [control]="loginForm.controls.password"
+    />
 
-        <app-button [label]="'Se connecter'" [size]="'full'" (click)="handleLogin()" />
+    <app-button [label]="'Se connecter'" [size]="'full'" (click)="handleLogin()" />
 
-        <p class="sign-sect">
-            Vous n'avez pas encore de compte ?
-            <strong class="sign-link" routerLink="/sign">S'inscrire</strong>
-        </p>
-    </form>
+    <p class="sign-sect">
+      Vous n'avez pas encore de compte ?
+      <strong class="sign-link" routerLink="/sign">S'inscrire</strong>
+    </p>
+  </form>
 </div>

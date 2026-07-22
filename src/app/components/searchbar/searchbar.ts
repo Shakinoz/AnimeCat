@@ -87,6 +87,11 @@ export class Searchbar {
       });
   }
 
+  /**
+   * Selection d'un résultat dans l'autocomplete : navigation vers la page détail.
+   * Le champ d'input est vidé après la sélection pour garder l'UX propre.
+   */
+
   // ── Sélection d'un résultat → fiche détail ───────────────
   onSelect(event: MatAutocompleteSelectedEvent): void {
     const anime = event.option.value as Anime;

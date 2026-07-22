@@ -1,63 +1,78 @@
 <header>
-    <div class="nav-logo" routerLink="/">
-        <img src="assets/logo.png" alt="App Logo">
-        <h1>AnimeCat</h1>
-    </div>
+  <div class="nav-logo" routerLink="/">
+    <img src="assets/logo.png" alt="App Logo" />
+    <h1>AnimeCat</h1>
+  </div>
 
-    <app-searchbar class="desktop-search"></app-searchbar>
+  <app-searchbar class="desktop-search"></app-searchbar>
 
-    <nav class="nav-sect">
-        <button class="nav-link" routerLink="/catalog">
-            <mat-icon>apps</mat-icon>
-            Catalogue
-        </button>
-        <button class="nav-link" routerLink="/swipe">
-            <mat-icon>swipe</mat-icon>
-            Swipe
-        </button>
-        @if (storageService.isAuthenticated()) {
-        <button class="nav-link" routerLink="/profil">
-            <mat-icon>person</mat-icon>
-            Profil
-        </button>
-        }
-        @if (storageService.isAuthenticated()) {
-        <app-button variant="primary" size="md" label="Se déconnecter" (click)="handleLogout()"></app-button>
-        } @else {
-        <app-button variant="primary" size="md" label="Se connecter" routerLink="/login"></app-button>
-        }
-    </nav>
-
-    <button matIconButton class="menu-button" (click)="showMenu = !showMenu">
-        <mat-icon>menu</mat-icon>
+  <nav class="nav-sect">
+    <button class="nav-link" routerLink="/catalog">
+      <mat-icon>apps</mat-icon>
+      Catalogue
     </button>
+    <button class="nav-link" routerLink="/swipe">
+      <mat-icon>swipe</mat-icon>
+      Swipe
+    </button>
+    @if (storageService.isAuthenticated()) {
+      <button class="nav-link" routerLink="/profil">
+        <mat-icon>person</mat-icon>
+        Profil
+      </button>
+    }
+    @if (storageService.isAuthenticated()) {
+      <app-button
+        variant="primary"
+        size="md"
+        label="Se déconnecter"
+        (click)="handleLogout()"
+      ></app-button>
+    } @else {
+      <app-button variant="primary" size="md" label="Se connecter" routerLink="/login"></app-button>
+    }
+  </nav>
+
+  <button matIconButton class="menu-button" (click)="showMenu = !showMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
 </header>
 
 @if (showMenu) {
-<div class="mobile-menu">
+  <div class="mobile-menu">
     <app-searchbar [format]="'mobile'" class="mobile-search"></app-searchbar>
     <div class="flex">
-        <div class="mobile-links">
-            <button class="nav-link" routerLink="/catalog">
-                <mat-icon>apps</mat-icon>
-                Catalogue
-            </button>
-            <button class="nav-link" routerLink="/swipe">
-                <mat-icon>swipe</mat-icon>
-                Swipe
-            </button>
-            @if (storageService.isAuthenticated()) {
-            <button class="nav-link" routerLink="/profil">
-                <mat-icon>person</mat-icon>
-                Profil
-            </button>
-            }
-        </div>
+      <div class="mobile-links">
+        <button class="nav-link" routerLink="/catalog">
+          <mat-icon>apps</mat-icon>
+          Catalogue
+        </button>
+        <button class="nav-link" routerLink="/swipe">
+          <mat-icon>swipe</mat-icon>
+          Swipe
+        </button>
         @if (storageService.isAuthenticated()) {
-        <app-button variant="primary" size="sm" label="Se déconnecter" (click)="handleLogout()"></app-button>
-        } @else {
-        <app-button variant="primary" size="sm" label="Se connecter" routerLink="/login"></app-button>
+          <button class="nav-link" routerLink="/profil">
+            <mat-icon>person</mat-icon>
+            Profil
+          </button>
         }
+      </div>
+      @if (storageService.isAuthenticated()) {
+        <app-button
+          variant="primary"
+          size="sm"
+          label="Se déconnecter"
+          (click)="handleLogout()"
+        ></app-button>
+      } @else {
+        <app-button
+          variant="primary"
+          size="sm"
+          label="Se connecter"
+          routerLink="/login"
+        ></app-button>
+      }
     </div>
-</div>
+  </div>
 }
