@@ -97,4 +97,21 @@
     width: 21px;
     font-size: 21px;
   }
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &.swipe {
+    width: $logo-width;
+    height: $logo-width;
+    border-radius: 50%;
+    padding: 0;
+    mat-icon {
+      height: $space-lg;
+      width: $space-lg;
+      font-size: $font-xl;
+    }
+  }
 }

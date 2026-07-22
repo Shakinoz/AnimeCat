@@ -1,17 +1,40 @@
+@use '../../../variables.scss' as *;
+
+/* Pagination en bas de la grille pour garder le parcours de navigation clair. */
 .pagination-controls {
   display: flex;
-  gap: 12px;
-  align-items: center;
   justify-content: center;
-  padding: 12px 0;
+  align-items: center;
+  gap: $space-md;
+  margin-top: $space-lg;
+  padding-top: $space-lg;
+  border-top: $border-thin solid rgba($white, 0.1);
 }
+
 .pagination-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: inherit;
+  padding: $space-xs $space-md;
+  background-color: $surface-soft;
+  border: $border-thin solid rgba($white, 0.12);
+  color: $white;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-size: $font-sm;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-button;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
+
 .page-info {
-  font-weight: 600;
+  font-size: $font-sm;
+  color: $blue-grey;
 }

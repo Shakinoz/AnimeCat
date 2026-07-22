@@ -17,4 +17,6 @@ export class Button {
   public type = input<ButtonType>('button');
   public label = input<string>();
   public icon = input<string>();
+  public disabled = input<boolean>(false);
+  public swipe = input<boolean>(false);
 }

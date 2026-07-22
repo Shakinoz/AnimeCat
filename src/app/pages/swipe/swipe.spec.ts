@@ -1,18 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
-import { Swipe } from './swipe';
+import { SwipePage } from './swipe';
 
 describe('Swipe', () => {
-  let component: Swipe;
-  let fixture: ComponentFixture<Swipe>;
+  let component: SwipePage;
+  let fixture: ComponentFixture<SwipePage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Swipe]
-    })
-    .compileComponents();
+      imports: [SwipePage],
+      providers: [provideRouter([]), provideHttpClient()],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(Swipe);
+    fixture = TestBed.createComponent(SwipePage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

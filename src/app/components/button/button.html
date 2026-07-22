@@ -1,8 +1,9 @@
-<button [type]="type()" [class]="`btn btn--${this.variant()} btn--${this.size()}`">
+<button [type]="type()" [class]="`btn btn--${this.variant()} btn--${this.size()}`" [class.disabled]="disabled()"
+  [class.swipe]="swipe()" [disabled]="disabled()">
   @if (icon()) {
-    <mat-icon>{{ icon() }}</mat-icon>
+  <mat-icon>{{ icon() }}</mat-icon>
   }
   @if (label()) {
-    {{ label() }}
+  {{ label() }}
   }
 </button>
