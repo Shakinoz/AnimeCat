@@ -12,37 +12,46 @@
     <div class="catalogue-content">
         <!-- Colonne latérale contenant tous les filtres disponibles pour la recherche. -->
         <aside class="filters-sidebar" aria-label="Filtres de recherche">
-            <h2>Filtres</h2>
+            <div class="filter-title" (click)="isMobileDevice() && showFilters.update(v => !v)">
+                <h2>Filtres</h2>
+                @if (isMobileDevice()) {
+                <mat-icon>{{ showFilters() ? 'arrow_drop_up' :
+                    'arrow_drop_down' }}</mat-icon>
+                }
+            </div>
 
-            <!-- Champ libre pour chercher par nom d'anime. -->
-            <app-filter-group label="Recherche">
-                <input id="anime-search" type="text" class="search-input" [value]="searchQuery"
-                    (input)="handleSearchInput($event)" placeholder="Nom de l'anime..." />
-            </app-filter-group>
 
-            <!-- Sélecteur de type d'anime, par exemple TV, Film ou OVA. -->
-            <app-filter-group label="Type">
-                <app-select-filter id="anime-type" [options]="typeOptions" [value]="selectedType"
-                    (valueChange)="selectedType = $event; onTypeChange()"></app-select-filter>
-            </app-filter-group>
+            <div class="filters-sect" [style.display]="!isMobileDevice() || showFilters() ? 'block' : 'none'">
+                <!-- Champ libre pour chercher par nom d'anime. -->
+                <app-filter-group label="Recherche">
+                    <input id="anime-search" type="text" class="search-input" [value]="searchQuery"
+                        (input)="handleSearchInput($event)" placeholder="Nom de l'anime..." />
+                </app-filter-group>
 
-            <!-- Sélecteur du statut de diffusion. -->
-            <app-filter-group label="Statut">
-                <app-select-filter id="anime-status" [options]="statusOptions" [value]="selectedStatus"
-                    (valueChange)="selectedStatus = $event; onStatusChange()"></app-select-filter>
-            </app-filter-group>
+                <!-- Sélecteur de type d'anime, par exemple TV, Film ou OVA. -->
+                <app-filter-group label="Type">
+                    <app-select-filter id="anime-type" [options]="typeOptions" [value]="selectedType"
+                        (valueChange)="selectedType = $event; onTypeChange()"></app-select-filter>
+                </app-filter-group>
 
-            <!-- Liste de genres sous forme de cases à cocher pour une sélection multiple. -->
-            <app-filter-group label="Genres">
-                <app-genre-checkbox-list [genres]="genreOptions" [selected]="selectedGenres"
-                    (selectedChange)="selectedGenres = $event; onGenreChange()"></app-genre-checkbox-list>
-            </app-filter-group>
+                <!-- Sélecteur du statut de diffusion. -->
+                <app-filter-group label="Statut">
+                    <app-select-filter id="anime-status" [options]="statusOptions" [value]="selectedStatus"
+                        (valueChange)="selectedStatus = $event; onStatusChange()"></app-select-filter>
+                </app-filter-group>
 
-            <!-- Sélecteur de tri pour modifier l'ordre d’affichage des cartes. -->
-            <app-filter-group label="Trier par">
-                <app-select-filter id="anime-sort" [options]="sortOptions" [value]="sortBy"
-                    (valueChange)="handleSortValueChange($event)"></app-select-filter>
-            </app-filter-group>
+                <!-- Liste de genres sous forme de cases à cocher pour une sélection multiple. -->
+                <app-filter-group label="Genres">
+                    <app-genre-checkbox-list [genres]="genreOptions" [selected]="selectedGenres"
+                        (selectedChange)="selectedGenres = $event; onGenreChange()"></app-genre-checkbox-list>
+                </app-filter-group>
+
+                <!-- Sélecteur de tri pour modifier l'ordre d’affichage des cartes. -->
+                <app-filter-group label="Trier par">
+                    <app-select-filter id="anime-sort" [options]="sortOptions" [value]="sortBy"
+                        (valueChange)="handleSortValueChange($event)"></app-select-filter>
+                </app-filter-group>
+            </div>
         </aside>
 
         <!-- Zone principale où les cartes des animes sont affichées. -->

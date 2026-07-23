@@ -10,6 +10,8 @@ import { GenreCheckboxList } from '../../components/genre-checkbox-list/genre-ch
 import { PaginationControls } from '../../components/pagination-controls/pagination-controls';
 import { SelectFilter } from '../../components/select-filter/select-filter';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-catalogue',
@@ -23,6 +25,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     GenreCheckboxList,
     PaginationControls,
     SelectFilter,
+    MatIcon,
   ],
   templateUrl: './catalogue-page.html',
   styleUrl: './catalogue-page.scss',
@@ -45,6 +48,8 @@ export class CataloguePage {
 
   // Indicateur de chargement utilisé par le template pour afficher un état de progression.
   isLoading = signal(false);
+  isMobileDevice = signal(false);
+  showFilters = signal(false);
 
   // État des filtres de recherche et de navigation.
   searchQuery = '';
@@ -116,7 +121,15 @@ export class CataloguePage {
   ];
 
   // Chargement initial de la page au démarrage du composant.
-  constructor(private readonly tenraiService: TenraiService) {
+  constructor(
+    private readonly tenraiService: TenraiService,
+    private readonly deviceDetector: DeviceDetectorService,
+  ) {
+    this.isMobileDevice.set(this.deviceDetector.isMobile());
+
+    // Sur desktop: filtres visibles en permanence. Sur mobile: panneau replié par défaut.
+    this.showFilters.set(!this.isMobileDevice());
+
     this.loadAnimes();
   }
 
