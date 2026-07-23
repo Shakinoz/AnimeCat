@@ -1,19 +1,26 @@
 import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, SlicePipe } from '@angular/common';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { TenraiService } from '../../services/tenrai.service';
 import { StorageService } from '../../services/storage.service';
 import { NotificationService } from '../../services/notification.service';
+import {
+  AnimeRecommendationService,
+  RecommendationResult,
+} from '../../services/anime-recommendation.service';
 import { Anime } from '@tutkli/jikan-ts';
 import { Header } from '../../components/header/header';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { POPULAR_DATA as popularData } from '../../data/popular-data';
 import { Button } from '../../components/button/button';
-import { CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
+import { ITierList } from '../../models/user-anime.interface';
 
 @Component({
   selector: 'app-swipe',
   standalone: true,
-  imports: [CommonModule, Header, MatProgressSpinner, Button, CdkDrag],
+  imports: [CommonModule, Header, MatProgressSpinner, Button, CdkDrag, SlicePipe],
   templateUrl: './swipe.html',
   styleUrl: './swipe.scss',
 })
@@ -29,13 +36,22 @@ import { CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
 export class SwipePage {
   private static readonly DT_DRAG_X_THRESHOLD = 230;
   private static readonly DT_DRAG_Y_THRESHOLD = -75;
+  private static readonly MB_DRAG_X_THRESHOLD = 100;
+  private static readonly MB_DRAG_Y_THRESHOLD = -50;
+  private static readonly DT_MAX_TILT_DEG = 14;
+  private static readonly MB_MAX_TILT_DEG = 10;
 
   animes: Anime[] = [];
   currentIndex = 0;
 
   finished = signal(false);
   isLoading = signal(false);
+  isMobile = signal(false);
   infoVisible = signal(false);
+  dragRotation = signal(0);
+  isBuildingRecommendations = signal(false);
+  recommendations = signal<RecommendationResult | null>(null);
+  private lastAppliedRotation = 0;
 
   // Historique des actions pour permettre l'annulation (dernière action à la fin)
   private history: Array<{
@@ -48,7 +64,10 @@ export class SwipePage {
     private readonly tenrai: TenraiService,
     private readonly storage: StorageService,
     private readonly notify: NotificationService,
+    private readonly recommendationService: AnimeRecommendationService,
+    private readonly detectionService: DeviceDetectorService,
   ) {
+    this.isMobile.set(this.detectionService.isMobile());
     this.loadAnimes();
   }
 
@@ -68,30 +87,61 @@ export class SwipePage {
     return this.tenrai.getGenresLabel(anime, 4);
   }
 
+  onCardDragged(event: CdkDragMove): void {
+    const { x } = event.source.getFreeDragPosition();
+    const threshold = this.getDragXThreshold();
+    const maxTilt = this.isMobile() ? SwipePage.MB_MAX_TILT_DEG : SwipePage.DT_MAX_TILT_DEG;
+
+    // Normalise x entre -1 et 1 pour garder une inclinaison progressive et bornée.
+    const ratio = Math.max(-1, Math.min(1, x / threshold));
+    const nextRotation = ratio * maxTilt;
+
+    // Evite de déclencher trop de rendus pour des variations imperceptibles.
+    if (Math.abs(nextRotation - this.lastAppliedRotation) < 0.25) return;
+
+    this.lastAppliedRotation = nextRotation;
+    this.dragRotation.set(nextRotation);
+  }
+
   onCardDragEnded(event: CdkDragEnd): void {
     const { x, y } = event.source.getFreeDragPosition();
+    const dragXThreshold = this.getDragXThreshold();
+    const dragYThreshold = this.getDragYThreshold();
 
     // Repositionne toujours la carte a son point initial, meme sans action.
     event.source.reset();
+    this.lastAppliedRotation = 0;
+    this.dragRotation.set(0);
 
     // Si la carte a été déplacée suffisamment à droite, gauche ou haut, déclenche l'action correspondante.
-    if (x >= SwipePage.DT_DRAG_X_THRESHOLD) {
+    if (x >= dragXThreshold) {
       this.like();
       return;
     }
 
-    if (x <= -SwipePage.DT_DRAG_X_THRESHOLD) {
+    if (x <= -dragXThreshold) {
       this.dislike();
       return;
     }
 
-    if (y <= SwipePage.DT_DRAG_Y_THRESHOLD) {
+    if (y <= dragYThreshold) {
       this.skip();
     }
   }
 
+  private getDragXThreshold(): number {
+    return this.isMobile() ? SwipePage.MB_DRAG_X_THRESHOLD : SwipePage.DT_DRAG_X_THRESHOLD;
+  }
+
+  private getDragYThreshold(): number {
+    return this.isMobile() ? SwipePage.MB_DRAG_Y_THRESHOLD : SwipePage.DT_DRAG_Y_THRESHOLD;
+  }
+
   private loadAnimes(): void {
     this.isLoading.set(true);
+    this.finished.set(false);
+    this.recommendations.set(null);
+
     this.tenrai.getMostPopular(1, 100).subscribe({
       next: (res) => {
         const source = res.data?.length
@@ -187,9 +237,7 @@ export class SwipePage {
       this.currentIndex++;
     } else {
       this.finished.set(true);
-      // TODO:
-      // appeler la fonction de recommandation des animes sur bases des animes likés et des genres favoris
-      console.log('fin de liste voici les datas de tests', this.history);
+      this.generateRecommendationsFromProfile();
     }
   }
 
@@ -198,6 +246,8 @@ export class SwipePage {
 
     const last = this.history.pop()!;
     const animeId = last.animeId;
+    this.finished.set(false);
+    this.recommendations.set(null);
 
     // revert genre deltas
     // Inverse les deltas de genres appliqués précédemment
@@ -220,5 +270,168 @@ export class SwipePage {
     }
 
     this.notify.show('Action annulée', false);
+  }
+
+  /**
+   * Retourne le score de recommandation formaté pour l'UI.
+   */
+  recommendationScore(score: number | undefined): string {
+    if (score === undefined || Number.isNaN(score)) return '-';
+    return score.toFixed(1);
+  }
+
+  /**
+   * Génère les recommandations finales en appliquant le pipeline proposé:
+   * 1) construire un profil de goûts (scores swipe + tierlist)
+   * 2) rechercher des candidats Tenrai à partir de combinaisons de genres
+   * 3) scorer et sélectionner: choix sûr, populaire, découverte
+   */
+  private generateRecommendationsFromProfile(): void {
+    if (this.isBuildingRecommendations()) return;
+
+    const currentUser = this.storage.getCurrentUser();
+    if (!currentUser) {
+      this.notify.show('Connecte-toi pour générer des recommandations personnalisées.', true);
+      return;
+    }
+
+    this.isBuildingRecommendations.set(true);
+
+    const swipeGenreScores = this.storage.getGenreScores();
+    const rejectedIds = new Set(this.storage.getRejected());
+
+    // On se concentre sur les genres positifs les plus forts pour construire les recherches.
+    const topGenreIds = Object.entries(swipeGenreScores)
+      .map(([genreId, score]) => ({ genreId: Number(genreId), score }))
+      .filter((entry) => entry.genreId > 0 && entry.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map((entry) => entry.genreId);
+
+    const genreCombos = this.buildGenreCombinations(topGenreIds);
+    const tierAnimeIds = this.getTierAnimeIds(currentUser.tierList);
+
+    const tierAnimes$ = tierAnimeIds.length
+      ? this.tenrai.getByIds(tierAnimeIds, false, 2).pipe(catchError(() => of([] as Anime[])))
+      : of([] as Anime[]);
+
+    const candidates$ = genreCombos.length
+      ? forkJoin(
+          genreCombos.map((combo) =>
+            this.tenrai.getByGenres(combo, 1, 25).pipe(
+              map((result) => result.data),
+              catchError(() => of([] as Anime[])),
+            ),
+          ),
+        ).pipe(
+          map((groups) => groups.flat()),
+          map((animes) => this.dedupeAnimes(animes)),
+        )
+      : this.tenrai.getMostPopular(1, 80).pipe(
+          map((result) => this.dedupeAnimes(result.data)),
+          catchError(() => of(this.dedupeAnimes((popularData.data as unknown as Anime[]) ?? []))),
+        );
+
+    forkJoin({ tierAnimes: tierAnimes$, candidates: candidates$ }).subscribe({
+      next: ({ tierAnimes, candidates }) => {
+        // Si le pool est trop faible, on enrichit avec le lot déjà présent dans le swipe.
+        const enrichedCandidates = this.dedupeAnimes([...candidates, ...this.animes]);
+
+        const result = this.recommendationService.generateRecommendations({
+          currentUser,
+          tierAnimes,
+          candidates: enrichedCandidates,
+          swipeGenreScores,
+          rejectedIds,
+        });
+
+        this.recommendations.set(result);
+        this.isBuildingRecommendations.set(false);
+
+        if (result.safestChoice || result.popularChoice || result.discovery) {
+          this.notify.show('Recommandations générées avec succès.', false);
+        } else {
+          this.notify.show('Pas assez de candidats pour générer des recommandations.', true);
+        }
+
+        console.log('Recommendations result', result);
+      },
+      error: (err) => {
+        console.error('Recommendation generation error', err);
+        this.isBuildingRecommendations.set(false);
+        this.notify.show('Impossible de générer les recommandations pour le moment.', true);
+      },
+    });
+  }
+
+  /**
+   * Crée des combinaisons 2 et 3 genres (plus un single de secours) à partir des top genres.
+   * Objectif: obtenir des candidats variés sans multiplier trop fortement les appels API.
+   */
+  private buildGenreCombinations(genreIds: number[]): number[][] {
+    if (!genreIds.length) return [];
+
+    const combinations: number[][] = [];
+    const unique = [...new Set(genreIds)].filter((id) => id > 0);
+
+    // Combinaisons de 2 genres.
+    for (let i = 0; i < unique.length; i++) {
+      for (let j = i + 1; j < unique.length; j++) {
+        combinations.push([unique[i], unique[j]]);
+      }
+    }
+
+    // Combinaisons de 3 genres pour capturer les affinités plus fines.
+    for (let i = 0; i < unique.length; i++) {
+      for (let j = i + 1; j < unique.length; j++) {
+        for (let k = j + 1; k < unique.length; k++) {
+          combinations.push([unique[i], unique[j], unique[k]]);
+        }
+      }
+    }
+
+    // Si aucune combinaison n'existe (ex: un seul genre), on fallback sur le genre seul.
+    if (!combinations.length) {
+      combinations.push([unique[0]]);
+    }
+
+    // Déduplication robuste pour éviter les appels API doublons.
+    const byKey = new Map<string, number[]>();
+    combinations.forEach((combo) => {
+      const normalized = [...combo].sort((a, b) => a - b);
+      byKey.set(normalized.join(','), normalized);
+    });
+
+    return Array.from(byKey.values()).slice(0, 12);
+  }
+
+  /**
+   * Récupère l'ensemble des IDs présents en tier list (S/A/B/C), sans doublon.
+   */
+  private getTierAnimeIds(tierList: ITierList): number[] {
+    return [
+      ...new Set([
+        ...(tierList.S ?? []),
+        ...(tierList.A ?? []),
+        ...(tierList.B ?? []),
+        ...(tierList.C ?? []),
+      ]),
+    ];
+  }
+
+  /**
+   * Déduplique des animés par MAL ID, en gardant la première occurrence valide.
+   */
+  private dedupeAnimes(animes: Anime[]): Anime[] {
+    const byId = new Map<number, Anime>();
+
+    animes.forEach((anime) => {
+      if (!anime?.mal_id) return;
+      if (!byId.has(anime.mal_id)) {
+        byId.set(anime.mal_id, anime);
+      }
+    });
+
+    return Array.from(byId.values());
   }
 }

@@ -9,18 +9,18 @@
         </div>
         }
 
-        @if (!isLoading() && currentAnime) {
-        <div class="card" cdkDrag cdkDragBoundary=":host" (cdkDragEnded)="onCardDragEnded($event)">
+        @if (!isLoading() && currentAnime && !finished()) {
+        <div class="card" [style.--drag-rotation]="dragRotation() + 'deg'" cdkDrag cdkDragBoundary=":host"
+            (cdkDragMoved)="onCardDragged($event)" (cdkDragEnded)="onCardDragEnded($event)">
             <div class="card-media">
-                <img [src]="cover(currentAnime)" alt="{{ currentAnime.title }}"
-                    (error)="$any($event.target).src = 'assets/img/placeholder.webp'" />
+                <img [src]="cover(currentAnime)" alt="{{ currentAnime.title }}" />
             </div>
 
             <div class="card-body">
                 <h3 class="title">{{ currentAnime.title }}</h3>
                 <p class="sub">{{ currentAnime.rating }} • {{ currentAnime.episodes || '?' }} épisodes</p>
                 <p class="genres">{{ genresLabel(currentAnime) }}</p>
-                <p class="synopsis">{{ currentAnime.synopsis }}</p>
+                <p class="synopsis">{{ currentAnime.synopsis | slice: 0 : (isMobile() ? 80 : 270) }}...</p>
             </div>
 
             <div class="controls">
@@ -35,6 +35,50 @@
 
             </div>
         </div>
+        }
+
+        @if (!isLoading() && finished()) {
+        <section class="recommendation-sect">
+            <h3 class="recommendation-title">Tes recommandations personnalisées</h3>
+
+            @if (isBuildingRecommendations()) {
+            <div class="loading-sect">
+                <mat-spinner></mat-spinner>
+                <p class="loading">Analyse de ton profil en cours...</p>
+            </div>
+            }
+
+            @if (!isBuildingRecommendations() && recommendations()) {
+            <div class="recommendation-grid">
+                @if (recommendations()?.safestChoice; as safest) {
+                <article class="recommendation-card safest">
+                    <p class="badge">Choix le plus sûr</p>
+                    <h4>{{ safest.anime.title }}</h4>
+                    <p class="meta">Score: {{ recommendationScore(safest.score) }}</p>
+                    <p class="explanation">{{ safest.explanation }}</p>
+                </article>
+                }
+
+                @if (recommendations()?.popularChoice; as popular) {
+                <article class="recommendation-card popular">
+                    <p class="badge">Recommandation populaire</p>
+                    <h4>{{ popular.anime.title }}</h4>
+                    <p class="meta">Score: {{ recommendationScore(popular.score) }}</p>
+                    <p class="explanation">{{ popular.explanation }}</p>
+                </article>
+                }
+
+                @if (recommendations()?.discovery; as discovery) {
+                <article class="recommendation-card discovery">
+                    <p class="badge">Découverte</p>
+                    <h4>{{ discovery.anime.title }}</h4>
+                    <p class="meta">Score: {{ recommendationScore(discovery.score) }}</p>
+                    <p class="explanation">{{ discovery.explanation }}</p>
+                </article>
+                }
+            </div>
+            }
+        </section>
         }
 
         @if (!isLoading() && !currentAnime) {

@@ -34,16 +34,29 @@
       margin-top: $space-lg;
       position: relative;
       width: 360px;
-      background: $surface-soft;
+      height: 83vh;
+      background: $surface;
       border-radius: $radius-lg;
       box-shadow: $shadow-lg;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       touch-action: none;
       user-select: none;
+      rotate: var(--drag-rotation, 0deg);
+      transform-origin: center 75%;
+      transition: rotate 120ms ease-out;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform: translateZ(0);
+
+      &.cdk-drag-dragging {
+        transition: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+      }
 
       .card-media {
-        height: 400px;
+        height: 55%;
         background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
         img {
           width: 100%;
@@ -56,6 +69,7 @@
 
       .card-body {
         padding: $space-md;
+        height: 30%;
         .title {
           margin: 0;
           font-size: $font-md;
@@ -73,7 +87,6 @@
         .synopsis {
           color: $muted;
           font-size: $font-sm;
-          max-height: 72px;
           overflow: hidden;
         }
       }
@@ -82,26 +95,105 @@
         display: flex;
         justify-content: space-around;
         padding: $space-md;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), transparent);
+        border-top: $blue $border-thin solid;
 
         .undo {
           z-index: 1;
           position: absolute;
-          top: -25px;
-          left: -25px;
+          top: 10px;
+          left: 10px;
         }
 
         .info {
           z-index: 1;
           position: absolute;
-          top: -25px;
-          right: -25px;
+          top: 10px;
+          right: 10px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        margin-top: 0;
+        height: 70vh;
+
+        .card-media {
+          height: 40%;
+        }
+
+        .card-body {
+          height: 30%;
         }
       }
     }
 
     .empty {
       color: $muted;
+    }
+
+    .recommendation-sect {
+      width: min(980px, 100%);
+      margin-top: $space-lg;
+
+      .recommendation-title {
+        margin: 0 0 $space-md;
+        font-size: $font-lg;
+      }
+
+      .recommendation-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: $space-md;
+      }
+
+      .recommendation-card {
+        border: $border-thin solid rgba(255, 255, 255, 0.14);
+        border-radius: $radius-md;
+        background: rgba(0, 0, 0, 0.22);
+        padding: $space-md;
+
+        .badge {
+          margin: 0 0 $space-xs;
+          color: $blue-grey;
+          font-size: $font-sm;
+          text-transform: uppercase;
+        }
+
+        h4 {
+          margin: 0 0 $space-xs;
+          font-size: $font-md;
+        }
+
+        .meta {
+          margin: 0 0 $space-sm;
+          color: $muted;
+          font-size: $font-sm;
+        }
+
+        .explanation {
+          margin: 0;
+          color: $muted;
+          font-size: $font-sm;
+          line-height: 1.4;
+        }
+
+        &.safest {
+          border-color: rgba(90, 177, 255, 0.35);
+        }
+
+        &.popular {
+          border-color: rgba(84, 201, 147, 0.35);
+        }
+
+        &.discovery {
+          border-color: rgba(243, 184, 92, 0.35);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .recommendation-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     }
   }
 }
