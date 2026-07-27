@@ -31,10 +31,9 @@
     }
 
     .card {
-      margin-top: $space-lg;
       position: relative;
       width: 360px;
-      height: 83vh;
+      height: 80vh;
       background: $surface;
       border-radius: $radius-lg;
       box-shadow: $shadow-lg;
@@ -56,7 +55,7 @@
       }
 
       .card-media {
-        height: 55%;
+        height: 50%;
         background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
         img {
           width: 100%;
@@ -174,6 +173,7 @@
           color: $muted;
           font-size: $font-sm;
           line-height: 1.4;
+          margin-bottom: $space-lg;
         }
 
         &.safest {

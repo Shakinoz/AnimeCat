@@ -20,7 +20,8 @@ import { RouterLink } from '@angular/router';
 import { AnimeStatus, HomeAnime } from '../../models/user-anime.interface';
 import { AnimeCard } from '../../components/anime-card/anime-card';
 import { NotificationService } from '../../services/notification.service';
-import { Subscription } from 'rxjs';
+import { catchError, forkJoin, map, of, Subscription } from 'rxjs';
+import { AnimeRecommendationService } from '../../services/anime-recommendation.service';
 
 @Component({
   selector: 'app-home',
@@ -43,6 +44,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   trending: WritableSignal<HomeAnime[]> = signal([]);
   popular: WritableSignal<HomeAnime[]> = signal([]);
+  recommendations: WritableSignal<HomeAnime[]> = signal([]);
+  isRecommendationsLoading = signal(false);
   isLoading = signal(true);
   private readonly statusSubscription = new Subscription();
 
@@ -57,6 +60,7 @@ export class HomePage implements OnInit, OnDestroy {
     private tenrai: TenraiService,
     private storageService: StorageService,
     private notificationService: NotificationService,
+    private recommendationService: AnimeRecommendationService,
   ) {
     this.loadData();
   }
@@ -65,6 +69,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.statusSubscription.add(
       this.storageService.animeStatusChanged$.subscribe(() => {
         this.refreshHeroAndLists();
+        this.loadRecommendationCarousel();
       }),
     );
   }
@@ -89,10 +94,12 @@ export class HomePage implements OnInit, OnDestroy {
       next: (res) => {
         this.popular.set(this.addUserStatus(res.data));
         this.isLoading.set(false);
+        this.loadRecommendationCarousel();
       },
       error: () => {
         this.popular.set(this.addUserStatus(popularData.data as unknown as Anime[]));
         this.isLoading.set(false);
+        this.loadRecommendationCarousel();
       },
     });
   }
@@ -165,6 +172,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.trending.update((list) => list.map((anime) => refreshStatus(anime)));
     this.popular.update((list) => list.map((anime) => refreshStatus(anime)));
+    this.recommendations.update((list) => list.map((anime) => refreshStatus(anime)));
 
     if (this.heroAnime) {
       this.heroAnime = refreshStatus(this.heroAnime);
@@ -176,5 +184,93 @@ export class HomePage implements OnInit, OnDestroy {
       ...anime,
       userStatus: this.storageService.getAnimeStatus(anime.mal_id) ?? null,
     }));
+  }
+
+  private loadRecommendationCarousel(): void {
+    const currentUser = this.storageService.getCurrentUser();
+    if (!currentUser) {
+      this.recommendations.set([]);
+      return;
+    }
+
+    currentUser.tierList ??= { S: [], A: [], B: [], C: [] };
+
+    const swipeGenreScores = this.storageService.getGenreScores();
+    const rejectedIds = new Set(this.storageService.getRejected());
+
+    const topGenreIds = Object.entries(swipeGenreScores)
+      .map(([genreId, score]) => ({ genreId: Number(genreId), score }))
+      .filter((entry) => entry.genreId > 0 && entry.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map((entry) => entry.genreId);
+
+    const hasTierSignals =
+      this.recommendationService.getTierAnimeIds(currentUser.tierList).length > 0;
+    if (!topGenreIds.length && !hasTierSignals) {
+      this.recommendations.set([]);
+      return;
+    }
+
+    this.isRecommendationsLoading.set(true);
+
+    const genreCombos = this.recommendationService.buildGenreCombinations(topGenreIds);
+    const tierAnimeIds = this.recommendationService.getTierAnimeIds(currentUser.tierList);
+
+    const tierAnimes$ = tierAnimeIds.length
+      ? this.tenrai.getByIds(tierAnimeIds, false, 2).pipe(catchError(() => of([] as Anime[])))
+      : of([] as Anime[]);
+
+    const candidates$ = genreCombos.length
+      ? forkJoin(
+          genreCombos.map((combo) =>
+            this.tenrai.getByGenres(combo, 1, 25).pipe(
+              map((result) => result.data),
+              catchError(() => of([] as Anime[])),
+            ),
+          ),
+        ).pipe(
+          map((groups) => groups.flat()),
+          map((animes) => this.recommendationService.dedupeAnimes(animes)),
+        )
+      : this.tenrai.getMostPopular(1, 100).pipe(
+          map((result) => this.recommendationService.dedupeAnimes(result.data)),
+          catchError(() =>
+            of(
+              this.recommendationService.dedupeAnimes(
+                (popularData.data as unknown as Anime[]) ?? [],
+              ),
+            ),
+          ),
+        );
+
+    forkJoin({ tierAnimes: tierAnimes$, candidates: candidates$ }).subscribe({
+      next: ({ tierAnimes, candidates }) => {
+        const enrichedCandidates = this.recommendationService.dedupeAnimes([
+          ...candidates,
+          ...this.trending(),
+          ...this.popular(),
+          ...((popularData.data as unknown as Anime[]) ?? []),
+        ]);
+
+        const ranked = this.recommendationService.generateTopRecommendations(
+          {
+            currentUser,
+            tierAnimes,
+            candidates: enrichedCandidates,
+            swipeGenreScores,
+            rejectedIds,
+          },
+          12,
+        );
+
+        this.recommendations.set(this.addUserStatus(ranked.map((entry) => entry.anime)));
+        this.isRecommendationsLoading.set(false);
+      },
+      error: () => {
+        this.recommendations.set([]);
+        this.isRecommendationsLoading.set(false);
+      },
+    });
   }
 }

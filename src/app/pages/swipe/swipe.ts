@@ -15,12 +15,12 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { POPULAR_DATA as popularData } from '../../data/popular-data';
 import { Button } from '../../components/button/button';
 import { CdkDrag, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
-import { ITierList } from '../../models/user-anime.interface';
+import { AnimeCard } from '../../components/anime-card/anime-card';
 
 @Component({
   selector: 'app-swipe',
   standalone: true,
-  imports: [CommonModule, Header, MatProgressSpinner, Button, CdkDrag, SlicePipe],
+  imports: [CommonModule, Header, MatProgressSpinner, Button, CdkDrag, SlicePipe, AnimeCard],
   templateUrl: './swipe.html',
   styleUrl: './swipe.scss',
 })
@@ -308,8 +308,8 @@ export class SwipePage {
       .slice(0, 5)
       .map((entry) => entry.genreId);
 
-    const genreCombos = this.buildGenreCombinations(topGenreIds);
-    const tierAnimeIds = this.getTierAnimeIds(currentUser.tierList);
+    const genreCombos = this.recommendationService.buildGenreCombinations(topGenreIds);
+    const tierAnimeIds = this.recommendationService.getTierAnimeIds(currentUser.tierList);
 
     const tierAnimes$ = tierAnimeIds.length
       ? this.tenrai.getByIds(tierAnimeIds, false, 2).pipe(catchError(() => of([] as Anime[])))
@@ -325,17 +325,26 @@ export class SwipePage {
           ),
         ).pipe(
           map((groups) => groups.flat()),
-          map((animes) => this.dedupeAnimes(animes)),
+          map((animes) => this.recommendationService.dedupeAnimes(animes)),
         )
       : this.tenrai.getMostPopular(1, 80).pipe(
-          map((result) => this.dedupeAnimes(result.data)),
-          catchError(() => of(this.dedupeAnimes((popularData.data as unknown as Anime[]) ?? []))),
+          map((result) => this.recommendationService.dedupeAnimes(result.data)),
+          catchError(() =>
+            of(
+              this.recommendationService.dedupeAnimes(
+                (popularData.data as unknown as Anime[]) ?? [],
+              ),
+            ),
+          ),
         );
 
     forkJoin({ tierAnimes: tierAnimes$, candidates: candidates$ }).subscribe({
       next: ({ tierAnimes, candidates }) => {
         // Si le pool est trop faible, on enrichit avec le lot déjà présent dans le swipe.
-        const enrichedCandidates = this.dedupeAnimes([...candidates, ...this.animes]);
+        const enrichedCandidates = this.recommendationService.dedupeAnimes([
+          ...candidates,
+          ...this.animes,
+        ]);
 
         const result = this.recommendationService.generateRecommendations({
           currentUser,
@@ -362,76 +371,5 @@ export class SwipePage {
         this.notify.show('Impossible de générer les recommandations pour le moment.', true);
       },
     });
-  }
-
-  /**
-   * Crée des combinaisons 2 et 3 genres (plus un single de secours) à partir des top genres.
-   * Objectif: obtenir des candidats variés sans multiplier trop fortement les appels API.
-   */
-  private buildGenreCombinations(genreIds: number[]): number[][] {
-    if (!genreIds.length) return [];
-
-    const combinations: number[][] = [];
-    const unique = [...new Set(genreIds)].filter((id) => id > 0);
-
-    // Combinaisons de 2 genres.
-    for (let i = 0; i < unique.length; i++) {
-      for (let j = i + 1; j < unique.length; j++) {
-        combinations.push([unique[i], unique[j]]);
-      }
-    }
-
-    // Combinaisons de 3 genres pour capturer les affinités plus fines.
-    for (let i = 0; i < unique.length; i++) {
-      for (let j = i + 1; j < unique.length; j++) {
-        for (let k = j + 1; k < unique.length; k++) {
-          combinations.push([unique[i], unique[j], unique[k]]);
-        }
-      }
-    }
-
-    // Si aucune combinaison n'existe (ex: un seul genre), on fallback sur le genre seul.
-    if (!combinations.length) {
-      combinations.push([unique[0]]);
-    }
-
-    // Déduplication robuste pour éviter les appels API doublons.
-    const byKey = new Map<string, number[]>();
-    combinations.forEach((combo) => {
-      const normalized = [...combo].sort((a, b) => a - b);
-      byKey.set(normalized.join(','), normalized);
-    });
-
-    return Array.from(byKey.values()).slice(0, 12);
-  }
-
-  /**
-   * Récupère l'ensemble des IDs présents en tier list (S/A/B/C), sans doublon.
-   */
-  private getTierAnimeIds(tierList: ITierList): number[] {
-    return [
-      ...new Set([
-        ...(tierList.S ?? []),
-        ...(tierList.A ?? []),
-        ...(tierList.B ?? []),
-        ...(tierList.C ?? []),
-      ]),
-    ];
-  }
-
-  /**
-   * Déduplique des animés par MAL ID, en gardant la première occurrence valide.
-   */
-  private dedupeAnimes(animes: Anime[]): Anime[] {
-    const byId = new Map<number, Anime>();
-
-    animes.forEach((anime) => {
-      if (!anime?.mal_id) return;
-      if (!byId.has(anime.mal_id)) {
-        byId.set(anime.mal_id, anime);
-      }
-    });
-
-    return Array.from(byId.values());
   }
 }

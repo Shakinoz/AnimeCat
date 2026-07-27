@@ -1,100 +1,125 @@
 <app-header></app-header>
 
 <div class="swipe-page">
-    <main class="swipe-main">
-        @if (isLoading()) {
-        <div class="loading-sect">
+  <main class="swipe-main">
+    @if (isLoading()) {
+      <div class="loading-sect">
+        <mat-spinner></mat-spinner>
+        <p class="loading">Chargement...</p>
+      </div>
+    }
+
+    @if (!isLoading() && currentAnime && !finished()) {
+      <div
+        class="card"
+        [style.--drag-rotation]="dragRotation() + 'deg'"
+        cdkDrag
+        cdkDragBoundary=":host"
+        (cdkDragMoved)="onCardDragged($event)"
+        (cdkDragEnded)="onCardDragEnded($event)"
+      >
+        <div class="card-media">
+          <img [src]="cover(currentAnime)" alt="{{ currentAnime.title }}" />
+        </div>
+
+        <div class="card-body">
+          <h3 class="title">{{ currentAnime.title }}</h3>
+          <p class="sub">{{ currentAnime.rating }} • {{ currentAnime.episodes || '?' }} épisodes</p>
+          <p class="genres">{{ genresLabel(currentAnime) }}</p>
+          <p class="synopsis">
+            {{ currentAnime.synopsis | slice: 0 : (isMobile() ? 80 : 150) }}...
+          </p>
+        </div>
+
+        <div class="controls">
+          <app-button [icon]="'heart_broken'" [swipe]="true" (click)="dislike()"></app-button>
+          <app-button [icon]="'visibility'" [swipe]="true" (click)="skip()"></app-button>
+          <app-button [icon]="'favorite'" [swipe]="true" (click)="like()"></app-button>
+
+          <app-button
+            class="undo"
+            [icon]="'undo'"
+            [swipe]="true"
+            (click)="undo()"
+            [disabled]="historyLength === 0"
+          ></app-button>
+
+          <app-button
+            class="info"
+            [icon]="'info_i'"
+            [swipe]="true"
+            (click)="infoVisible.set(true)"
+          ></app-button>
+        </div>
+      </div>
+    }
+
+    @if (!isLoading() && finished()) {
+      <section class="recommendation-sect">
+        <h3 class="recommendation-title">Tes recommandations personnalisées</h3>
+
+        @if (isBuildingRecommendations()) {
+          <div class="loading-sect">
             <mat-spinner></mat-spinner>
-            <p class="loading">Chargement...</p>
-        </div>
+            <p class="loading">Analyse de ton profil en cours...</p>
+          </div>
         }
 
-        @if (!isLoading() && currentAnime && !finished()) {
-        <div class="card" [style.--drag-rotation]="dragRotation() + 'deg'" cdkDrag cdkDragBoundary=":host"
-            (cdkDragMoved)="onCardDragged($event)" (cdkDragEnded)="onCardDragEnded($event)">
-            <div class="card-media">
-                <img [src]="cover(currentAnime)" alt="{{ currentAnime.title }}" />
-            </div>
-
-            <div class="card-body">
-                <h3 class="title">{{ currentAnime.title }}</h3>
-                <p class="sub">{{ currentAnime.rating }} • {{ currentAnime.episodes || '?' }} épisodes</p>
-                <p class="genres">{{ genresLabel(currentAnime) }}</p>
-                <p class="synopsis">{{ currentAnime.synopsis | slice: 0 : (isMobile() ? 80 : 270) }}...</p>
-            </div>
-
-            <div class="controls">
-                <app-button [icon]="'heart_broken'" [swipe]="true" (click)="dislike()"></app-button>
-                <app-button [icon]="'visibility'" [swipe]="true" (click)="skip()"></app-button>
-                <app-button [icon]="'favorite'" [swipe]="true" (click)="like()"></app-button>
-
-                <app-button class="undo" [icon]="'undo'" [swipe]="true" (click)="undo()"
-                    [disabled]="historyLength === 0"></app-button>
-
-                <app-button class="info" [icon]="'info_i'" [swipe]="true" (click)="infoVisible.set(true)"></app-button>
-
-            </div>
-        </div>
-        }
-
-        @if (!isLoading() && finished()) {
-        <section class="recommendation-sect">
-            <h3 class="recommendation-title">Tes recommandations personnalisées</h3>
-
-            @if (isBuildingRecommendations()) {
-            <div class="loading-sect">
-                <mat-spinner></mat-spinner>
-                <p class="loading">Analyse de ton profil en cours...</p>
-            </div>
+        @if (!isBuildingRecommendations() && recommendations()) {
+          <div class="recommendation-grid">
+            @if (recommendations()?.safestChoice; as safest) {
+              <article class="recommendation-card safest">
+                <p class="badge">Choix le plus sûr</p>
+                <p class="explanation">{{ safest.explanation }}</p>
+                <app-anime-card [anime]="safest.anime"></app-anime-card>
+              </article>
             }
 
-            @if (!isBuildingRecommendations() && recommendations()) {
-            <div class="recommendation-grid">
-                @if (recommendations()?.safestChoice; as safest) {
-                <article class="recommendation-card safest">
-                    <p class="badge">Choix le plus sûr</p>
-                    <h4>{{ safest.anime.title }}</h4>
-                    <p class="meta">Score: {{ recommendationScore(safest.score) }}</p>
-                    <p class="explanation">{{ safest.explanation }}</p>
-                </article>
-                }
-
-                @if (recommendations()?.popularChoice; as popular) {
-                <article class="recommendation-card popular">
-                    <p class="badge">Recommandation populaire</p>
-                    <h4>{{ popular.anime.title }}</h4>
-                    <p class="meta">Score: {{ recommendationScore(popular.score) }}</p>
-                    <p class="explanation">{{ popular.explanation }}</p>
-                </article>
-                }
-
-                @if (recommendations()?.discovery; as discovery) {
-                <article class="recommendation-card discovery">
-                    <p class="badge">Découverte</p>
-                    <h4>{{ discovery.anime.title }}</h4>
-                    <p class="meta">Score: {{ recommendationScore(discovery.score) }}</p>
-                    <p class="explanation">{{ discovery.explanation }}</p>
-                </article>
-                }
-            </div>
+            @if (recommendations()?.popularChoice; as popular) {
+              <article class="recommendation-card popular">
+                <p class="badge">Recommandation populaire</p>
+                <p class="explanation">{{ popular.explanation }}</p>
+                <app-anime-card [anime]="popular.anime"></app-anime-card>
+              </article>
             }
-        </section>
-        }
 
-        @if (!isLoading() && !currentAnime) {
-        <div class="empty">Aucun anime disponible.</div>
+            @if (recommendations()?.discovery; as discovery) {
+              <article class="recommendation-card discovery">
+                <p class="badge">Découverte</p>
+                <p class="explanation">{{ discovery.explanation }}</p>
+                <app-anime-card [anime]="discovery.anime"></app-anime-card>
+              </article>
+            }
+          </div>
         }
-    </main>
+      </section>
+    }
+
+    @if (!isLoading() && !currentAnime) {
+      <div class="empty">Aucun anime disponible.</div>
+    }
+  </main>
 </div>
-<div id="info-popup" class="overlay" [style.display]="infoVisible() ? 'flex' : 'none'" (click)="infoVisible.set(false)">
-    <div class="info-sect">
-        <p class="info-title">AnimeCat est une application de découverte d'animes. Faites glisser les cartes pour
-            indiquer vos
-            préférences et découvrez de nouveaux animes adaptés à vos goûts!</p>
-        <p class="info-sub">Swipez vers la droite pour aimer, vers la gauche pour ne pas aimer, et vers le haut pour
-            passer.
-            Vous pouvez également annuler votre dernière action en appuyant sur le bouton "Undo".</p>
+<div
+  id="info-popup"
+  class="overlay"
+  [style.display]="infoVisible() ? 'flex' : 'none'"
+  (click)="infoVisible.set(false)"
+>
+  <div class="info-sect">
+    <p class="info-title">
+      AnimeCat est une application de découverte d'animes. Faites glisser les cartes pour indiquer
+      vos préférences et découvrez de nouveaux animes adaptés à vos goûts!
+    </p>
+    <p class="info-sub">
+      Swipez vers la droite pour aimer, vers la gauche pour ne pas aimer, et vers le haut pour
+      passer. Vous pouvez également annuler votre dernière action en appuyant sur le bouton "Undo".
+    </p>
 
-        <app-button class="info-btn" [label]="'Compris !'" (click)="infoVisible.set(false)"></app-button>
-    </div>
+    <app-button
+      class="info-btn"
+      [label]="'Compris !'"
+      (click)="infoVisible.set(false)"
+    ></app-button>
+  </div>
 </div>

@@ -77,5 +77,27 @@
         </div>
       </section>
     }
+
+    @if (isRecommendationsLoading()) {
+      <section class="section">
+        <h2>Recommandé pour toi</h2>
+        <div class="loading-inline">
+          <mat-spinner diameter="30"></mat-spinner>
+          <p>Génération de recommandations personnalisées...</p>
+        </div>
+      </section>
+    }
+
+    @if (!isRecommendationsLoading() && recommendations().length) {
+      <section class="section">
+        <h2>Recommandé pour toi</h2>
+
+        <div class="carousel">
+          @for (anime of recommendations(); track anime.mal_id) {
+            <app-anime-card [anime]="anime"></app-anime-card>
+          }
+        </div>
+      </section>
+    }
   }
 </div>
