@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Anime } from '@tutkli/jikan-ts';
 import { GenreScoreMap } from '../models/anime-list.interface';
 import { IUser } from '../models/user.interface';
+import { ITierList } from '../models/user-anime.interface';
 
 /**
  * Type de recommandation affiché dans l'UI.
@@ -42,6 +43,16 @@ export interface RecommendationResult {
   popularChoice: AnimeRecommendation | null;
   discovery: AnimeRecommendation | null;
   genreScores: RankedGenreScore[];
+}
+
+/**
+ * Recommandation classée destinée aux vues de liste/carousel.
+ */
+export interface RankedAnimeRecommendation {
+  anime: Anime;
+  score: number;
+  matchingGenres: string[];
+  explanation: string;
 }
 
 /**
@@ -119,6 +130,111 @@ export class AnimeRecommendationService {
       discovery,
       genreScores: this.sortGenreScores(genreScoreMap),
     };
+  }
+
+  /**
+   * Génère une liste classée de recommandations, utile pour alimenter un carousel.
+   * Réutilise strictement le même pipeline de scoring que la génération "3 cartes".
+   */
+  generateTopRecommendations(input: RecommendationInput, limit = 12): RankedAnimeRecommendation[] {
+    if (!Number.isFinite(limit) || limit <= 0) {
+      return [];
+    }
+
+    const genreScoreMap = this.buildGenreProfile(input);
+    const excludedAnimeIds = this.buildExcludedAnimeIds(input.currentUser, input.rejectedIds);
+
+    const availableAnimes = input.candidates.filter((anime) => {
+      const animeId = anime.mal_id;
+      if (!animeId) return false;
+      return !excludedAnimeIds.has(animeId);
+    });
+
+    const scoredAnimes = availableAnimes
+      .map((anime) => this.scoreAnime(anime, genreScoreMap))
+      .sort((a, b) => b.score - a.score);
+
+    const byId = new Map<number, ScoredAnime>();
+    scoredAnimes.forEach((entry) => {
+      const animeId = entry.anime.mal_id;
+      if (!animeId || byId.has(animeId)) return;
+      byId.set(animeId, entry);
+    });
+
+    return Array.from(byId.values())
+      .slice(0, limit)
+      .map((entry) => ({
+        anime: entry.anime,
+        score: entry.score,
+        matchingGenres: entry.matchingGenres,
+        explanation: this.buildExplanation(entry.matchingGenres, 'safest_choice'),
+      }));
+  }
+
+  /**
+   * Crée des combinaisons de 2 et 3 genres (plus fallback single).
+   */
+  buildGenreCombinations(genreIds: number[]): number[][] {
+    if (!genreIds.length) return [];
+
+    const combinations: number[][] = [];
+    const unique = [...new Set(genreIds)].filter((id) => id > 0);
+
+    for (let i = 0; i < unique.length; i++) {
+      for (let j = i + 1; j < unique.length; j++) {
+        combinations.push([unique[i], unique[j]]);
+      }
+    }
+
+    for (let i = 0; i < unique.length; i++) {
+      for (let j = i + 1; j < unique.length; j++) {
+        for (let k = j + 1; k < unique.length; k++) {
+          combinations.push([unique[i], unique[j], unique[k]]);
+        }
+      }
+    }
+
+    if (!combinations.length && unique.length) {
+      combinations.push([unique[0]]);
+    }
+
+    const byKey = new Map<string, number[]>();
+    combinations.forEach((combo) => {
+      const normalized = [...combo].sort((a, b) => a - b);
+      byKey.set(normalized.join(','), normalized);
+    });
+
+    return Array.from(byKey.values()).slice(0, 12);
+  }
+
+  /**
+   * Récupère l'ensemble des IDs présents en tier list (S/A/B/C), sans doublon.
+   */
+  getTierAnimeIds(tierList: ITierList): number[] {
+    return [
+      ...new Set([
+        ...(tierList.S ?? []),
+        ...(tierList.A ?? []),
+        ...(tierList.B ?? []),
+        ...(tierList.C ?? []),
+      ]),
+    ];
+  }
+
+  /**
+   * Déduplique des animés par MAL ID, en gardant la première occurrence valide.
+   */
+  dedupeAnimes(animes: Anime[]): Anime[] {
+    const byId = new Map<number, Anime>();
+
+    animes.forEach((anime) => {
+      if (!anime?.mal_id) return;
+      if (!byId.has(anime.mal_id)) {
+        byId.set(anime.mal_id, anime);
+      }
+    });
+
+    return Array.from(byId.values());
   }
 
   /**

@@ -9,7 +9,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { IUser, AuthResult, AuthUser } from '../models/user.interface';
-import { AnimeStatus } from '../models/user-anime.interface';
+import { AnimeStatus, ITierList } from '../models/user-anime.interface';
 import { GenreScoreMap } from '../models/anime-list.interface';
 
 // ── Clés LocalStorage ─────────────────────────────────────────
@@ -151,6 +151,40 @@ export class StorageService {
    */
   getAnimeStatus(mal_id: number): AnimeStatus | null {
     return this.getCurrentUser()?.animeList.find((a) => a.animeId === mal_id)?.status ?? null;
+  }
+
+  /**
+   * Déplace un animé vers un rang de tier list (S/A/B/C), ou le retire de la tier list.
+   * Retourne l'ancien et le nouveau rang pour permettre des effets de scoring côté UI.
+   */
+  updateAnimeTier(
+    animeId: number,
+    tier: keyof ITierList | null,
+  ): { previousTier: keyof ITierList | null; nextTier: keyof ITierList | null } | null {
+    const user = this.getCurrentUser();
+    if (!user) return null;
+
+    user.tierList ??= { S: [], A: [], B: [], C: [] };
+
+    const tiers: Array<keyof ITierList> = ['S', 'A', 'B', 'C'];
+    const previousTier =
+      tiers.find((tierKey) => (user.tierList[tierKey] ?? []).includes(animeId)) ?? null;
+
+    if (previousTier === tier) {
+      return { previousTier, nextTier: tier };
+    }
+
+    tiers.forEach((tierKey) => {
+      user.tierList[tierKey] = (user.tierList[tierKey] ?? []).filter((id) => id !== animeId);
+    });
+
+    if (tier) {
+      user.tierList[tier] = [...(user.tierList[tier] ?? []), animeId];
+    }
+
+    this.persistCurrentUser(user);
+
+    return { previousTier, nextTier: tier };
   }
 
   // ── Scores de genres (Swipe) ──────────────────────────────

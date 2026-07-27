@@ -49,12 +49,138 @@
       color: $muted;
       text-align: center;
       padding: $space-lg 0;
+      min-width: fit-content;
     }
 
     .anime-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: $space-sm;
+    }
+
+    .tierlist-board {
+      border: 1px solid $surface-strong;
+      border-radius: $radius-md;
+      overflow: hidden;
+      background: $surface-strong;
+      margin-bottom: $space-md;
+    }
+
+    .tier-row {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      min-height: 95px;
+      border-bottom: 1px solid $border-soft;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.drag-over {
+        background: rgba(47, 143, 157, 0.2);
+      }
+    }
+
+    .tier-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: $white;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .tier-s {
+      background: $primary-button;
+    }
+
+    .tier-a {
+      background: $blue;
+    }
+
+    .tier-b {
+      background: $surface-soft;
+    }
+
+    .tier-c {
+      background: $surface-strong;
+    }
+
+    .tier-animes {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: $space-xxs;
+      padding: $space-xs;
+      background: $dark-blue;
+      overflow-x: auto;
+      overflow-y: hidden;
+      min-height: 118px;
+    }
+
+    .tier-placeholder {
+      color: rgba(123, 166, 180, 0.88);
+      font-size: 0.92rem;
+      padding: $space-xxs;
+    }
+
+    .tier-poster {
+      width: 72px;
+      height: 102px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid $border-soft;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-drag: element;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    .pin-section {
+      background: $surface;
+      border: 1px solid $surface-strong;
+      border-radius: $radius-md;
+      padding: $space-sm;
+      transition: background-color 0.2s ease;
+
+      &.drag-over {
+        background: $surface-soft;
+      }
+
+      h3 {
+        margin: 0 0 $space-sm;
+        color: $white;
+      }
+    }
+
+    .pin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: $space-xxs;
+      align-items: start;
+      min-height: 118px;
+    }
+
+    .cdk-drag-preview {
+      width: 72px;
+      height: 102px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid $border-soft;
+      box-shadow: $shadow-md;
+    }
+
+    .cdk-drag-placeholder {
+      opacity: 0.32;
+    }
+
+    .cdk-drag-animating {
+      transition: transform 180ms cubic-bezier(0.2, 0, 0, 1);
     }
   }
 
@@ -72,6 +198,30 @@
 
     .anime-grid {
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+    }
+
+    .anime-grid-section {
+      .tier-row {
+        grid-template-columns: 64px 1fr;
+      }
+
+      .tier-label {
+        font-size: 1.3rem;
+      }
+
+      .tier-poster {
+        width: 62px;
+        height: 88px;
+      }
+
+      .pin-grid {
+        grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+        min-height: 96px;
+      }
+
+      .tier-animes {
+        min-height: 96px;
+      }
     }
   }
 }

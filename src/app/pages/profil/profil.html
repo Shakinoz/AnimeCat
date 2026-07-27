@@ -63,14 +63,72 @@
       }
 
       @if (selectedTab() === 'tierlist') {
-        @if (tierlist().length) {
-          <div class="anime-grid">
-            @for (anime of tierlist(); track anime.mal_id) {
-              <app-anime-card [anime]="anime"></app-anime-card>
-            }
+        @if (seen().length) {
+          <div cdkDropListGroup>
+            <section class="tierlist-board">
+              @for (tier of tierOrder; track tier) {
+                <div class="tier-row" [class.drag-over]="hoveredTier() === tier">
+                  <div class="tier-label" [class]="'tier-label tier-' + tier.toLowerCase()">
+                    {{ tier }}
+                  </div>
+
+                  <div
+                    class="tier-animes"
+                    cdkDropList
+                    cdkDropListOrientation="horizontal"
+                    [cdkDropListData]="tierRows()[tier]"
+                    (cdkDropListEntered)="onTierEnter(tier)"
+                    (cdkDropListExited)="onTierLeave(tier)"
+                    (cdkDropListDropped)="onTierDropped($event, tier)"
+                  >
+                    @if (tierRows()[tier].length) {
+                      @for (anime of tierRows()[tier]; track anime.mal_id) {
+                        <img
+                          class="tier-poster"
+                          [src]="getCoverUrl(anime)"
+                          [alt]="getDisplayTitle(anime)"
+                          cdkDrag
+                          [cdkDragData]="anime"
+                        />
+                      }
+                    } @else {
+                      <div class="tier-placeholder">Dépose des animés ici</div>
+                    }
+                  </div>
+                </div>
+              }
+            </section>
+
+            <section class="pin-section" [class.drag-over]="isPinDropHover()">
+              <h3>Pin Images</h3>
+
+              @if (pinnedImages().length) {
+                <div
+                  class="pin-grid"
+                  cdkDropList
+                  cdkDropListOrientation="mixed"
+                  [cdkDropListData]="pinnedImages()"
+                  (cdkDropListEntered)="onPinEnter()"
+                  (cdkDropListExited)="onPinExit()"
+                  (cdkDropListDropped)="onPinDropped($event)"
+                >
+                  @for (anime of pinnedImages(); track anime.mal_id) {
+                    <img
+                      class="tier-poster"
+                      [src]="getCoverUrl(anime)"
+                      [alt]="getDisplayTitle(anime)"
+                      cdkDrag
+                      [cdkDragData]="anime"
+                    />
+                  }
+                </div>
+              } @else {
+                <p class="empty-state">Tous les animés terminés sont déjà classés.</p>
+              }
+            </section>
           </div>
         } @else {
-          <p class="empty-state">Aucun animé terminé pour le moment.</p>
+          <p class="empty-state">Aucun animé terminé à classer pour le moment.</p>
         }
       }
     }
