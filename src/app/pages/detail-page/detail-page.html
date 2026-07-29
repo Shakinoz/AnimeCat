@@ -1,1 +1,79 @@
-<p>detail-page works!</p>
+<app-header></app-header>
+
+<section class="detail-page">
+    @if (isLoading()) {
+    <div class="loading-sect">
+        <mat-spinner></mat-spinner>
+        <p class="loading">Chargement de la fiche anime...</p>
+    </div>
+    }
+
+    @if (!isLoading() && error()) {
+    <div class="state-card error-state">
+        <h2>Erreur</h2>
+        <p>{{ error() }}</p>
+        <a class="back-link" routerLink="/catalog">Retour au catalogue</a>
+    </div>
+    }
+
+    @if (!isLoading() && anime(); as currentAnime) {
+    <article class="detail-card">
+        <div class="hero">
+            <div class="poster-wrapper">
+                <img [src]="cover(currentAnime)" [alt]="title(currentAnime)" />
+            </div>
+
+            <div class="hero-content">
+                <p class="eyebrow">Fiche anime</p>
+                <h1>{{ title(currentAnime) }}</h1>
+
+                @if (currentAnime.title_japanese) {
+                <p class="subtitle">{{ currentAnime.title_japanese }}</p>
+                }
+
+                <div class="meta-grid">
+                    <span class="meta-pill score">{{ currentAnime.score ?? 'N/A' }} / 10</span>
+                    <span class="meta-pill">{{ currentAnime.type || 'Type inconnu' }}</span>
+                    <span class="meta-pill">{{ currentAnime.status || 'Statut inconnu' }}</span>
+                    <span class="meta-pill">Episodes: {{ currentAnime.episodes ?? '?' }}</span>
+                    <span class="meta-pill">Duree: {{ currentAnime.duration || '?' }}</span>
+                    <span class="meta-pill">Rank #{{ currentAnime.rank ?? '?' }}</span>
+                </div>
+
+                <p class="genres">{{ genres(currentAnime) }}</p>
+
+                <div class="action-sect">
+                    <div class="actions-row">
+                        <app-anime-actions [animeId]="currentAnime.mal_id" [status]="animeStatus()"></app-anime-actions>
+                    </div>
+
+                    <app-button (click)="openExternal(currentAnime.url)" [label]="'Voir sur MyAnimeList'"
+                        [size]="'sm'"></app-button>
+                </div>
+
+            </div>
+        </div>
+
+        <section class="content-grid">
+            <div class="block synopsis-block">
+                <h2>Synopsis</h2>
+                <p>{{ currentAnime.synopsis || 'Aucun synopsis disponible.' }}</p>
+            </div>
+
+            <div class="block details-block">
+                <h2>Details</h2>
+                <ul>
+                    <li><strong>Source:</strong> {{ currentAnime.source || 'Inconnue' }}</li>
+                    <li><strong>Diffusion:</strong> {{ airedLabel(currentAnime) }}</li>
+                    <li><strong>Studios:</strong> {{ studios(currentAnime) }}</li>
+                    <li><strong>Genres:</strong> {{ allGenres(currentAnime) }}</li>
+                    <li><strong>Popularite:</strong> #{{ currentAnime.popularity ?? '?' }}</li>
+                    <li><strong>Membres:</strong> {{ currentAnime.members ?? '?' }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <a class="back-link" routerLink="/catalog">Retour au catalogue</a>
+    </article>
+    }
+</section>

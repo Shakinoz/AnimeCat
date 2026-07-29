@@ -95,7 +95,7 @@ export class Searchbar {
   // ── Sélection d'un résultat → fiche détail ───────────────
   onSelect(event: MatAutocompleteSelectedEvent): void {
     const anime = event.option.value as Anime;
-    this.router.navigate(['/detail?id=', anime.mal_id]);
+    this.router.navigate(['/detail', anime.mal_id]);
     this.results.set([]);
     this.hasSearched.set(false);
   }
