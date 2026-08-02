@@ -94,7 +94,7 @@ export class AnimeRecommendationService {
    * Point d'entrée principal du moteur de recommandation.
    * Pipeline:
    * 1) construire le profil de goûts (genres)
-   * 2) exclure les animés non recommandables (vus / planifiés / rejetés)
+   * 2) exclure les animés non recommandables (vus / rejetés)
    * 3) scorer les candidats
    * 4) sélectionner 3 recommandations complémentaires
    */
@@ -275,14 +275,14 @@ export class AnimeRecommendationService {
 
   /**
    * Exclut des recommandations:
-   * - les animés déjà vus / planifiés dans la liste utilisateur
+   * - les animés déjà vus dans la liste utilisateur
    * - les animés explicitement rejetés dans le swipe
    */
   private buildExcludedAnimeIds(currentUser: IUser, rejectedIds: Set<number>): Set<number> {
     const excluded = new Set<number>();
 
     currentUser.animeList
-      .filter((entry) => entry.status === 'seen' || entry.status === 'plan_to_watch')
+      .filter((entry) => entry.status === 'seen')
       .forEach((entry) => excluded.add(entry.animeId));
 
     rejectedIds.forEach((id) => excluded.add(id));

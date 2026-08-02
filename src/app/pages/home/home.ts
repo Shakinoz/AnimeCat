@@ -69,7 +69,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.statusSubscription.add(
       this.storageService.animeStatusChanged$.subscribe(() => {
         this.refreshHeroAndLists();
-        this.loadRecommendationCarousel();
       }),
     );
   }
