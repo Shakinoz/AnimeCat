@@ -1,5 +1,9 @@
 @use '../../../variables.scss' as *;
 
+:host {
+  display: block;
+}
+
 header {
   display: flex;
   justify-content: space-between;
@@ -8,30 +12,35 @@ header {
   border-bottom: $blue $border-thin solid;
   background-color: $dark-blue;
   color: $white;
+
   .nav-logo {
     display: flex;
     align-items: center;
     gap: $space-xs;
     cursor: pointer;
+
     img {
       width: $logo-width;
       height: $logo-height;
+      object-fit: contain;
     }
+
     h1 {
       font-size: $font-xl;
-      font-weight: bold;
+      font-weight: 700;
       letter-spacing: 1px;
+
       &:hover {
         color: $blue-grey;
       }
     }
   }
+
   .nav-sect {
     display: flex;
+    align-items: center;
     gap: $space-lg;
-    button {
-      color: $white;
-    }
+
     .nav-link {
       background: none;
       border: none;
@@ -40,12 +49,18 @@ header {
       gap: $space-xs;
       cursor: pointer;
       font-size: $font-base;
+      color: $white;
+      padding: $space-xxs 0;
+      transition: color 0.2s ease;
+
       &:hover {
         color: $blue-grey;
       }
+
       &:active {
         color: $blue;
       }
+
       .mat-icon {
         width: $font-xxl;
         height: $font-xxl;
@@ -53,27 +68,14 @@ header {
         color: $blue;
       }
     }
-    .login {
-      background-color: $blue;
-      color: $white;
-      border: none;
-      padding: $space-sm $space-md;
-      border-radius: $radius-xs;
-      cursor: pointer;
-      font-size: $font-base;
-      transition: all 0.2s ease;
-      &:hover {
-        background-color: $blue-grey;
-        transform: translateY(-2px);
-      }
-      &:active {
-        transform: translateY(0);
-        background-color: $blue;
-      }
-    }
   }
+
   .menu-button {
     display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
     mat-icon {
       color: $blue;
     }
@@ -86,13 +88,17 @@ header {
   padding: $padding-lg;
   background-color: $dark-blue;
   border-bottom: $blue $border-thin solid;
+
   .flex {
     display: flex;
     justify-content: space-between;
+    gap: $space-md;
+
     .mobile-links {
       display: flex;
       flex-direction: column;
       gap: $space-md;
+
       .nav-link {
         color: $white;
         display: flex;
@@ -104,12 +110,16 @@ header {
         cursor: pointer;
         font-size: $font-base;
         width: fit-content;
+        transition: color 0.2s ease;
+
         &:hover {
           color: $blue-grey;
         }
+
         &:active {
           color: $blue;
         }
+
         .mat-icon {
           width: $font-xxl;
           height: $font-xxl;
@@ -121,18 +131,23 @@ header {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1050px) {
   header {
     .nav-sect {
       display: none;
     }
+
     .menu-button {
       display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .desktop-search {
       display: none;
     }
   }
+
   .mobile-menu {
     display: block;
   }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class FilterGroup {
   /**
-   * Wrapper simple pour grouper un label et un contrôle de filtre.
-   * Utilisé pour conserver une structure HTML cohérente dans la sidebar.
+   * Libellé affiché au-dessus du contrôle de filtre.
+   * Le composant sert de wrapper sémantique pour maintenir une structure UI homogène.
    */
-  @Input() label?: string;
+  readonly label = input<string>('');
 }

@@ -32,13 +32,13 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 })
 export class CataloguePage {
   /**
-   * Page Catalogue — affichage et recherche paginée d'animes.
+   * Page Catalogue — moteur de recherche et navigation paginée sur les animés.
    *
-   * Responsable de :
-   * - construire les paramètres de recherche
-   * - appeler `TenraiService` pour récupérer des listes
-   * - appliquer le tri local et filtrer les résultats
-   * - gérer la pagination et l'état de chargement utilisé par le template
+   * Le composant centralise :
+   * - la construction des paramètres de recherche,
+   * - l'appel au service distant,
+   * - l'application du tri et des filtres locaux,
+   * - l'état réactif consommé par le template.
    */
   // Liste brute retournée par l'API avant toute transformation locale.
   animes: Anime[] = [];
@@ -125,9 +125,8 @@ export class CataloguePage {
     private readonly tenraiService: TenraiService,
     private readonly deviceDetector: DeviceDetectorService,
   ) {
+    // L'API de détection de périphérique est utilisée pour adapter la UX.
     this.isMobileDevice.set(this.deviceDetector.isMobile());
-
-    // Sur desktop: filtres visibles en permanence. Sur mobile: panneau replié par défaut.
     this.showFilters.set(!this.isMobileDevice());
 
     this.loadAnimes();
@@ -166,7 +165,7 @@ export class CataloguePage {
         this.totalItems = result.total || 0;
         this.hasNextPage = result.hasNextPage || false;
 
-        // Après chaque réception, on applique le tri local et on met à jour la grille.
+        // Après chaque réception, on applique le tri local et on met à jour l'affichage.
         this.applyLocalFilters();
         this.isLoading.set(false);
       },

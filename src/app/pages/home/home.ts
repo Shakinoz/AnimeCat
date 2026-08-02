@@ -1,12 +1,4 @@
-import {
-  Component,
-  signal,
-  WritableSignal,
-  ViewChild,
-  ElementRef,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, signal, WritableSignal, OnInit, OnDestroy, inject } from '@angular/core';
 import { Anime } from '@tutkli/jikan-ts';
 import { TenraiService } from '../../services/tenrai.service';
 import { SlicePipe } from '@angular/common';
@@ -22,25 +14,27 @@ import { AnimeCard } from '../../components/anime-card/anime-card';
 import { NotificationService } from '../../services/notification.service';
 import { catchError, forkJoin, map, of, Subscription } from 'rxjs';
 import { AnimeRecommendationService } from '../../services/anime-recommendation.service';
+import { Carousel } from '../../components/carousel/carousel';
 
 @Component({
   selector: 'app-home',
-  imports: [SlicePipe, Header, Button, MatProgressSpinnerModule, RouterLink, AnimeCard],
+  imports: [SlicePipe, Header, Button, MatProgressSpinnerModule, RouterLink, AnimeCard, Carousel],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class HomePage implements OnInit, OnDestroy {
   /**
-   * Page Home — tableau de bord présentant les sections `trending` et `popular`.
+   * Page Home — tableau de bord présentant les sections de découverte.
    *
-   * Comportements clés :
-   * - charge des listes via `TenraiService` (top airing, popular)
-   * - enrichit les items avec le `userStatus` provenant de `StorageService`
-   * - fournit des helpers `cover`, `title`, `genres` pour le template
+   * Responsabilités principales :
+   * - charger les listes dédiées à l'accueil via le service Tenrai,
+   * - enrichir les animes avec leur statut utilisateur,
+   * - gérer la navigation du hero et des carrousels.
    */
-  @ViewChild('trendingCarousel', { read: ElementRef })
-  trendingCarousel!: ElementRef<HTMLDivElement>;
-  @ViewChild('popularCarousel', { read: ElementRef }) popularCarousel!: ElementRef<HTMLDivElement>;
+  private readonly tenrai = inject(TenraiService);
+  private readonly storageService = inject(StorageService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly recommendationService = inject(AnimeRecommendationService);
 
   trending: WritableSignal<HomeAnime[]> = signal([]);
   popular: WritableSignal<HomeAnime[]> = signal([]);
@@ -56,16 +50,12 @@ export class HomePage implements OnInit, OnDestroy {
     return Array.from({ length: this.trending().length }, (_, index) => index);
   }
 
-  constructor(
-    private tenrai: TenraiService,
-    private storageService: StorageService,
-    private notificationService: NotificationService,
-    private recommendationService: AnimeRecommendationService,
-  ) {
+  constructor() {
     this.loadData();
   }
 
   ngOnInit(): void {
+    // Met à jour les statuts visuels quand la liste d'animes change côté stockage.
     this.statusSubscription.add(
       this.storageService.animeStatusChanged$.subscribe(() => {
         this.refreshHeroAndLists();
@@ -77,8 +67,13 @@ export class HomePage implements OnInit, OnDestroy {
     this.statusSubscription.unsubscribe();
   }
 
-  loadData() {
-    this.tenrai.getTopAiring(1, 12).subscribe({
+  loadData(): void {
+    this.loadTrendingData();
+    this.loadPopularData();
+  }
+
+  private loadTrendingData(): void {
+    this.tenrai.getTopAiring(1, 18).subscribe({
       next: (res) => {
         this.trending.set(this.addUserStatus(res.data));
         this.heroAnime = this.trending()[0];
@@ -88,8 +83,10 @@ export class HomePage implements OnInit, OnDestroy {
         this.heroAnime = this.trending()[0];
       },
     });
+  }
 
-    this.tenrai.getMostPopular(1, 12).subscribe({
+  private loadPopularData(): void {
+    this.tenrai.getMostPopular(1, 18).subscribe({
       next: (res) => {
         this.popular.set(this.addUserStatus(res.data));
         this.isLoading.set(false);
@@ -103,33 +100,20 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
-  nextHero() {
+  // Hero section: cycle through the featured anime list.
+  nextHero(): void {
     this.heroIndex = (this.heroIndex + 1) % this.trending().length;
     this.heroAnime = this.trending()[this.heroIndex];
   }
 
-  prevHero() {
+  prevHero(): void {
     this.heroIndex = (this.heroIndex - 1 + this.trending().length) % this.trending().length;
     this.heroAnime = this.trending()[this.heroIndex];
   }
 
-  setHeroIndex(index: number) {
+  setHeroIndex(index: number): void {
     this.heroIndex = index;
     this.heroAnime = this.trending()[index];
-  }
-
-  scrollCarousel(section: 'trending' | 'popular', direction: 'left' | 'right') {
-    const carousel =
-      section === 'trending'
-        ? this.trendingCarousel?.nativeElement
-        : this.popularCarousel?.nativeElement;
-    if (!carousel) {
-      return;
-    }
-
-    const distance =
-      direction === 'left' ? -carousel.offsetWidth * 0.75 : carousel.offsetWidth * 0.75;
-    carousel.scrollBy({ left: distance, behavior: 'smooth' });
   }
 
   cover(anime: Anime) {
@@ -164,6 +148,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private refreshHeroAndLists(): void {
+    // Réapplique le statut utilisateur aux listes affichées sans recharger les données.
     const refreshStatus = (anime: HomeAnime) => ({
       ...anime,
       userStatus: this.storageService.getAnimeStatus(anime.mal_id) ?? null,
@@ -186,6 +171,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private loadRecommendationCarousel(): void {
+    // Génère la section des recommandations à partir du profil utilisateur et des scores.
     const currentUser = this.storageService.getCurrentUser();
     if (!currentUser) {
       this.recommendations.set([]);
@@ -260,7 +246,7 @@ export class HomePage implements OnInit, OnDestroy {
             swipeGenreScores,
             rejectedIds,
           },
-          12,
+          18,
         );
 
         this.recommendations.set(this.addUserStatus(ranked.map((entry) => entry.anime)));

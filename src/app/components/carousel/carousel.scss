@@ -1,0 +1,72 @@
+@use '../../../variables.scss' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.carousel-cont {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  padding: 0 45px;
+
+  .carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: calc(100% - $space-xxs);
+    background: $surface;
+    opacity: 0.9;
+    border: none;
+    font-size: $font-xxl;
+    padding: $space-sm;
+    cursor: pointer;
+    border-radius: $radius-sm;
+    color: white;
+    z-index: 3;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+
+    &.prev {
+      left: 0;
+    }
+    &.next {
+      right: 0;
+    }
+
+    &:hover:not(:disabled) {
+      background: $surface-soft;
+      transform: translateY(-51%);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  .carousel {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: $space-xxs;
+    width: 100%;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0;
+
+    .carousel-nav {
+      display: none;
+    }
+  }
+}

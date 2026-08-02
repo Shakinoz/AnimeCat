@@ -7,29 +7,18 @@
   <app-searchbar class="desktop-search"></app-searchbar>
 
   <nav class="nav-sect">
-    <button class="nav-link" routerLink="/catalog">
-      <mat-icon>apps</mat-icon>
-      Catalogue
+    @for (item of navigationItems; track item.route) {
+    @if (item.route !== '/profil' || isAuthenticated()) {
+    <button class="nav-link" [routerLink]="item.route">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      {{ item.label }}
     </button>
-    <button class="nav-link" routerLink="/swipe">
-      <mat-icon>swipe</mat-icon>
-      Swipe
-    </button>
-    @if (storageService.isAuthenticated()) {
-      <button class="nav-link" routerLink="/profil">
-        <mat-icon>person</mat-icon>
-        Profil
-      </button>
     }
-    @if (storageService.isAuthenticated()) {
-      <app-button
-        variant="primary"
-        size="md"
-        label="Se déconnecter"
-        (click)="handleLogout()"
-      ></app-button>
+    }
+    @if (isAuthenticated()) {
+    <app-button variant="primary" size="md" label="Se déconnecter" (click)="handleLogout()"></app-button>
     } @else {
-      <app-button variant="primary" size="md" label="Se connecter" routerLink="/login"></app-button>
+    <app-button variant="primary" size="md" label="Se connecter" routerLink="/login"></app-button>
     }
   </nav>
 
@@ -39,40 +28,24 @@
 </header>
 
 @if (showMenu) {
-  <div class="mobile-menu">
-    <app-searchbar [format]="'mobile'" class="mobile-search"></app-searchbar>
-    <div class="flex">
-      <div class="mobile-links">
-        <button class="nav-link" routerLink="/catalog">
-          <mat-icon>apps</mat-icon>
-          Catalogue
-        </button>
-        <button class="nav-link" routerLink="/swipe">
-          <mat-icon>swipe</mat-icon>
-          Swipe
-        </button>
-        @if (storageService.isAuthenticated()) {
-          <button class="nav-link" routerLink="/profil">
-            <mat-icon>person</mat-icon>
-            Profil
-          </button>
-        }
-      </div>
-      @if (storageService.isAuthenticated()) {
-        <app-button
-          variant="primary"
-          size="sm"
-          label="Se déconnecter"
-          (click)="handleLogout()"
-        ></app-button>
-      } @else {
-        <app-button
-          variant="primary"
-          size="sm"
-          label="Se connecter"
-          routerLink="/login"
-        ></app-button>
+<div class="mobile-menu">
+  <app-searchbar [format]="'mobile'" class="mobile-search"></app-searchbar>
+  <div class="flex">
+    <div class="mobile-links">
+      @for (item of navigationItems; track item.route) {
+      @if (item.route !== '/profil' || isAuthenticated()) {
+      <button class="nav-link" [routerLink]="item.route">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        {{ item.label }}
+      </button>
+      }
       }
     </div>
+    @if (isAuthenticated()) {
+    <app-button variant="primary" size="sm" label="Se déconnecter" (click)="handleLogout()"></app-button>
+    } @else {
+    <app-button variant="primary" size="sm" label="Se connecter" routerLink="/login"></app-button>
+    }
   </div>
+</div>
 }

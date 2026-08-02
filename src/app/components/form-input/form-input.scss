@@ -5,19 +5,32 @@
   flex-direction: column;
   gap: $space-xs;
   text-align: start;
+
   label {
     font-size: $font-base;
     color: $blue-grey;
+    font-weight: 600;
   }
+
   input {
-    height: 40px;
-    border: solid 1px $blue-grey;
+    height: 44px;
+    border: 1px solid $blue-grey;
     background-color: $dark-blue;
     border-radius: $radius-sm;
-    color: $blue-grey;
+    color: $white;
     font-size: $font-sm;
     text-indent: $space-sm;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $blue;
+      box-shadow: 0 0 0 2px rgba($blue, 0.2);
+    }
   }
+
   .input-error {
     color: $error;
     font-size: $font-sm;

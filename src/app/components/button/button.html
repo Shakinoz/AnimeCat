@@ -1,9 +1,9 @@
-<button [type]="type()" [class]="`btn btn--${this.variant()} btn--${this.size()}`" [class.disabled]="disabled()"
-  [class.swipe]="swipe()" [disabled]="disabled()">
+<button [type]="type()" class="btn" [class]="'btn--' + variant() + ' btn--' + size()" [class.disabled]="disabled()"
+  [class.swipe]="swipe()" [disabled]="disabled()" [attr.aria-disabled]="disabled()">
   @if (icon()) {
   <mat-icon>{{ icon() }}</mat-icon>
   }
   @if (label()) {
-  {{ label() }}
+  <span class="btn__label">{{ label() }}</span>
   }
 </button>

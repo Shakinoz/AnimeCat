@@ -102,10 +102,21 @@
 
     .genre-sect {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      min-height: 1.25rem;
       gap: 2px;
       color: $muted;
       font-size: $font-xs;
+      overflow: hidden;
+
+      .genre-name {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
     }
   }
 

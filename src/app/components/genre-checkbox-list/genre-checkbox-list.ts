@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface GenreOption {
@@ -14,17 +14,21 @@ export interface GenreOption {
   styleUrl: './genre-checkbox-list.scss',
 })
 export class GenreCheckboxList {
-  /**
-   * Liste de genres sous forme de cases à cocher.
-   * Émet `selectedChange` lorsque la sélection change.
-   */
-  @Input() genres: GenreOption[] = [];
-  @Input() selected: number[] = [];
-  @Output() selectedChange = new EventEmitter<number[]>();
+  /** Liste des genres affichés dans la colonne de filtres. */
+  readonly genres = input<GenreOption[]>([]);
+
+  /** Identifiants des genres actuellement sélectionnés. */
+  readonly selected = input<number[]>([]);
+
+  /** Émet la nouvelle sélection dès qu’un changement intervient. */
+  readonly selectedChange = output<number[]>();
 
   toggle(id: number): void {
-    const already = this.selected.includes(id);
-    this.selected = already ? this.selected.filter((x) => x !== id) : [...this.selected, id];
-    this.selectedChange.emit(this.selected);
+    const current = this.selected();
+    const alreadySelected = current.includes(id);
+    const nextSelection = alreadySelected
+      ? current.filter((value) => value !== id)
+      : [...current, id];
+    this.selectedChange.emit(nextSelection);
   }
 }

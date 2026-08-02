@@ -169,6 +169,7 @@
 /* SECTIONS */
 .section {
   padding: $space-md $space-xl;
+  position: relative;
 
   h2 {
     margin-bottom: $space-sm;
@@ -205,27 +206,76 @@
 }
 
 /* CAROUSEL */
-.carousel {
+// Les flèches de navigation sont positionnées au-dessus du conteneur pour garder un layout propre.
+.carousel-cont {
+  position: relative;
   display: flex;
-  gap: $space-sm;
-  overflow-x: auto;
-  scrollbar-width: none;
-  height: fit-content;
-  padding: $space-md;
+  box-sizing: border-box;
+  padding: 0 45px;
+
+  .carousel-nav {
+    position: absolute;
+    height: calc(100% - $space-xxs);
+    top: 50%;
+    transform: translateY(-50%);
+    background: $surface;
+    border: none;
+    font-size: $font-xxl;
+    padding: $space-sm;
+    cursor: pointer;
+    border-radius: $radius-sm;
+    transition: transform 0.2s;
+    color: white;
+    z-index: 3;
+
+    &.prev {
+      left: 0;
+    }
+
+    &.next {
+      right: 0;
+    }
+
+    &:hover {
+      background: $surface-soft;
+      transform: translateY(-51%);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  .carousel {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+    overflow-x: auto;
+    scrollbar-width: none;
+    height: fit-content;
+    padding: $space-xxs;
+
+    @media (max-width: 768px) {
+      gap: $space-xs;
+    }
+
+    @media (max-width: 480px) {
+      gap: $space-xs;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 
   @media (max-width: 768px) {
-    padding: $space-md;
-    gap: $space-xs;
-  }
-
-  @media (max-width: 480px) {
-    padding: $space-sm;
-    gap: $space-xs;
-  }
-
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  &::-webkit-scrollbar {
-    display: none;
+    padding: 0;
+    .carousel-nav {
+      display: none;
+    }
   }
 }
 

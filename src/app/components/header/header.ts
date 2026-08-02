@@ -7,6 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { StorageService } from '../../services/storage.service';
 import { NotificationService } from '../../services/notification.service';
 
+interface HeaderNavItem {
+  label: string;
+  icon: string;
+  route: string;
+}
+
 @Component({
   selector: 'app-header',
   imports: [Searchbar, RouterLink, Button, MatIconModule, MatButtonModule],
@@ -14,7 +20,15 @@ import { NotificationService } from '../../services/notification.service';
   styleUrl: './header.scss',
 })
 export class Header {
-  public showMenu: boolean = false;
+  /** Indique si le menu mobile est ouvert. */
+  public showMenu = false;
+
+  /** Liens principaux affichés dans le header desktop et mobile. */
+  public readonly navigationItems: HeaderNavItem[] = [
+    { label: 'Catalogue', icon: 'apps', route: '/catalog' },
+    { label: 'Swipe', icon: 'swipe', route: '/swipe' },
+    { label: 'Profil', icon: 'person', route: '/profil' },
+  ];
 
   constructor(
     public readonly storageService: StorageService,
@@ -23,9 +37,14 @@ export class Header {
   ) {}
 
   /** Déconnecte l'utilisateur et affiche une notification. */
-  public handleLogout() {
+  public handleLogout(): void {
     this.storageService.logout();
     this.notificationService.show('Vous êtes déconnecté.', false, true);
     this.router.navigate(['/']);
+  }
+
+  /** Indique si l’utilisateur est connecté pour afficher les actions d’authentification. */
+  public isAuthenticated(): boolean {
+    return this.storageService.isAuthenticated();
   }
 }

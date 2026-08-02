@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface SelectOption {
@@ -14,14 +14,23 @@ export interface SelectOption {
   styleUrl: './select-filter.scss',
 })
 export class SelectFilter {
-  @Input() label?: string;
-  @Input() id?: string;
-  @Input() options: SelectOption[] = [];
-  @Input() value?: string;
-  @Output() valueChange = new EventEmitter<string>();
+  /** Libellé visible au-dessus du sélecteur. */
+  readonly label = input<string>('');
 
-  onChange(e: Event): void {
-    const v = (e.target as HTMLSelectElement).value;
-    this.valueChange.emit(v);
+  /** Identifiant HTML du select pour le formulaire et l'accessibilité. */
+  readonly id = input<string>('');
+
+  /** Liste des options proposées à l’utilisateur. */
+  readonly options = input<SelectOption[]>([]);
+
+  /** Valeur actuellement sélectionnée. */
+  readonly value = input<string>('');
+
+  /** Émet la nouvelle valeur quand l’utilisateur change de choix. */
+  readonly valueChange = output<string>();
+
+  onChange(event: Event): void {
+    const nextValue = (event.target as HTMLSelectElement).value;
+    this.valueChange.emit(nextValue);
   }
 }

@@ -34,6 +34,15 @@ import { AnimeCard } from '../../components/anime-card/anime-card';
  * - undo            : annule la dernière action et inverse ses effets
  */
 export class SwipePage {
+  /**
+   * Page Swipe — expérience de découverte par gestes.
+   *
+   * Le flux est volontairement simple :
+   * - le swipe vers la droite "like" enrichit le profil utilisateur,
+   * - le swipe vers la gauche "dislike" pénalise les genres,
+   * - le swipe vers le haut "skip" passe sans affecter le profil,
+   * - l'historique permet d'annuler la dernière action.
+   */
   private static readonly DT_DRAG_X_THRESHOLD = 230;
   private static readonly DT_DRAG_Y_THRESHOLD = -75;
   private static readonly MB_DRAG_X_THRESHOLD = 100;
@@ -88,6 +97,7 @@ export class SwipePage {
   }
 
   onCardDragged(event: CdkDragMove): void {
+    // Le geste est traduit en inclinaison visuelle pour donner un feedback immédiat.
     const { x } = event.source.getFreeDragPosition();
     const threshold = this.getDragXThreshold();
     const maxTilt = this.isMobile() ? SwipePage.MB_MAX_TILT_DEG : SwipePage.DT_MAX_TILT_DEG;
@@ -104,6 +114,7 @@ export class SwipePage {
   }
 
   onCardDragEnded(event: CdkDragEnd): void {
+    // Une fois le geste terminé, on remet la carte à sa position initiale et on déclenche l'action si le seuil est atteint.
     const { x, y } = event.source.getFreeDragPosition();
     const dragXThreshold = this.getDragXThreshold();
     const dragYThreshold = this.getDragYThreshold();
@@ -138,6 +149,7 @@ export class SwipePage {
   }
 
   private loadAnimes(): void {
+    // Le chargement initial s'appuie sur les animes populaires, puis on mélange la liste pour une expérience plus naturelle.
     this.isLoading.set(true);
     this.finished.set(false);
     this.recommendations.set(null);
@@ -168,6 +180,7 @@ export class SwipePage {
   }
 
   private shuffleAnimes(list: Anime[]): Anime[] {
+    // On mélange la liste pour éviter l'apparition toujours du même ordre à chaque chargement.
     const shuffled = [...list];
 
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -190,6 +203,7 @@ export class SwipePage {
   }
 
   like(): void {
+    // Le like agit comme un signal positif : on enregistre l'anime et on valorise ses genres.
     const anime = this.currentAnime;
     if (!anime || this.finished()) return;
 
@@ -207,6 +221,7 @@ export class SwipePage {
   }
 
   dislike(): void {
+    // Le dislike agit comme un signal négatif : il pénalise les genres et marque l'anime comme rejeté.
     const anime = this.currentAnime;
     if (!anime || this.finished()) return;
 
@@ -225,6 +240,7 @@ export class SwipePage {
   }
 
   skip(): void {
+    // Le skip est neutre : on passe à la carte suivante sans modifier le profil utilisateur.
     const anime = this.currentAnime;
     if (!anime) return;
 
@@ -242,6 +258,7 @@ export class SwipePage {
   }
 
   undo(): void {
+    // L'annulation inverse les effets de la dernière action grâce à l'historique.
     if (this.history.length === 0) return;
 
     const last = this.history.pop()!;
@@ -287,6 +304,7 @@ export class SwipePage {
    * 3) scorer et sélectionner: choix sûr, populaire, découverte
    */
   private generateRecommendationsFromProfile(): void {
+    // Une fois la pile de cartes épuisée, on construit un profil de recommandations à partir des goûts observés.
     if (this.isBuildingRecommendations()) return;
 
     const currentUser = this.storage.getCurrentUser();

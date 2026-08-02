@@ -1,59 +1,58 @@
-# AnimeCatTFE
+# AnimeCat
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+AnimeCat est une application Angular moderne dédiée à la découverte, la gestion et la recommandation d’animes. Le projet combine une interface riche, des composants standalone, un système de swipe, une authentification locale et un stockage persistant pour offrir une expérience fluide et démonstrative.
 
-## Development server
+## Fonctionnalités principales
 
-To start a local development server, run:
+- exploration d’animes via une interface catalogue et une page détail,
+- navigation fluide avec un header responsive,
+- système de swipe pour noter et recommander des animes,
+- gestion locale du profil utilisateur et de l’état des animes,
+- architecture Angular moderne avec composants standalone et signaux.
 
-```bash
-ng serve
-```
+## Stack technique
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 21
+- Angular Material
+- RxJS
+- TypeScript
+- SCSS
+- LocalStorage pour la persistance locale
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Installation
 
 ```bash
-ng build
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Lancer l’application
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Puis ouvrir l’URL suivante dans le navigateur :
 
-For end-to-end (e2e) testing, run:
+```text
+http://localhost:4200/
+```
+
+## Construire le projet
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Tests
 
-## Additional Resources
+```bash
+npm test
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Structure du projet
+
+- src/app/components : composants UI réutilisables
+- src/app/pages : pages principales de l’application
+- src/app/services : logique métier et accès aux données
+- src/app/models : interfaces et types partagés
+- docs : documentation technique du projet

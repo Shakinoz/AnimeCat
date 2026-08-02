@@ -1,0 +1,15 @@
+<div class="carousel-cont">
+    <button type="button" class="carousel-nav prev" [disabled]="!canScrollLeft()" (click)="scroll('left')"
+        aria-label="Afficher les éléments précédents">
+        ‹
+    </button>
+
+    <div class="carousel" #carouselViewport (scroll)="updateState()">
+        <ng-content></ng-content>
+    </div>
+
+    <button type="button" class="carousel-nav next" [disabled]="!canScrollRight()" (click)="scroll('right')"
+        aria-label="Afficher les éléments suivants">
+        ›
+    </button>
+</div>

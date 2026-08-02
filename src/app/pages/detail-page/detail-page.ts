@@ -19,6 +19,10 @@ import { Button } from '../../components/button/button';
   styleUrl: './detail-page.scss',
 })
 export class DetailPage implements OnInit, OnDestroy {
+  /**
+   * État du détail d'un anime : chargement, erreur, données et statut utilisateur.
+   * Les signals évitent la manipulation manuelle du DOM et rendent le template réactif.
+   */
   readonly anime = signal<Anime | null>(null);
   readonly isLoading = signal(true);
   readonly error = signal<string | null>(null);
@@ -34,6 +38,7 @@ export class DetailPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Réagit au changement de route pour charger l'anime correspondant.
     this.subscription.add(
       this.route.paramMap
         .pipe(
@@ -41,10 +46,7 @@ export class DetailPage implements OnInit, OnDestroy {
             const idParam = params.get('id');
             const id = Number(idParam);
 
-            this.isLoading.set(true);
-            this.error.set(null);
-            this.anime.set(null);
-            this.animeStatus.set(null);
+            this.resetViewState();
 
             if (!idParam || Number.isNaN(id) || id <= 0) {
               this.error.set('Identifiant anime invalide.');
@@ -70,6 +72,7 @@ export class DetailPage implements OnInit, OnDestroy {
         }),
     );
 
+    // Met à jour le bouton d'action si l'état utilisateur change en dehors de cette vue.
     this.subscription.add(
       this.storage.animeStatusChanged$.subscribe(() => {
         const animeId = this.anime()?.mal_id;
@@ -81,6 +84,13 @@ export class DetailPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  private resetViewState(): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.anime.set(null);
+    this.animeStatus.set(null);
   }
 
   cover(anime: Anime): string {

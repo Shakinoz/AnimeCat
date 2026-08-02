@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,20 +9,23 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination-controls.scss',
 })
 export class PaginationControls {
-  /**
-   * Contrôles de pagination simples (Précédent / Suivant).
-   * Émet `prev` / `next` selon l'état (`currentPage`, `hasNext`).
-   */
-  @Input() currentPage = 1;
-  @Input() hasNext = false;
-  @Output() prev = new EventEmitter<void>();
-  @Output() next = new EventEmitter<void>();
+  /** Page actuellement affichée. */
+  readonly currentPage = input(1);
+
+  /** Indique s’il existe une page suivante à charger. */
+  readonly hasNext = input(false);
+
+  /** Émet un événement lorsque l’utilisateur demande la page précédente. */
+  readonly prev = output<void>();
+
+  /** Émet un événement lorsque l’utilisateur demande la page suivante. */
+  readonly next = output<void>();
 
   onPrev(): void {
-    if (this.currentPage > 1) this.prev.emit();
+    if (this.currentPage() > 1) this.prev.emit();
   }
 
   onNext(): void {
-    if (this.hasNext) this.next.emit();
+    if (this.hasNext()) this.next.emit();
   }
 }
