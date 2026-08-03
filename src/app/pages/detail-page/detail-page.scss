@@ -149,6 +149,7 @@
     margin-bottom: 0;
     line-height: $line-height-loose;
     color: rgba($white, 0.92);
+    text-align: justify;
   }
 
   ul {
@@ -188,6 +189,7 @@
 
   .poster-wrapper {
     max-width: 320px;
+    margin: 0 auto;
   }
 
   .content-grid {
