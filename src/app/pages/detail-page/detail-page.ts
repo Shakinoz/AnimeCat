@@ -20,8 +20,8 @@ import { Button } from '../../components/button/button';
 })
 export class DetailPage implements OnInit, OnDestroy {
   /**
-   * État du détail d'un anime : chargement, erreur, données et statut utilisateur.
-   * Les signals évitent la manipulation manuelle du DOM et rendent le template réactif.
+   * Detail page reactive state: loading, error, anime data, and user status.
+   * Signals keep template updates declarative without manual DOM work.
    */
   readonly anime = signal<Anime | null>(null);
   readonly isLoading = signal(true);
@@ -38,7 +38,7 @@ export class DetailPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Réagit au changement de route pour charger l'anime correspondant.
+    // React to route changes and load the corresponding anime.
     this.subscription.add(
       this.route.paramMap
         .pipe(
@@ -56,7 +56,7 @@ export class DetailPage implements OnInit, OnDestroy {
 
             return this.tenrai.getById(id).pipe(
               catchError(() => {
-                this.error.set('Impossible de charger cet anime pour le moment.');
+                this.error.set('Unable to load this anime at the moment.');
                 return of(null);
               }),
             );
@@ -72,7 +72,7 @@ export class DetailPage implements OnInit, OnDestroy {
         }),
     );
 
-    // Met à jour le bouton d'action si l'état utilisateur change en dehors de cette vue.
+    // Keep action state in sync when updates happen outside this view.
     this.subscription.add(
       this.storage.animeStatusChanged$.subscribe(() => {
         const animeId = this.anime()?.mal_id;
@@ -86,6 +86,7 @@ export class DetailPage implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  /** Resets all view-level signals before a new route fetch. */
   private resetViewState(): void {
     this.isLoading.set(true);
     this.error.set(null);
@@ -93,28 +94,34 @@ export class DetailPage implements OnInit, OnDestroy {
     this.animeStatus.set(null);
   }
 
+  /** Returns the preferred cover URL for the selected anime. */
   cover(anime: Anime): string {
     return this.tenrai.getCoverUrl(anime);
   }
 
+  /** Returns the preferred display title for the selected anime. */
   title(anime: Anime): string {
     return this.tenrai.getDisplayTitle(anime);
   }
 
+  /** Returns a user-friendly genre label for details UI. */
   genres(anime: Anime): string {
     return this.tenrai.getGenresLabel(anime, 6) || 'Genres non disponibles';
   }
 
+  /** Returns a comma-separated studio list or a fallback label. */
   studios(anime: Anime): string {
     if (!anime.studios?.length) return 'Inconnus';
     return anime.studios.map((studio) => studio.name).join(', ');
   }
 
+  /** Returns the complete genre list label for metadata display. */
   allGenres(anime: Anime): string {
     if (!anime.genres?.length) return 'Inconnus';
     return anime.genres.map((genre) => genre.name).join(', ');
   }
 
+  /** Formats the aired range string with safe fallbacks. */
   airedLabel(anime: Anime): string {
     const aired = anime.aired as { from?: string | null; to?: string | null } | undefined;
 
@@ -129,6 +136,7 @@ export class DetailPage implements OnInit, OnDestroy {
     return 'Inconnue';
   }
 
+  /** Opens an external URL in a safe new tab context. */
   openExternal(url?: string | null): void {
     if (!url) {
       this.notification.show('Lien indisponible pour cet anime.', true);

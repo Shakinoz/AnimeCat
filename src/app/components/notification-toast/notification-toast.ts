@@ -11,6 +11,7 @@ import { NotificationService } from '../../services/notification.service';
 export class NotificationToast {
   constructor(public readonly notificationService: NotificationService) {}
 
+  /** Closes the currently visible toast notification. */
   public close(): void {
     this.notificationService.hide();
   }

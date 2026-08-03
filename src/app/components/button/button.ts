@@ -12,24 +12,24 @@ export type ButtonType = 'button' | 'submit' | 'reset';
   styleUrl: './button.scss',
 })
 export class Button {
-  /** Style visuel du bouton. */
+  /** Visual style variant. */
   public readonly variant = input<ButtonVariant>('primary');
 
-  /** Taille du bouton utilisée par les variantes de style. */
+  /** Button size variant. */
   public readonly size = input<ButtonSize>('md');
 
-  /** Type HTML du bouton pour les formulaires. */
+  /** Native HTML button type. */
   public readonly type = input<ButtonType>('button');
 
-  /** Libellé affiché dans le bouton. */
+  /** Optional text label. */
   public readonly label = input<string>();
 
-  /** Icône optionnelle affichée avant le texte. */
+  /** Optional icon displayed before the label. */
   public readonly icon = input<string>();
 
-  /** Désactive le bouton si nécessaire. */
+  /** Disables interactions when true. */
   public readonly disabled = input<boolean>(false);
 
-  /** Variante spéciale utilisée pour les boutons de swipe. */
+  /** Special circular variant used by swipe actions. */
   public readonly swipe = input<boolean>(false);
 }

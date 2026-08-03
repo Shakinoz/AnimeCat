@@ -9,5 +9,6 @@ import { NotificationToast } from './components/notification-toast/notification-
   styleUrl: './app.scss',
 })
 export class App {
+  /** Application display title exposed in root shell context. */
   protected readonly title = signal('AnimeCat_TFE');
 }

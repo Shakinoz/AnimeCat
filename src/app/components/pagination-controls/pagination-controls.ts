@@ -9,22 +9,24 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination-controls.scss',
 })
 export class PaginationControls {
-  /** Page actuellement affichée. */
+  /** Currently displayed page number. */
   readonly currentPage = input(1);
 
-  /** Indique s’il existe une page suivante à charger. */
+  /** Indicates whether a next page can be requested. */
   readonly hasNext = input(false);
 
-  /** Émet un événement lorsque l’utilisateur demande la page précédente. */
+  /** Emits when user requests previous page. */
   readonly prev = output<void>();
 
-  /** Émet un événement lorsque l’utilisateur demande la page suivante. */
+  /** Emits when user requests next page. */
   readonly next = output<void>();
 
+  /** Emits `prev` when current page is greater than 1. */
   onPrev(): void {
     if (this.currentPage() > 1) this.prev.emit();
   }
 
+  /** Emits `next` when there is a next page available. */
   onNext(): void {
     if (this.hasNext()) this.next.emit();
   }

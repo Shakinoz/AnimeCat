@@ -15,10 +15,10 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class LoginPage {
   /**
-   * Page Login — gère le formulaire de connexion local.
+   * Login page handling the local authentication form.
    *
-   * Valide les champs via `ReactiveFormsModule` puis délègue
-   * l'authentification à `StorageService` (mock/local).
+   * Validates fields with `ReactiveFormsModule`, then delegates
+   * authentication to `StorageService`.
    */
   public loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -30,7 +30,8 @@ export class LoginPage {
     private readonly notificationService: NotificationService,
   ) {}
 
-  public handleLogin() {
+  /** Executes login flow and redirects on success. */
+  public handleLogin(): void {
     if (this.loginForm.invalid) {
       return;
     }

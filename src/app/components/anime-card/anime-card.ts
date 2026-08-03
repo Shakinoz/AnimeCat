@@ -17,9 +17,9 @@ import { Subscription } from 'rxjs';
 })
 export class AnimeCard implements OnInit, OnDestroy {
   /**
-   * Composant `AnimeCard` — affiche une carte réutilisable pour un anime.
-   * - expose des helpers `title`, `cover()` et `genresShort()` pour le template
-   * - synchronise le statut utilisateur via `StorageService` et `animeStatusChanged$`
+   * Reusable anime card component.
+   * - exposes `title`, `cover()`, and `genresShort()` for the template
+   * - keeps user status synchronized through `StorageService`
    */
   public anime = input<HomeAnime>();
   private readonly localStatus = signal<AnimeStatus | null>(null);
@@ -32,7 +32,7 @@ export class AnimeCard implements OnInit, OnDestroy {
     private tenrai: TenraiService,
   ) {}
 
-  /** Affiche le titre utilisable dans le template (anglais en priorité). */
+  /** Initializes status synchronization for this card instance. */
 
   ngOnInit(): void {
     this.refreshStatus();
@@ -41,24 +41,27 @@ export class AnimeCard implements OnInit, OnDestroy {
     );
   }
 
+  /** Cleans up active subscriptions when component is destroyed. */
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
+  /** Preferred display title (English first, fallback to default title). */
   title = computed(() => this.anime()?.title_english?.trim() || this.anime()?.title || '');
 
-  /** Retourne l'URL de couverture canonique via TenraiService. */
+  /** Returns canonical cover URL through TenraiService. */
   cover(): string {
     const a = this.anime();
     return a ? this.tenrai.getCoverUrl(a) : 'assets/img/placeholder.webp';
   }
 
-  /** Retourne une chaîne de genres limitée pour l'affichage compact. */
+  /** Returns a compact genre label limited to `max` entries. */
   genresShort(max = 2): string {
     const a = this.anime();
     return a ? this.tenrai.getGenresLabel(a, max) : '';
   }
 
+  /** Toggles anime status from card interactions with auth guard. */
   toggleStatus(animeId: number, status: AnimeStatus): void {
     if (!this.storageService.isAuthenticated()) {
       this.notificationService.show(
@@ -78,6 +81,7 @@ export class AnimeCard implements OnInit, OnDestroy {
     this.refreshStatus();
   }
 
+  /** Recomputes local status from persisted user data. */
   private refreshStatus(): void {
     const animeId = this.anime()?.mal_id;
     if (!animeId) {

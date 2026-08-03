@@ -3,6 +3,10 @@ import { CanActivateFn, Router } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 import { NotificationService } from '../../services/notification.service';
 
+/**
+ * Route guard that only allows authenticated users.
+ * Redirects guests to home and shows an access notification.
+ */
 export const userNotLoggedGuard: CanActivateFn = (route, state) => {
   const storage = inject(StorageService);
   const router = inject(Router);

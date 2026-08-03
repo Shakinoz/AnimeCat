@@ -1,32 +1,31 @@
 // ─────────────────────────────────────────────────────────────
 // anime.interface.ts
-// Interfaces liées aux résultats et paramètres de l'API Tenrai.
+// Interfaces for Tenrai API list payloads and swipe genre scores.
 // ─────────────────────────────────────────────────────────────
 import { Anime } from '@tutkli/jikan-ts';
 
-// ── Résultat paginé renvoyé par TenraiService ────────────────
+// ── Paginated result returned by TenraiService ────────────────
 
 /**
- * Format normalisé de toutes les réponses listes de TenraiService.
- * Évite de manipuler directement l'enveloppe brute de l'API.
+ * Normalized structure for all TenraiService list responses.
+ * Avoids direct use of raw upstream API envelopes.
  */
 export interface AnimeListResult {
-  /** Tableau d'animés reçus pour la page courante. */
+  /** Anime array returned for the current page. */
   data: Anime[];
-  /** Indique s'il existe une page suivante. */
+  /** Whether another page is available. */
   hasNextPage: boolean;
-  /** Numéro de la page actuellement chargée. */
+  /** Current page number. */
   currentPage: number;
-  /** Nombre total de résultats (toutes pages). */
+  /** Total number of results across all pages. */
   total: number;
 }
 
-// ── Paramètres de recherche avancée ──────────────────────────
-// ── Scores des genres pour le système Swipe ──────────────────
+// ── Genre scores used by the Swipe system ──────────────────
 
 /**
- * Mappe un identifiant de genre MAL à un score d'affinité.
- * Stocké dans le LocalStorage sous la clé 'anime-cat-genre-scores'.
- * Positif = l'utilisateur aime ce genre, négatif = non aimé.
+ * Maps a MAL genre id to an affinity score.
+ * Persisted in LocalStorage under 'anime-cat-genre-scores'.
+ * Positive = user likes this genre, negative = user dislikes it.
  */
 export type GenreScoreMap = Record<number, number>;

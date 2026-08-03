@@ -20,10 +20,10 @@ type TierRank = keyof ITierList;
 })
 export class ProfilPage {
   /**
-   * Page Profil — affiche les listes utilisateur (watchlist, seen, tierlist).
+   * Profile page rendering user lists (watchlist, seen, and tier list).
    *
-   * Utilise `StorageService` pour récupérer l'utilisateur courant et
-   * `TenraiService` pour récupérer les données des animés par ID.
+   * Uses `StorageService` for user persistence and
+   * `TenraiService` to resolve anime details by ID.
    */
   public currentUser: IUser | null;
   public selectedTab: WritableSignal<ProfileTab> = signal('watchlist');
@@ -57,32 +57,39 @@ export class ProfilPage {
     this.loadLists();
   }
 
+  /** Selects which profile tab is currently visible. */
   selectTab(tab: ProfileTab) {
     this.selectedTab.set(tab);
   }
 
+  /** TrackBy function for stable anime rendering in lists. */
   trackByAnimeId(index: number, anime: HomeAnime) {
     return anime.mal_id;
   }
 
+  /** Returns cover URL for profile anime cards. */
   getCoverUrl(anime: HomeAnime): string {
     return this.tenrai.getCoverUrl(anime);
   }
 
+  /** Returns display title for profile anime cards. */
   getDisplayTitle(anime: HomeAnime): string {
     return this.tenrai.getDisplayTitle(anime);
   }
 
+  /** Marks a tier row as hovered for drag UI feedback. */
   onTierEnter(tier: TierRank): void {
     this.hoveredTier.set(tier);
   }
 
+  /** Clears tier hover state when leaving row boundary. */
   onTierLeave(tier: TierRank): void {
     if (this.hoveredTier() === tier) {
       this.hoveredTier.set(null);
     }
   }
 
+  /** Handles drag-drop into a tier and applies resulting score delta. */
   onTierDropped(event: CdkDragDrop<HomeAnime[]>, tier: TierRank): void {
     const anime = event.item.data as HomeAnime | undefined;
     this.hoveredTier.set(null);
@@ -101,6 +108,7 @@ export class ProfilPage {
     this.refreshTierRows();
   }
 
+  /** Handles drag-drop into pin area (remove from tier). */
   onPinDropped(event: CdkDragDrop<HomeAnime[]>): void {
     const anime = event.item.data as HomeAnime | undefined;
     this.isPinDropHover.set(false);
@@ -120,15 +128,18 @@ export class ProfilPage {
     this.refreshTierRows();
   }
 
+  /** Enables pin drop visual feedback on drag enter. */
   onPinEnter(): void {
     this.isPinDropHover.set(true);
     this.hoveredTier.set(null);
   }
 
+  /** Disables pin drop visual feedback on drag leave. */
   onPinExit(): void {
     this.isPinDropHover.set(false);
   }
 
+  /** Loads watchlist/seen lists and resolves anime details for rendering. */
   private loadLists() {
     this.currentUser = this.storageService.getCurrentUser();
 
@@ -195,6 +206,7 @@ export class ProfilPage {
     });
   }
 
+  /** Rebuilds tier rows and pinned section from current state. */
   private refreshTierRows(): void {
     const user = this.currentUser;
     if (!user) {
@@ -231,11 +243,13 @@ export class ProfilPage {
     this.pinnedImages.set(this.seen().filter((anime) => !rankedIds.has(anime.mal_id)));
   }
 
+  /** Returns the numeric weight associated with a tier rank. */
   private getTierWeight(tier: TierRank | null): number {
     if (!tier) return 0;
     return this.tierWeights[tier] ?? 0;
   }
 
+  /** Applies genre score delta derived from an anime's genre list. */
   private applyGenreDeltaFromAnime(anime: HomeAnime, delta: number): void {
     if (!delta) return;
 

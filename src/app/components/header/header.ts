@@ -20,10 +20,10 @@ interface HeaderNavItem {
   styleUrl: './header.scss',
 })
 export class Header {
-  /** Indique si le menu mobile est ouvert. */
+  /** Indicates whether the mobile menu is open. */
   public showMenu = false;
 
-  /** Liens principaux affichés dans le header desktop et mobile. */
+  /** Main links rendered in desktop and mobile navigation. */
   public readonly navigationItems: HeaderNavItem[] = [
     { label: 'Catalogue', icon: 'apps', route: '/catalog' },
     { label: 'Swipe', icon: 'swipe', route: '/swipe' },
@@ -36,14 +36,14 @@ export class Header {
     private readonly router: Router,
   ) {}
 
-  /** Déconnecte l'utilisateur et affiche une notification. */
+  /** Logs out the current user and displays a confirmation toast. */
   public handleLogout(): void {
     this.storageService.logout();
     this.notificationService.show('Vous êtes déconnecté.', false, true);
     this.router.navigate(['/']);
   }
 
-  /** Indique si l’utilisateur est connecté pour afficher les actions d’authentification. */
+  /** Returns whether auth-dependent actions should be visible. */
   public isAuthenticated(): boolean {
     return this.storageService.isAuthenticated();
   }

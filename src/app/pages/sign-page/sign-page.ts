@@ -15,9 +15,9 @@ import { NotificationService } from '../../services/notification.service';
 })
 export class SignPage {
   /**
-   * Page Sign-up — gère l'inscription locale d'un nouvel utilisateur.
+   * Sign-up page handling local registration.
    *
-   * Effectue la validation des champs et appelle `StorageService.register`.
+   * Performs field validation and calls `StorageService.register`.
    */
   public signupForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -34,7 +34,8 @@ export class SignPage {
     private readonly notificationService: NotificationService,
   ) {}
 
-  public handleSign() {
+  /** Executes registration flow and redirects on success. */
+  public handleSign(): void {
     if (
       this.signupForm.invalid ||
       this.signupForm.value.confirmPassword !== this.signupForm.value.password

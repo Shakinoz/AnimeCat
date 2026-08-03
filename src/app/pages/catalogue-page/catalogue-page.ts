@@ -32,39 +32,39 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 })
 export class CataloguePage {
   /**
-   * Page Catalogue — moteur de recherche et navigation paginée sur les animés.
+   * Catalogue page handling search, filters, and paginated browsing.
    *
-   * Le composant centralise :
-   * - la construction des paramètres de recherche,
-   * - l'appel au service distant,
-   * - l'application du tri et des filtres locaux,
-   * - l'état réactif consommé par le template.
+   * This component centralizes:
+   * - search parameter construction,
+   * - API data loading,
+   * - local sorting and filter rendering,
+   * - reactive state consumed by the template.
    */
-  // Liste brute retournée par l'API avant toute transformation locale.
+  // Raw list returned by the API before local transformations.
   animes: Anime[] = [];
 
-  // Liste affichée après application du tri local et des filtres de présentation.
+  // List shown after local sorting and presentation filtering.
   filteredAnimes: Anime[] = [];
 
-  // Indicateur de chargement utilisé par le template pour afficher un état de progression.
+  // Loading signal used by the template to display progress states.
   isLoading = signal(false);
   isMobileDevice = signal(false);
   showFilters = signal(false);
 
-  // État des filtres de recherche et de navigation.
+  // Current state of search and filtering controls.
   searchQuery = '';
   selectedType: string = 'all';
   selectedStatus: string = 'all';
   selectedGenres: number[] = [];
   sortBy: 'score-desc' | 'score-asc' | 'alphabetic-asc' | 'alphabetic-desc' = 'score-desc';
 
-  // Pagination pour gérer les pages successives de résultats.
+  // Pagination state for result browsing.
   currentPage = 1;
   limit = 24;
   totalItems = 0;
   hasNextPage = false;
 
-  // Options de filtre proposées à l'utilisateur dans la sidebar.
+  // Filter options displayed in the sidebar.
   typeOptions = [
     { value: 'all', label: 'Tous' },
     { value: 'tv', label: 'TV' },
@@ -89,7 +89,7 @@ export class CataloguePage {
     { value: 'alphabetic-desc', label: 'Alphabétique (Z-A)' },
   ];
 
-  // Liste des genres disponibles pour la sélection par cases à cocher.
+  // Available genres displayed as checkbox options.
   genreOptions = [
     { id: 1, label: 'Action' },
     { id: 2, label: 'Aventure' },
@@ -120,12 +120,12 @@ export class CataloguePage {
     { id: 35, label: 'Tragédie' },
   ];
 
-  // Chargement initial de la page au démarrage du composant.
+  // Initial page setup on component creation.
   constructor(
     private readonly tenraiService: TenraiService,
     private readonly deviceDetector: DeviceDetectorService,
   ) {
-    // L'API de détection de périphérique est utilisée pour adapter la UX.
+    // Device detection drives a small mobile/desktop UX adaptation.
     this.isMobileDevice.set(this.deviceDetector.isMobile());
     this.showFilters.set(!this.isMobileDevice());
 
@@ -133,12 +133,9 @@ export class CataloguePage {
   }
 
   /**
-   * Charge la première page de résultats au démarrage du composant.
-   * Cette méthode construit les paramètres à envoyer au service
-   * et met à jour l'état local (`animes`, `filteredAnimes`, `hasNextPage`).
+   * Loads anime using active filters and updates local state.
+   * Updates `animes`, `filteredAnimes`, `totalItems`, and pagination flags.
    */
-
-  // Appel au service pour récupérer les animes selon les filtres actifs.
   loadAnimes(): void {
     this.isLoading.set(true);
     this.filteredAnimes = [];
@@ -160,23 +157,23 @@ export class CataloguePage {
 
     this.tenraiService.searchAdvanced(params).subscribe({
       next: (result: AnimeListResult) => {
-        // La réponse de l'API fournit la liste brute ainsi que les métadonnées de pagination.
+        // API response includes raw list and pagination metadata.
         this.animes = result.data || [];
         this.totalItems = result.total || 0;
         this.hasNextPage = result.hasNextPage || false;
 
-        // Après chaque réception, on applique le tri local et on met à jour l'affichage.
+        // Re-apply local sorting after each response.
         this.applyLocalFilters();
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Erreur lors du chargement des animes:', err);
+        console.error('Error while loading anime:', err);
         this.isLoading.set(false);
       },
     });
   }
 
-  // Applique le tri local sur la liste déjà reçue depuis l'API.
+  /** Applies local sorting to the already loaded anime list. */
   applyLocalFilters(): void {
     this.filteredAnimes = [...this.animes];
 
@@ -200,52 +197,52 @@ export class CataloguePage {
     }
   }
 
-  // Réinitialise la pagination à la première page après un changement de recherche.
+  /** Resets pagination after a search criteria change. */
   onSearchChange(): void {
     this.currentPage = 1;
     this.loadAnimes();
   }
 
-  // Met à jour la valeur de recherche à partir de l'événement natif du champ input.
+  /** Updates search text from native input event. */
   handleSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement | null;
     this.searchQuery = target?.value ?? '';
     this.onSearchChange();
   }
 
-  // Recharge les résultats quand le type de diffusion change.
+  /** Reloads results when anime type filter changes. */
   onTypeChange(): void {
     this.currentPage = 1;
     this.loadAnimes();
   }
 
-  // Met à jour la valeur du type à partir de l'événement natif du select.
+  /** Updates type value from native select event. */
   handleTypeChange(event: Event): void {
     const target = event.target as HTMLSelectElement | null;
     this.selectedType = target?.value ?? 'all';
     this.onTypeChange();
   }
 
-  // Recharge les résultats quand le statut change.
+  /** Reloads results when status filter changes. */
   onStatusChange(): void {
     this.currentPage = 1;
     this.loadAnimes();
   }
 
-  // Met à jour la valeur du statut à partir de l'événement natif du select.
+  /** Updates status value from native select event. */
   handleStatusChange(event: Event): void {
     const target = event.target as HTMLSelectElement | null;
     this.selectedStatus = target?.value ?? 'all';
     this.onStatusChange();
   }
 
-  // Recharge les résultats quand la liste de genres change.
+  /** Reloads results when selected genres change. */
   onGenreChange(): void {
     this.currentPage = 1;
     this.loadAnimes();
   }
 
-  // Basculer un genre dans la sélection et relancer la recherche.
+  /** Toggles a genre selection and triggers a reload. */
   toggleGenreSelection(genreId: number): void {
     const alreadySelected = this.selectedGenres.includes(genreId);
 
@@ -256,12 +253,12 @@ export class CataloguePage {
     this.onGenreChange();
   }
 
-  // Re-trie simplement la liste déjà chargée sans refaire un appel réseau.
+  /** Re-applies sorting without making a new API request. */
   onSortChange(): void {
     this.applyLocalFilters();
   }
 
-  // Met à jour la valeur du tri à partir de l'événement natif du select.
+  /** Updates sort value from native select event. */
   handleSortChange(event: Event): void {
     const target = event.target as HTMLSelectElement | null;
     const value = target?.value as typeof this.sortBy | undefined;
@@ -269,13 +266,13 @@ export class CataloguePage {
     this.onSortChange();
   }
 
-  // Variante pour les composants qui émettent directement une string (ex: SelectFilter).
+  /** Handles sort changes emitted directly as string values. */
   handleSortValueChange(value: string): void {
     this.sortBy = (value as typeof this.sortBy) ?? 'score-desc';
     this.onSortChange();
   }
 
-  // Passe à la page suivante si elle existe.
+  /** Moves to the next page when available. */
   nextPage(): void {
     if (this.hasNextPage) {
       this.currentPage++;
@@ -283,7 +280,7 @@ export class CataloguePage {
     }
   }
 
-  // Revient à la page précédente si la page actuelle n'est pas la première.
+  /** Moves to the previous page when possible. */
   prevPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
@@ -291,7 +288,7 @@ export class CataloguePage {
     }
   }
 
-  // Retourne l'URL de l'image de couverture de l'anime, avec un fallback propre.
+  /** Returns cover URL with a service-level fallback strategy. */
   getImageUrl(anime: Anime): string {
     return this.tenraiService.getCoverUrl(anime);
   }

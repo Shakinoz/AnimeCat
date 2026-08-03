@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────
 // storage.service.ts
-// Gestion complète de la persistance LocalStorage :
-//   - Authentification (register / login / logout)
-//   - Liste des animés de l'utilisateur (statuts)
-//   - Notifications réactives via Observable
+// Complete LocalStorage persistence layer:
+//   - Authentication (register / login / logout)
+//   - User anime list status management
+//   - Reactive update notifications via Observable
 // ─────────────────────────────────────────────────────────────
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,15 +12,15 @@ import { IUser, AuthResult, AuthUser } from '../models/user.interface';
 import { AnimeStatus, ITierList } from '../models/user-anime.interface';
 import { GenreScoreMap } from '../models/anime-list.interface';
 
-// ── Clés LocalStorage ─────────────────────────────────────────
+// ── LocalStorage keys ─────────────────────────────────────────
 
-/** Clé pour la liste de tous les comptes enregistrés. */
+/** Key for the list of all registered accounts. */
 const KEY_USERS = 'anime-cat-users';
-/** Clé pour l'utilisateur actuellement connecté. */
+/** Key for the currently signed-in user. */
 const KEY_CURRENT = 'anime-cat-current-user';
-/** Clé pour les scores d'affinité de genres (système Swipe). */
+/** Key for genre affinity scores (Swipe system). */
 const KEY_GENRES = 'anime-cat-genre-scores';
-/** Clé pour les animés rejetés dans le Swipe. */
+/** Key for rejected anime IDs in Swipe. */
 const KEY_REJECTED = 'anime-cat-rejected';
 
 // ─────────────────────────────────────────────────────────────
@@ -28,34 +28,33 @@ const KEY_REJECTED = 'anime-cat-rejected';
 @Injectable({ providedIn: 'root' })
 export class StorageService {
   /**
-   * Service de persistance local (LocalStorage) pour l'app.
-   * - gère l'authentification locale (register/login/logout)
-   * - stocke et met à jour les statuts d'animés utilisateur
-   * - expose un Observable `animeStatusChanged$` pour la synchronisation
-   * - gère les scores de genres et la liste des animés rejetés (Swipe)
+   * Local persistence service for the application.
+   * - handles local authentication (register/login/logout)
+   * - stores and updates user anime status values
+   * - exposes `animeStatusChanged$` for UI synchronization
+   * - stores genre scores and rejected anime IDs for Swipe
    */
   private readonly router = inject(Router);
 
   /**
-   * Subject interne qui émet chaque fois qu'un statut d'animé change.
-   * Permet à tous les composants abonnés (AnimeCard, Home…) de
-   * se rafraîchir automatiquement sans polling.
+   * Internal subject emitted whenever an anime status changes.
+   * This allows subscribed components to refresh without polling.
    */
   private readonly statusChanged$ = new Subject<void>();
 
-  /** Observable public auquel les composants peuvent s'abonner. */
+  /** Public observable used by components to react to status updates. */
   readonly animeStatusChanged$: Observable<void> = this.statusChanged$.asObservable();
 
   constructor() {
-    // Patch unique pour émettre aussi sur les changements cross-onglets
+    // Install a one-time patch to also propagate cross-tab changes.
     this.patchStorageEvents();
   }
 
-  // ── Authentification ─────────────────────────────────────
+  // ── Authentication ─────────────────────────────────────
 
   /**
-   * Crée un nouveau compte utilisateur.
-   * Vérifie l'unicité du pseudo et de l'email avant d'enregistrer.
+   * Creates a new user account.
+   * Validates unique username and email before persisting.
    */
   register(user: Pick<AuthUser, 'username' | 'email' | 'password'>): AuthResult {
     const users = this.getUsers();
@@ -83,7 +82,7 @@ export class StorageService {
   }
 
   /**
-   * Connecte un utilisateur existant avec email + mot de passe.
+   * Authenticates an existing user with email and password.
    */
   login(credentials: Pick<AuthUser, 'email' | 'password'>): AuthResult {
     const email = credentials.email.trim().toLowerCase();
@@ -97,29 +96,29 @@ export class StorageService {
     return { success: true, message: 'Connexion réussie' };
   }
 
-  /** Déconnecte l'utilisateur et redirige vers la page d'accueil. */
+  /** Signs out the current user and redirects to the home page. */
   logout(): void {
     localStorage.removeItem(KEY_CURRENT);
     this.router.navigate(['/']);
   }
 
-  /** Retourne true si un utilisateur est actuellement connecté. */
+  /** Returns `true` when a user session exists. */
   isAuthenticated(): boolean {
     return !!this.getCurrentUser();
   }
 
-  /** Retourne l'utilisateur connecté, ou null si non connecté. */
+  /** Returns the current user, or `null` if no session is active. */
   getCurrentUser(): IUser | null {
     const raw = localStorage.getItem(KEY_CURRENT);
     return raw ? (JSON.parse(raw) as IUser) : null;
   }
 
-  // ── Gestion des statuts d'animés ──────────────────────────
+  // ── Anime status management ──────────────────────────
 
   /**
-   * Ajoute ou met à jour le statut d'un animé pour l'utilisateur connecté.
-   * Si l'animé est déjà dans la liste, son statut est mis à jour.
-   * Sinon, une nouvelle entrée est créée.
+   * Adds or updates an anime status for the signed-in user.
+   * If the anime already exists in the list, status is overwritten.
+   * Otherwise, a new entry is created.
    */
   updateAnimeStatus(animeId: number, status: AnimeStatus): void {
     const user = this.getCurrentUser();
@@ -136,7 +135,7 @@ export class StorageService {
   }
 
   /**
-   * Supprime un animé de la liste de l'utilisateur (toutes statuts).
+   * Removes an anime from the user list (all statuses).
    */
   removeAnime(animeId: number): void {
     const user = this.getCurrentUser();
@@ -147,15 +146,15 @@ export class StorageService {
   }
 
   /**
-   * Retourne le statut courant d'un animé, ou null si non enregistré.
+   * Returns the current status for an anime, or `null` when absent.
    */
   getAnimeStatus(mal_id: number): AnimeStatus | null {
     return this.getCurrentUser()?.animeList.find((a) => a.animeId === mal_id)?.status ?? null;
   }
 
   /**
-   * Déplace un animé vers un rang de tier list (S/A/B/C), ou le retire de la tier list.
-   * Retourne l'ancien et le nouveau rang pour permettre des effets de scoring côté UI.
+   * Moves an anime into a tier rank (S/A/B/C), or removes it from tiering.
+   * Returns both previous and next rank so the UI can apply score deltas.
    */
   updateAnimeTier(
     animeId: number,
@@ -187,11 +186,11 @@ export class StorageService {
     return { previousTier, nextTier: tier };
   }
 
-  // ── Scores de genres (Swipe) ──────────────────────────────
+  // ── Genre scores (Swipe) ──────────────────────────────
 
   /**
-   * Retourne la map de scores d'affinité des genres.
-   * Clé = identifiant MAL du genre, valeur = score (peut être négatif).
+   * Returns the genre affinity score map.
+   * Key = MAL genre id, value = score (can be negative).
    */
   getGenreScores(): GenreScoreMap {
     const raw = localStorage.getItem(KEY_GENRES);
@@ -199,8 +198,8 @@ export class StorageService {
   }
 
   /**
-   * Applique des deltas de score sur les genres existants.
-   * @param deltas Objet { genreId: delta } à ajouter aux scores actuels
+   * Applies score deltas to the existing genre map.
+   * @param deltas Object of { genreId: delta } values.
    */
   applyGenreDeltas(deltas: GenreScoreMap): void {
     const scores = this.getGenreScores();
@@ -210,9 +209,9 @@ export class StorageService {
     localStorage.setItem(KEY_GENRES, JSON.stringify(scores));
   }
 
-  // ── Animés rejetés (Swipe) ────────────────────────────────
+  // ── Rejected anime IDs (Swipe) ────────────────────────────────
 
-  /** Ajoute un animé à la liste des animés refusés dans le Swipe. */
+  /** Adds an anime ID to the rejected list used by Swipe. */
   addRejected(animeId: number): void {
     const list = this.getRejected();
     if (!list.includes(animeId)) {
@@ -221,29 +220,29 @@ export class StorageService {
     }
   }
 
-  /** Retire un animé de la liste des rejetés (utilisé par Undo). */
+  /** Removes an anime ID from the rejected list (used by undo). */
   removeRejected(animeId: number): void {
     const filtered = this.getRejected().filter((id) => id !== animeId);
     localStorage.setItem(KEY_REJECTED, JSON.stringify(filtered));
   }
 
-  /** Retourne la liste de tous les identifiants d'animés rejetés. */
+  /** Returns all rejected anime IDs. */
   getRejected(): number[] {
     const raw = localStorage.getItem(KEY_REJECTED);
     return raw ? (JSON.parse(raw) as number[]) : [];
   }
 
-  // ── Méthodes privées ──────────────────────────────────────
+  // ── Private helpers ──────────────────────────────────────
 
-  /** Retourne tous les utilisateurs enregistrés. */
+  /** Returns all registered users. */
   private getUsers(): IUser[] {
     const raw = localStorage.getItem(KEY_USERS);
     return raw ? (JSON.parse(raw) as IUser[]) : [];
   }
 
   /**
-   * Sauvegarde l'utilisateur courant en LocalStorage et met à jour
-   * la liste globale des utilisateurs. Émet ensuite une notification.
+   * Persists the current user in LocalStorage and updates
+   * the global users list, then emits a change notification.
    */
   private persistCurrentUser(user: IUser): void {
     localStorage.setItem(KEY_CURRENT, JSON.stringify(user));
@@ -259,10 +258,10 @@ export class StorageService {
   }
 
   /**
-   * Patch unique sur Storage.prototype pour émettre des événements
-   * personnalisés lorsque les clés AnimeCat changent.
-   * Permet la synchronisation entre onglets (window storage event).
-   * Le flag __animeCatStoragePatched évite les doubles patches.
+   * One-time patch on Storage.prototype to emit custom events
+   * when AnimeCat-related keys change.
+   * Enables synchronization across browser tabs.
+   * The __animeCatStoragePatched guard prevents duplicate patching.
    */
   private patchStorageEvents(): void {
     const win = window as Window & { __animeCatStoragePatched?: boolean };

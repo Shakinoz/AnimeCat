@@ -24,12 +24,12 @@ import { Carousel } from '../../components/carousel/carousel';
 })
 export class HomePage implements OnInit, OnDestroy {
   /**
-   * Page Home — tableau de bord présentant les sections de découverte.
+   * Home page dashboard presenting discovery sections.
    *
-   * Responsabilités principales :
-   * - charger les listes dédiées à l'accueil via le service Tenrai,
-   * - enrichir les animes avec leur statut utilisateur,
-   * - gérer la navigation du hero et des carrousels.
+   * Main responsibilities:
+   * - load home lists through Tenrai service,
+   * - enrich anime entries with user status,
+   * - manage hero and carousel navigation.
    */
   private readonly tenrai = inject(TenraiService);
   private readonly storageService = inject(StorageService);
@@ -46,6 +46,7 @@ export class HomePage implements OnInit, OnDestroy {
   heroAnime?: HomeAnime;
   heroIndex = 0;
 
+  /** Returns hero indicator dots based on trending list length. */
   get heroDots() {
     return Array.from({ length: this.trending().length }, (_, index) => index);
   }
@@ -55,7 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Met à jour les statuts visuels quand la liste d'animes change côté stockage.
+    // Refresh visible statuses whenever storage updates anime state.
     this.statusSubscription.add(
       this.storageService.animeStatusChanged$.subscribe(() => {
         this.refreshHeroAndLists();
@@ -67,11 +68,13 @@ export class HomePage implements OnInit, OnDestroy {
     this.statusSubscription.unsubscribe();
   }
 
+  /** Loads trending and popular datasets used by the home page. */
   loadData(): void {
     this.loadTrendingData();
     this.loadPopularData();
   }
 
+  /** Loads trending anime and initializes hero state. */
   private loadTrendingData(): void {
     this.tenrai.getTopAiring(1, 18).subscribe({
       next: (res) => {
@@ -85,6 +88,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  /** Loads popular anime and then triggers recommendation loading. */
   private loadPopularData(): void {
     this.tenrai.getMostPopular(1, 18).subscribe({
       next: (res) => {
@@ -106,28 +110,34 @@ export class HomePage implements OnInit, OnDestroy {
     this.heroAnime = this.trending()[this.heroIndex];
   }
 
+  /** Moves the hero slider to the previous item. */
   prevHero(): void {
     this.heroIndex = (this.heroIndex - 1 + this.trending().length) % this.trending().length;
     this.heroAnime = this.trending()[this.heroIndex];
   }
 
+  /** Selects a specific hero item by index. */
   setHeroIndex(index: number): void {
     this.heroIndex = index;
     this.heroAnime = this.trending()[index];
   }
 
+  /** Returns the cover URL for a given anime. */
   cover(anime: Anime) {
     return this.tenrai.getCoverUrl(anime);
   }
 
+  /** Returns the display title for a given anime. */
   title(anime: Anime) {
     return this.tenrai.getDisplayTitle(anime);
   }
 
+  /** Returns a compact genre label for a given anime. */
   genres(anime: Anime) {
     return this.tenrai.getGenresLabel(anime);
   }
 
+  /** Toggles the status of an anime in the current user list. */
   toggleStatus(animeId: number, status: AnimeStatus): void {
     if (!this.storageService.isAuthenticated()) {
       this.notificationService.show(
@@ -148,7 +158,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private refreshHeroAndLists(): void {
-    // Réapplique le statut utilisateur aux listes affichées sans recharger les données.
+    // Reapply user statuses without re-fetching remote data.
     const refreshStatus = (anime: HomeAnime) => ({
       ...anime,
       userStatus: this.storageService.getAnimeStatus(anime.mal_id) ?? null,
@@ -163,6 +173,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
+  /** Adds current user status to each anime entry. */
   private addUserStatus(animes: Anime[]): HomeAnime[] {
     return animes.map((anime) => ({
       ...anime,
@@ -171,7 +182,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private loadRecommendationCarousel(): void {
-    // Génère la section des recommandations à partir du profil utilisateur et des scores.
+    // Build recommendations from profile signals and persisted scores.
     const currentUser = this.storageService.getCurrentUser();
     if (!currentUser) {
       this.recommendations.set([]);

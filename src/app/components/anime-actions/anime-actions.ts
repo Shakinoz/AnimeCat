@@ -14,8 +14,8 @@ import { AnimeStatus } from '../../models/user-anime.interface';
 })
 export class AnimeActions {
   /**
-   * Composant d'actions d'une carte (boutons Plan/Seen).
-   * Vérifie l'authentification via `StorageService` avant toute modification.
+   * Card action component (Plan/Seen buttons).
+   * Checks authentication through `StorageService` before updates.
    */
   @Input() animeId?: number | null;
   @Input() status: AnimeStatus | null = null;
@@ -25,6 +25,7 @@ export class AnimeActions {
     private notify: NotificationService,
   ) {}
 
+  /** Returns `true` when action can continue for authenticated users. */
   private ensureAuth(): boolean {
     if (!this.storage.isAuthenticated()) {
       this.notify.show('Vous devez être connecté pour ajouter un anime à votre liste.', true);
@@ -33,6 +34,7 @@ export class AnimeActions {
     return true;
   }
 
+  /** Toggles `plan_to_watch` status for the current anime. */
   togglePlan(): void {
     if (!this.animeId || !this.ensureAuth()) return;
     const current = this.storage.getAnimeStatus(this.animeId);
@@ -40,6 +42,7 @@ export class AnimeActions {
     else this.storage.updateAnimeStatus(this.animeId, 'plan_to_watch');
   }
 
+  /** Toggles `seen` status for the current anime. */
   toggleSeen(): void {
     if (!this.animeId || !this.ensureAuth()) return;
     const current = this.storage.getAnimeStatus(this.animeId);

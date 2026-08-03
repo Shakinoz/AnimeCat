@@ -1,36 +1,36 @@
 // ─────────────────────────────────────────────────────────────
 // user-anime.interface.ts
-// Modèles liés à la gestion des animés par l'utilisateur.
+// Models for user-specific anime state management.
 // ─────────────────────────────────────────────────────────────
 import { Anime } from '@tutkli/jikan-ts';
 
-// ── Statut d'un animé dans la liste de l'utilisateur ────────
+// ── Anime status values in user list ────────
 
 /**
- * Les trois états possibles d'un animé pour un utilisateur.
- * - plan_to_watch : dans la watchlist
- * - seen          : marqué comme terminé
- * - watching      : en cours (réservé pour une future évolution)
+ * Available anime states for a user.
+ * - plan_to_watch : in watchlist
+ * - seen          : marked as completed
+ * - watching      : currently watching (reserved for future use)
  */
 export type AnimeStatus = 'watching' | 'seen' | 'plan_to_watch';
 
-// ── Entrée dans la liste de l'utilisateur ────────────────────
+// ── Entry in a user's anime list ────────────────────
 
-/** Association entre un identifiant MAL et un statut utilisateur. */
+/** Links a MAL anime ID with a user status. */
 export interface IUserAnime {
   animeId: number;
   status: AnimeStatus;
-  /** Note personnelle (optionnelle). */
+  /** Optional personal score. */
   score?: number;
-  /** Marqué comme favori (optionnel). */
+  /** Optional favorite flag. */
   favorite?: boolean;
 }
 
-// ── Tier List ────────────────────────────────────────────────
+// ── Tier list ────────────────────────────────────────────────
 
 /**
- * Stocke les identifiants MAL classés par rang.
- * S = Supreme, A = Excellent, B = Bien, C = Correct.
+ * Stores MAL anime IDs grouped by rank.
+ * S = Supreme, A = Excellent, B = Good, C = Average.
  */
 export interface ITierList {
   S: number[];
@@ -39,11 +39,11 @@ export interface ITierList {
   C: number[];
 }
 
-// ── Type étendu utilisé dans la Home et le Profil ────────────
+// ── Extended type used in Home and Profile ────────────
 
 /**
- * Étend le type Anime de Jikan avec le statut de l'utilisateur courant.
- * Utilisé partout où la carte doit afficher l'état (vue, watchlist…).
+ * Extends Jikan `Anime` with the current user status.
+ * Used wherever cards need to render persisted state.
  */
 export interface HomeAnime extends Anime {
   userStatus?: AnimeStatus | null;

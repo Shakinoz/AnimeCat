@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // tenrai.service.ts
-// Couche d'accès à l'API Tenrai (miroir Jikan v4).
-// Toutes les requêtes HTTP passent par ce service.
+// API access layer for Tenrai (Jikan v4 mirror).
+// All HTTP requests are routed through this service.
 // ─────────────────────────────────────────────────────────────
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -11,9 +11,9 @@ import type { Anime } from '@tutkli/jikan-ts';
 import { AnimeListResult } from '../models/anime-list.interface';
 import { SearchParams } from '../models/search-param.interface';
 
-// ── Enveloppe brute renvoyée par l'API ───────────────────────
+// ── Raw API envelope ───────────────────────
 
-/** Structure de la réponse JSON brute de Tenrai/Jikan. */
+/** Shape of the raw JSON response returned by Tenrai/Jikan. */
 interface TenraiEnvelope<T> {
   data?: T;
   pagination?: {
@@ -28,23 +28,23 @@ interface TenraiEnvelope<T> {
 
 @Injectable({ providedIn: 'root' })
 /**
- * Service HTTP vers l'API Tenrai (Jikan mirror).
- * Centralise toutes les requêtes réseau et fournit des helpers
- * d'affichage (cover, titres, labels de genres) utilisés par les composants.
+ * HTTP service for the Tenrai API (Jikan mirror).
+ * Centralizes remote calls and exposes display helpers
+ * (cover URL, title, genre labels) used by UI components.
  */
 export class TenraiService {
-  /** URL de base de l'API. Changer ici pour pointer vers un autre miroir. */
+  /** API base URL. Change this value to use another mirror. */
   private readonly baseUrl = 'https://api.tenrai.org/v1';
-  /** Cache en mémoire des détails anime déjà chargés. */
+  /** In-memory cache for already fetched anime details. */
   private readonly animeCache = new Map<string, Anime>();
 
   constructor(private readonly http: HttpClient) {}
 
-  // ── Méthodes de liste ─────────────────────────────────────
+  // ── List endpoints ─────────────────────────────────────
 
   /**
-   * Récupère les animés actuellement en diffusion (trending).
-   * Utilisé par la page Home (hero + carousel) et la page Swipe.
+   * Fetches currently airing anime (trending list).
+   * Used by Home (hero + carousel) and Swipe.
    */
   getTopAiring(page = 1, limit = 16): Observable<AnimeListResult> {
     return this.http
@@ -58,8 +58,8 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les animés les plus populaires (par nombre de membres).
-   * Utilisé dans le carousel "Populaires" de la Home.
+   * Fetches most popular anime by member count.
+   * Used in Home's popular carousel.
    */
   getMostPopular(page = 1, limit = 16): Observable<AnimeListResult> {
     return this.http
@@ -73,7 +73,7 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les animés les mieux notés (tri par score).
+   * Fetches top-rated anime.
    */
   getTopScore(page = 1, limit = 16): Observable<AnimeListResult> {
     return this.http
@@ -87,7 +87,7 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les animés de la saison en cours.
+   * Fetches anime from the current season.
    */
   getCurrentSeason(page = 1, limit = 16): Observable<AnimeListResult> {
     return this.http
@@ -101,9 +101,9 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les animés d'une saison spécifique.
-   * @param year  Année (ex : 2024)
-   * @param season Saison parmi spring | summer | fall | winter
+   * Fetches anime for a specific season.
+   * @param year Year value (for example: 2024).
+   * @param season One of: spring, summer, fall, winter.
    */
   getSeason(
     year: number,
@@ -121,11 +121,11 @@ export class TenraiService {
       );
   }
 
-  // ── Recherche ─────────────────────────────────────────────
+  // ── Search ─────────────────────────────────────────────
 
   /**
-   * Recherche rapide par nom — utilisée par la Searchbar (autocomplete).
-   * @param query Texte saisi par l'utilisateur
+   * Quick search by title, used by Searchbar autocomplete.
+   * @param query User input query.
    */
   searchByName(query: string, page = 1, limit = 8): Observable<AnimeListResult> {
     return this.http
@@ -139,8 +139,8 @@ export class TenraiService {
   }
 
   /**
-   * Recherche avancée avec filtres multiples — utilisée par la page Catalogue.
-   * Les paramètres non définis sont simplement ignorés.
+   * Advanced search with multiple filters, used by Catalogue.
+   * Undefined filter values are ignored when building query params.
    */
   searchAdvanced(params: SearchParams): Observable<AnimeListResult> {
     return this.http
@@ -164,12 +164,11 @@ export class TenraiService {
       );
   }
 
-  // ── Détail ────────────────────────────────────────────────
+  // ── Detail endpoints ────────────────────────────────────────────────
 
   /**
-   * Récupère la fiche complète d'un animé par son identifiant MAL.
-   * Essaie d'abord l'endpoint /full (plus de données),
-   * avec fallback sur l'endpoint standard en cas d'erreur.
+   * Fetches full anime details by MAL id.
+   * Tries `/full` first, then falls back to summary endpoint on error.
    */
   getById(id: number, full = true): Observable<Anime> {
     const cacheKey = `${full ? 'full' : 'summary'}:${id}`;
@@ -194,8 +193,8 @@ export class TenraiService {
   }
 
   /**
-   * Récupère plusieurs animés en limitant le nombre de requêtes simultanées.
-   * Les erreurs individuelles sont ignorées pour éviter de vider toute la liste.
+   * Fetches multiple anime while limiting concurrent requests.
+   * Individual request errors are ignored to keep partial results.
    */
   getByIds(ids: number[], full = false, concurrency = 2): Observable<Anime[]> {
     const uniqueIds = [...new Set(ids)];
@@ -223,8 +222,8 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les personnages principaux d'un animé.
-   * Retourne any car la structure varie selon les animés.
+   * Fetches anime character data.
+   * Returns `any` because upstream payload shape can vary.
    */
   getCharacters(id: number): Observable<any> {
     return this.http
@@ -233,7 +232,7 @@ export class TenraiService {
   }
 
   /**
-   * Récupère les recommandations d'animés similaires.
+   * Fetches recommendations related to a specific anime.
    */
   getRecommendations(id: number): Observable<any> {
     return this.http
@@ -241,11 +240,11 @@ export class TenraiService {
       .pipe(map((res) => this.extractData(res)));
   }
 
-  // ── Filtres spéciaux ──────────────────────────────────────
+  // ── Special filters ──────────────────────────────────────
 
   /**
-   * Récupère des animés filtrés par liste de genres MAL.
-   * Utilisé par le moteur de recommandation du Swipe.
+   * Fetches anime filtered by MAL genre IDs.
+   * Used by the Swipe recommendation pipeline.
    */
   getByGenres(genreIds: number[], page = 1, limit = 25): Observable<AnimeListResult> {
     return this.http
@@ -266,7 +265,7 @@ export class TenraiService {
   }
 
   /**
-   * Récupère un animé aléatoire.
+   * Fetches a random anime.
    */
   getRandom(): Observable<Anime> {
     return this.http.get<TenraiEnvelope<Anime>>(`${this.baseUrl}/random/anime`).pipe(
@@ -275,11 +274,11 @@ export class TenraiService {
     );
   }
 
-  // ── Utilitaires d'affichage ───────────────────────────────
+  // ── Display utilities ───────────────────────────────
 
   /**
-   * Retourne l'URL de la meilleure image disponible.
-   * Ordre de préférence : WebP large → JPG large → placeholder local.
+   * Returns the best available cover URL.
+   * Preference order: large WebP → large JPG → local placeholder.
    */
   getCoverUrl(anime: Anime): string {
     return (
@@ -290,15 +289,15 @@ export class TenraiService {
   }
 
   /**
-   * Retourne le titre à afficher : anglais en priorité, puis japonais.
+   * Returns the display title, preferring English when available.
    */
   getDisplayTitle(anime: Anime): string {
     return anime.title_english?.trim() || anime.title;
   }
 
   /**
-   * Retourne les genres formatés en chaîne lisible.
-   * @param max Nombre maximum de genres à afficher (défaut : 4)
+   * Returns a human-readable genres label.
+   * @param max Maximum number of genres to include.
    */
   getGenresLabel(anime: Anime, max = 4): string {
     return (anime.genres ?? [])
@@ -307,11 +306,11 @@ export class TenraiService {
       .join(', ');
   }
 
-  // ── Méthodes privées ──────────────────────────────────────
+  // ── Private helpers ──────────────────────────────────────
 
   /**
-   * Construit un objet HttpParams en ignorant les valeurs null/undefined/vides.
-   * Toutes les requêtes utilisent cette méthode pour garder les URLs propres.
+   * Builds `HttpParams` while skipping null/undefined/empty values.
+   * This keeps request URLs compact and predictable.
    */
   private buildParams(values: Record<string, unknown>): HttpParams {
     return Object.entries(values).reduce((params, [key, value]) => {
@@ -321,8 +320,8 @@ export class TenraiService {
   }
 
   /**
-   * Extrait le champ `data` si l'objet a la structure d'une enveloppe Tenrai,
-   * sinon retourne l'objet tel quel (compatibilité avec les deux formats d'API).
+   * Extracts `data` when the payload matches Tenrai envelope shape,
+   * otherwise returns the payload as-is (compatibility fallback).
    */
   private extractData<T>(res: TenraiEnvelope<T> | T): T {
     if (res && typeof res === 'object' && 'data' in res) {
@@ -332,8 +331,8 @@ export class TenraiService {
   }
 
   /**
-   * Convertit une réponse paginée brute en AnimeListResult normalisé.
-   * Centralise la gestion des propriétés optionnelles de la pagination.
+   * Converts a raw paginated payload into normalized `AnimeListResult`.
+   * Centralizes optional pagination handling in one place.
    */
   private normalizeList(res: TenraiEnvelope<Anime[]>): AnimeListResult {
     const data = this.extractData<Anime[]>(res as TenraiEnvelope<Anime[]>);

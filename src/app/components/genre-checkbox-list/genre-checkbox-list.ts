@@ -14,15 +14,16 @@ export interface GenreOption {
   styleUrl: './genre-checkbox-list.scss',
 })
 export class GenreCheckboxList {
-  /** Liste des genres affichés dans la colonne de filtres. */
+  /** Genre options shown in the filters column. */
   readonly genres = input<GenreOption[]>([]);
 
-  /** Identifiants des genres actuellement sélectionnés. */
+  /** IDs of currently selected genres. */
   readonly selected = input<number[]>([]);
 
-  /** Émet la nouvelle sélection dès qu’un changement intervient. */
+  /** Emits updated selection whenever a checkbox changes. */
   readonly selectedChange = output<number[]>();
 
+  /** Toggles one genre ID inside the selected collection. */
   toggle(id: number): void {
     const current = this.selected();
     const alreadySelected = current.includes(id);

@@ -14,21 +14,22 @@ export interface SelectOption {
   styleUrl: './select-filter.scss',
 })
 export class SelectFilter {
-  /** Libellé visible au-dessus du sélecteur. */
+  /** Visible label displayed above the select element. */
   readonly label = input<string>('');
 
-  /** Identifiant HTML du select pour le formulaire et l'accessibilité. */
+  /** HTML id used for form binding and accessibility. */
   readonly id = input<string>('');
 
-  /** Liste des options proposées à l’utilisateur. */
+  /** Available options rendered in the dropdown. */
   readonly options = input<SelectOption[]>([]);
 
-  /** Valeur actuellement sélectionnée. */
+  /** Currently selected value. */
   readonly value = input<string>('');
 
-  /** Émet la nouvelle valeur quand l’utilisateur change de choix. */
+  /** Emits next value whenever user selection changes. */
   readonly valueChange = output<string>();
 
+  /** Handles native change event and emits selected value. */
   onChange(event: Event): void {
     const nextValue = (event.target as HTMLSelectElement).value;
     this.valueChange.emit(nextValue);

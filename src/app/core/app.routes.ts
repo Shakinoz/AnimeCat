@@ -8,6 +8,7 @@ import { userNotLoggedGuard } from './guards/user-not-logged-guard';
 import { CataloguePage } from '../pages/catalogue-page/catalogue-page';
 import { SwipePage } from '../pages/swipe/swipe';
 
+/** Central route table for all standalone pages in AnimeCat. */
 export const routes: Routes = [
   { path: '', component: HomePage },
   { path: 'sign', component: SignPage },

@@ -8,15 +8,15 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './form-input.scss',
 })
 export class FormInput {
-  /** Libellé visible associé au champ. */
+  /** Visible label associated with the input. */
   public readonly label = input.required<string>();
 
-  /** Identifiant HTML utilisé pour l’association label/input. */
+  /** HTML id used to bind label and input. */
   public readonly id = input.required<string>();
 
-  /** Type du champ de saisie (text, email, password, etc.). */
+  /** Native input type (text, email, password, etc.). */
   public readonly type = input.required<string>();
 
-  /** Contrôle Reactif du formulaire. */
+  /** Reactive form control backing this field. */
   public readonly control = input.required<FormControl>();
 }

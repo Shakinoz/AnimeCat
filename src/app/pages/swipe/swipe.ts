@@ -25,23 +25,18 @@ import { AnimeCard } from '../../components/anime-card/anime-card';
   styleUrl: './swipe.scss',
 })
 /**
- * Page Swipe — interface de découverte d'animés par gestes.
+ * Swipe page for gesture-based anime discovery.
  *
- * Comportement :
- * - like (droite)  : enregistre l'anime en `plan_to_watch` et augmente les scores des genres
- * - dislike (gauche): marque l'anime comme rejeté et diminue les scores des genres
- * - skip (haut)     : neutre, ne modifie pas les scores
- * - undo            : annule la dernière action et inverse ses effets
+ * Behavior:
+ * - like (right)    : marks anime and boosts related genre scores
+ * - dislike (left)  : rejects anime and decreases related genre scores
+ * - skip (up)       : neutral action with no score update
+ * - undo            : reverts the last action and its side effects
  */
 export class SwipePage {
   /**
-   * Page Swipe — expérience de découverte par gestes.
-   *
-   * Le flux est volontairement simple :
-   * - le swipe vers la droite "like" enrichit le profil utilisateur,
-   * - le swipe vers la gauche "dislike" pénalise les genres,
-   * - le swipe vers le haut "skip" passe sans affecter le profil,
-   * - l'historique permet d'annuler la dernière action.
+   * Gesture thresholds and visual tilt constants.
+   * Desktop and mobile values are split for better ergonomics.
    */
   private static readonly DT_DRAG_X_THRESHOLD = 230;
   private static readonly DT_DRAG_Y_THRESHOLD = -75;
@@ -62,7 +57,7 @@ export class SwipePage {
   recommendations = signal<RecommendationResult | null>(null);
   private lastAppliedRotation = 0;
 
-  // Historique des actions pour permettre l'annulation (dernière action à la fin)
+  // Action history used to support undo (last action at the end).
   private history: Array<{
     action: 'like' | 'dislike' | 'skip';
     animeId: number;
@@ -80,33 +75,35 @@ export class SwipePage {
     this.loadAnimes();
   }
 
+  /** Returns cover URL for the current anime card context. */
   cover(anime: Anime | null): string {
     if (!anime) return 'assets/img/placeholder.webp';
     return this.tenrai.getCoverUrl(anime);
   }
 
-  /** Charge une première liste d'animes pour le swipe depuis les populaires. */
+  /** Returns the number of actions currently stored in history. */
 
   get historyLength(): number {
     return this.history.length;
   }
 
+  /** Returns a compact genres label for card rendering. */
   genresLabel(anime: Anime | null): string {
     if (!anime) return '';
     return this.tenrai.getGenresLabel(anime, 4);
   }
 
   onCardDragged(event: CdkDragMove): void {
-    // Le geste est traduit en inclinaison visuelle pour donner un feedback immédiat.
+    // Translate horizontal drag into card tilt for immediate visual feedback.
     const { x } = event.source.getFreeDragPosition();
     const threshold = this.getDragXThreshold();
     const maxTilt = this.isMobile() ? SwipePage.MB_MAX_TILT_DEG : SwipePage.DT_MAX_TILT_DEG;
 
-    // Normalise x entre -1 et 1 pour garder une inclinaison progressive et bornée.
+    // Normalize x between -1 and 1 to keep tilt progressive and bounded.
     const ratio = Math.max(-1, Math.min(1, x / threshold));
     const nextRotation = ratio * maxTilt;
 
-    // Evite de déclencher trop de rendus pour des variations imperceptibles.
+    // Avoid unnecessary renders for imperceptible angle changes.
     if (Math.abs(nextRotation - this.lastAppliedRotation) < 0.25) return;
 
     this.lastAppliedRotation = nextRotation;
@@ -114,17 +111,17 @@ export class SwipePage {
   }
 
   onCardDragEnded(event: CdkDragEnd): void {
-    // Une fois le geste terminé, on remet la carte à sa position initiale et on déclenche l'action si le seuil est atteint.
+    // Reset card position and trigger action when thresholds are crossed.
     const { x, y } = event.source.getFreeDragPosition();
     const dragXThreshold = this.getDragXThreshold();
     const dragYThreshold = this.getDragYThreshold();
 
-    // Repositionne toujours la carte a son point initial, meme sans action.
+    // Always reset card to origin, even if no action is triggered.
     event.source.reset();
     this.lastAppliedRotation = 0;
     this.dragRotation.set(0);
 
-    // Si la carte a été déplacée suffisamment à droite, gauche ou haut, déclenche l'action correspondante.
+    // Trigger corresponding action based on horizontal/vertical threshold.
     if (x >= dragXThreshold) {
       this.like();
       return;
@@ -140,16 +137,18 @@ export class SwipePage {
     }
   }
 
+  /** Returns horizontal drag threshold based on current device form factor. */
   private getDragXThreshold(): number {
     return this.isMobile() ? SwipePage.MB_DRAG_X_THRESHOLD : SwipePage.DT_DRAG_X_THRESHOLD;
   }
 
+  /** Returns vertical drag threshold based on current device form factor. */
   private getDragYThreshold(): number {
     return this.isMobile() ? SwipePage.MB_DRAG_Y_THRESHOLD : SwipePage.DT_DRAG_Y_THRESHOLD;
   }
 
   private loadAnimes(): void {
-    // Le chargement initial s'appuie sur les animes populaires, puis on mélange la liste pour une expérience plus naturelle.
+    // Initial load uses popular anime, then shuffles for natural card variety.
     this.isLoading.set(true);
     this.finished.set(false);
     this.recommendations.set(null);
@@ -164,7 +163,7 @@ export class SwipePage {
         this.currentIndex = 0;
 
         if (!res.data?.length) {
-          this.notify.show('API indisponible: liste populaire locale chargee.', false);
+          this.notify.show('API unavailable: local popular list loaded.', false);
         }
 
         this.isLoading.set(false);
@@ -173,14 +172,14 @@ export class SwipePage {
         console.error('Swipe load error', err);
         this.animes = this.shuffleAnimes((popularData.data as unknown as Anime[]) ?? []);
         this.currentIndex = 0;
-        this.notify.show('API indisponible: liste populaire locale chargee.', false);
+        this.notify.show('API unavailable: local popular list loaded.', false);
         this.isLoading.set(false);
       },
     });
   }
 
   private shuffleAnimes(list: Anime[]): Anime[] {
-    // On mélange la liste pour éviter l'apparition toujours du même ordre à chaque chargement.
+    // Shuffle list to avoid repetitive ordering between sessions.
     const shuffled = [...list];
 
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -191,11 +190,12 @@ export class SwipePage {
     return shuffled;
   }
 
+  /** Returns the currently displayed anime, or null when exhausted. */
   get currentAnime(): Anime | null {
     return this.animes[this.currentIndex] ?? null;
   }
 
-  /** Extrait les identifiants MAL des genres d'un anime. */
+  /** Extracts MAL genre IDs from an anime payload. */
   private getGenreIds(anime: Anime): number[] {
     return (anime.genres ?? [])
       .map((g: any) => g.mal_id ?? g.id ?? -1)
@@ -203,7 +203,7 @@ export class SwipePage {
   }
 
   like(): void {
-    // Le like agit comme un signal positif : on enregistre l'anime et on valorise ses genres.
+    // Like is a positive signal: save anime and reward related genres.
     const anime = this.currentAnime;
     if (!anime || this.finished()) return;
 
@@ -211,7 +211,7 @@ export class SwipePage {
     const deltas: Record<number, number> = {};
     genreIds.forEach((id) => (deltas[id] = (deltas[id] ?? 0) + 1));
 
-    // Enregistre l'anime et applique les deltas de genres
+    // Persist anime status and apply positive genre deltas.
     this.storage.updateAnimeStatus(anime.mal_id, 'seen');
     this.storage.applyGenreDeltas(deltas);
 
@@ -221,7 +221,7 @@ export class SwipePage {
   }
 
   dislike(): void {
-    // Le dislike agit comme un signal négatif : il pénalise les genres et marque l'anime comme rejeté.
+    // Dislike is a negative signal: penalize genres and reject anime.
     const anime = this.currentAnime;
     if (!anime || this.finished()) return;
 
@@ -229,7 +229,7 @@ export class SwipePage {
     const deltas: Record<number, number> = {};
     genreIds.forEach((id) => (deltas[id] = (deltas[id] ?? 0) - 1));
 
-    // Marque comme rejeté et applique pénalisation des genres
+    // Persist rejected flag and apply negative genre deltas.
     this.storage.updateAnimeStatus(anime.mal_id, 'seen');
     this.storage.addRejected(anime.mal_id);
     this.storage.applyGenreDeltas(deltas);
@@ -240,7 +240,7 @@ export class SwipePage {
   }
 
   skip(): void {
-    // Le skip est neutre : on passe à la carte suivante sans modifier le profil utilisateur.
+    // Skip is neutral: move to next card without profile updates.
     const anime = this.currentAnime;
     if (!anime) return;
 
@@ -248,6 +248,7 @@ export class SwipePage {
     this.nextCard();
   }
 
+  /** Moves to the next card or finishes and builds recommendations. */
   private nextCard(): void {
     if (this.currentIndex < this.animes.length - 1) {
       this.currentIndex++;
@@ -258,7 +259,7 @@ export class SwipePage {
   }
 
   undo(): void {
-    // L'annulation inverse les effets de la dernière action grâce à l'historique.
+    // Undo reverts the latest action by using stored history metadata.
     if (this.history.length === 0) return;
 
     const last = this.history.pop()!;
@@ -266,22 +267,21 @@ export class SwipePage {
     this.finished.set(false);
     this.recommendations.set(null);
 
-    // revert genre deltas
-    // Inverse les deltas de genres appliqués précédemment
+    // Revert previously applied genre deltas.
     const inverse: Record<number, number> = {};
     Object.entries(last.genreDeltas).forEach(([k, v]) => {
       inverse[Number(k)] = -v;
     });
     this.storage.applyGenreDeltas(inverse);
 
-    // Restaure l'état antérieur (retire de la watchlist ou retire le rejet)
+    // Restore previous persisted state (watchlist/rejected flags).
     if (last.action === 'like') {
       this.storage.removeAnime(animeId);
     } else if (last.action === 'dislike') {
       this.storage.removeRejected(animeId);
     }
 
-    // move back to previous card if possible
+    // Move back to previous card when possible.
     if (this.currentIndex > 0) {
       this.currentIndex--;
     }
@@ -290,7 +290,7 @@ export class SwipePage {
   }
 
   /**
-   * Retourne le score de recommandation formaté pour l'UI.
+   * Returns recommendation score formatted for UI display.
    */
   recommendationScore(score: number | undefined): string {
     if (score === undefined || Number.isNaN(score)) return '-';
@@ -298,18 +298,18 @@ export class SwipePage {
   }
 
   /**
-   * Génère les recommandations finales en appliquant le pipeline proposé:
-   * 1) construire un profil de goûts (scores swipe + tierlist)
-   * 2) rechercher des candidats Tenrai à partir de combinaisons de genres
-   * 3) scorer et sélectionner: choix sûr, populaire, découverte
+   * Generates final recommendations using the recommendation pipeline:
+   * 1) build preference profile (swipe scores + tier list)
+   * 2) load Tenrai candidates from genre combinations
+   * 3) score and select safest, popular, and discovery picks
    */
   private generateRecommendationsFromProfile(): void {
-    // Une fois la pile de cartes épuisée, on construit un profil de recommandations à partir des goûts observés.
+    // Build recommendation profile after the swipe deck is exhausted.
     if (this.isBuildingRecommendations()) return;
 
     const currentUser = this.storage.getCurrentUser();
     if (!currentUser) {
-      this.notify.show('Connecte-toi pour générer des recommandations personnalisées.', true);
+      this.notify.show('Sign in to generate personalized recommendations.', true);
       return;
     }
 
@@ -318,7 +318,7 @@ export class SwipePage {
     const swipeGenreScores = this.storage.getGenreScores();
     const rejectedIds = new Set(this.storage.getRejected());
 
-    // On se concentre sur les genres positifs les plus forts pour construire les recherches.
+    // Focus on strongest positive genres to build query combinations.
     const topGenreIds = Object.entries(swipeGenreScores)
       .map(([genreId, score]) => ({ genreId: Number(genreId), score }))
       .filter((entry) => entry.genreId > 0 && entry.score > 0)
@@ -358,7 +358,7 @@ export class SwipePage {
 
     forkJoin({ tierAnimes: tierAnimes$, candidates: candidates$ }).subscribe({
       next: ({ tierAnimes, candidates }) => {
-        // Si le pool est trop faible, on enrichit avec le lot déjà présent dans le swipe.
+        // Enrich candidate pool with already loaded swipe items when needed.
         const enrichedCandidates = this.recommendationService.dedupeAnimes([
           ...candidates,
           ...this.animes,
@@ -376,9 +376,9 @@ export class SwipePage {
         this.isBuildingRecommendations.set(false);
 
         if (result.safestChoice || result.popularChoice || result.discovery) {
-          this.notify.show('Recommandations générées avec succès.', false);
+          this.notify.show('Recommendations generated successfully.', false);
         } else {
-          this.notify.show('Pas assez de candidats pour générer des recommandations.', true);
+          this.notify.show('Not enough candidates to generate recommendations.', true);
         }
 
         console.log('Recommendations result', result);
@@ -386,7 +386,7 @@ export class SwipePage {
       error: (err) => {
         console.error('Recommendation generation error', err);
         this.isBuildingRecommendations.set(false);
-        this.notify.show('Impossible de générer les recommandations pour le moment.', true);
+        this.notify.show('Unable to generate recommendations right now.', true);
       },
     });
   }

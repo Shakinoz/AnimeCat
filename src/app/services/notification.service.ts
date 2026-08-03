@@ -1,43 +1,43 @@
 // ─────────────────────────────────────────────────────────────
 // notification.service.ts
-// Service global de notifications temporaires (toast).
-// Utilisé par les pages et composants pour informer l'utilisateur
-// d'une action réussie ou d'une erreur.
+// Global temporary notification service (toast).
+// Used by pages and components to inform users about
+// successful actions or errors.
 // ─────────────────────────────────────────────────────────────
 import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   /**
-   * Service de toast simplifié basé sur des `signal()`.
-   * Les composants lisent `message`, `visible`, `isError`, `isSuccess`
-   * pour afficher un toast et appellent `show()` / `hide()` selon besoin.
+   * Lightweight toast service powered by Angular signals.
+   * Components read `message`, `visible`, `isError`, and `isSuccess`
+   * to render notifications and call `show()` / `hide()` as needed.
    */
-  // ── State Signals (réactifs, lus directement dans les templates) ──
+  // ── State signals (reactive, consumed directly in templates) ──
 
-  /** Texte du message affiché dans le toast. */
+  /** Notification message text displayed in the toast. */
   readonly message = signal('');
-  /** true si le toast doit s'afficher avec le style erreur (rouge). */
+  /** True when the toast should use the error style. */
   readonly isError = signal(false);
-  /** true si le toast doit s'afficher avec le style succès (vert). */
+  /** True when the toast should use the success style. */
   readonly isSuccess = signal(false);
-  /** Contrôle la visibilité du toast. */
+  /** Controls toast visibility. */
   readonly visible = signal(false);
 
-  /** Référence au timer de fermeture automatique. */
+  /** Auto-close timer reference. */
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   /**
-   * Affiche un toast avec le message et le style spécifié.
-   * Se ferme automatiquement après `duration` ms.
+   * Displays a toast with the provided message and style.
+   * Automatically closes after `duration` milliseconds.
    *
-   * @param message   Texte à afficher
-   * @param isError   Affiche le style erreur (rouge) si true
-   * @param isSuccess Affiche le style succès (vert) si true
-   * @param duration  Durée d'affichage en ms (défaut : 3000)
+   * @param message Message to display.
+   * @param isError Whether to use the error style.
+   * @param isSuccess Whether to use the success style.
+   * @param duration Display duration in milliseconds.
    */
   show(message: string, isError = false, isSuccess = false, duration = 3000): void {
-    // Annule un timer en cours si un nouveau toast est déclenché
+    // Cancel any active timer before showing a new toast.
     if (this.timer) clearTimeout(this.timer);
 
     this.message.set(message);
@@ -48,7 +48,7 @@ export class NotificationService {
     this.timer = setTimeout(() => this.hide(), duration);
   }
 
-  /** Ferme immédiatement le toast et réinitialise l'état. */
+  /** Immediately closes the toast and resets state values. */
   hide(): void {
     this.visible.set(false);
     this.message.set('');

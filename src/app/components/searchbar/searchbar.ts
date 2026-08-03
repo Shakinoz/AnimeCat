@@ -1,8 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // search-autocomplete.component.ts
-// Recherche live avec mat-autocomplete — image + titre + synopsis
-// PAS de navigation vers une page catalogue : uniquement la liste
-// déroulante sous la barre, fidèle à Search_list.png
+// Live search powered by Angular Material autocomplete
+// (poster + title + synopsis preview).
 // ─────────────────────────────────────────────────────────────
 import { Component, inject, signal, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -51,7 +50,7 @@ export class Searchbar {
   private router = inject(Router);
   public readonly format = input<string>('desktop');
 
-  // ── État ────────────────────────────────────────────────
+  // ── Reactive state ────────────────────────────────────────────────
   readonly searchControl = new FormControl<string>('', { nonNullable: true });
   readonly results = signal<Anime[]>([]);
   readonly isLoading = signal(false);
@@ -88,11 +87,11 @@ export class Searchbar {
   }
 
   /**
-   * Selection d'un résultat dans l'autocomplete : navigation vers la page détail.
-   * Le champ d'input est vidé après la sélection pour garder l'UX propre.
+   * Handles autocomplete selection and navigates to detail page.
+   * Input is cleared after selection for cleaner UX.
    */
 
-  // ── Sélection d'un résultat → fiche détail ───────────────
+  // ── Selection -> detail page ───────────────
   onSelect(event: MatAutocompleteSelectedEvent): void {
     const anime = event.option.value as Anime;
     this.router.navigate(['/detail', anime.mal_id]);
@@ -100,28 +99,32 @@ export class Searchbar {
     this.hasSearched.set(false);
   }
 
-  // ── Vide le champ ─────────────────────────────────────────
+  // ── Clear input and local results ─────────────────────────────────────────
   clear(): void {
     this.searchControl.setValue('');
     this.results.set([]);
     this.hasSearched.set(false);
   }
 
-  // ── displayWith : on vide toujours l'input après sélection ─
+  // ── displayWith: keep input visually empty after selection ─
   displayFn = (): string => '';
 
-  // ── Helpers template ──────────────────────────────────────
+  // ── Template helpers ──────────────────────────────────────
+  /** Returns cover URL for an autocomplete item. */
   cover(anime: Anime): string {
     return this.tenrai.getCoverUrl(anime);
   }
+  /** Returns display title for an autocomplete item. */
   title(anime: Anime): string {
     return this.tenrai.getDisplayTitle(anime);
   }
 
+  /** Replaces broken image URLs with a local placeholder. */
   onImgError(e: Event): void {
     (e.target as HTMLImageElement).src = 'assets/img/placeholder.webp';
   }
 
+  /** TrackBy function for stable option rendering. */
   trackById(_: number, anime: Anime): number {
     return anime.mal_id;
   }

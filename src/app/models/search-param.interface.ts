@@ -1,3 +1,4 @@
+/** Parameters supported by Tenrai advanced search endpoint. */
 export interface SearchParams {
   query?: string;
   page?: number;

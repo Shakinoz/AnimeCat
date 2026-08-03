@@ -1,27 +1,27 @@
 // ─────────────────────────────────────────────────────────────
 // user.interface.ts
-// Modèle principal d'un utilisateur stocké dans le LocalStorage.
+// Main user model persisted in LocalStorage.
 // ─────────────────────────────────────────────────────────────
 import { ITierList, IUserAnime } from './user-anime.interface';
 
-/** Représente un utilisateur enregistré dans AnimeCat. */
+/** Represents a registered AnimeCat user. */
 export interface IUser {
-  /** Pseudo affiché dans l'interface. */
+  /** Username displayed in the UI. */
   username: string;
-  /** Adresse e-mail utilisée pour l'authentification. */
+  /** Email address used for authentication. */
   email: string;
-  /** Mot de passe (stocké en clair — LocalStorage, pas de backend). */
+  /** Password (stored in plain text locally, no backend). */
   password: string;
-  /** Liste des animés associés à un statut (watchlist, vu…). */
+  /** List of anime linked to statuses (watchlist/seen/etc). */
   animeList: IUserAnime[];
-  /** Classement Tier List (S, A, B, C) de l'utilisateur. */
+  /** User tier-list ranking groups (S/A/B/C). */
   tierList: ITierList;
 }
 
-/** Sous-type utilitaire : uniquement les champs d'authentification. */
+/** Utility subtype containing only authentication fields. */
 export type AuthUser = Pick<IUser, 'username' | 'email' | 'password'>;
 
-/** Résultat standard renvoyé par toutes les opérations d'auth. */
+/** Standard result returned by authentication operations. */
 export interface AuthResult {
   success: boolean;
   message: string;
