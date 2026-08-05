@@ -15,7 +15,7 @@ export const userNotLoggedGuard: CanActivateFn = (route, state) => {
   if (storage.isAuthenticated()) {
     return true;
   } else {
-    notify.show('Vous devez vous connecter pour acceder a cette page', true);
-    return router.createUrlTree(['/']);
+    notify.show('Vous devez vous connecter pour accéder à cette page', true);
+    return router.createUrlTree(['/login']);
   }
 };
