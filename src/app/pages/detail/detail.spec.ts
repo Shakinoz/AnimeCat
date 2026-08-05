@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DetailPage } from './detail-page';
+import { DetailPage } from './detail';
 
 describe('DetailPage', () => {
   let component: DetailPage;

@@ -13,10 +13,10 @@ import type { AnimeStatus } from '../../models/user-anime.interface';
 import { Button } from '../../components/button/button';
 
 @Component({
-  selector: 'app-detail-page',
+  selector: 'app-detail',
   imports: [CommonModule, RouterLink, MatProgressSpinnerModule, Header, AnimeActions, Button],
-  templateUrl: './detail-page.html',
-  styleUrl: './detail-page.scss',
+  templateUrl: './detail.html',
+  styleUrl: './detail.scss',
 })
 export class DetailPage implements OnInit, OnDestroy {
   /**

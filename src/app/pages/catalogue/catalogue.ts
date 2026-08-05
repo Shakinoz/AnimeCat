@@ -27,8 +27,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
     SelectFilter,
     MatIcon,
   ],
-  templateUrl: './catalogue-page.html',
-  styleUrl: './catalogue-page.scss',
+  templateUrl: './catalogue.html',
+  styleUrl: './catalogue.scss',
 })
 export class CataloguePage {
   /**

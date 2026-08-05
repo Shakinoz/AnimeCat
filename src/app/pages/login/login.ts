@@ -8,10 +8,10 @@ import { Button } from '../../components/button/button';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-login',
   imports: [ReactiveFormsModule, Header, FormInput, Button, RouterLink],
-  templateUrl: './login-page.html',
-  styleUrl: './login-page.scss',
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
 })
 export class LoginPage {
   /**

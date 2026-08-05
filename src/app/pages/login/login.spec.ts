@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
-import { LoginPage } from './login-page';
+import { LoginPage } from './login';
 
 describe('LoginPage', () => {
   let component: LoginPage;

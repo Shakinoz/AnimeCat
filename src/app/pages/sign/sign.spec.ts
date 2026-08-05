@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
-import { SignPage } from './sign-page';
+import { SignPage } from './sign';
 
 describe('SignPage', () => {
   let component: SignPage;

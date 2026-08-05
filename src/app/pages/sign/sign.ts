@@ -8,10 +8,10 @@ import { Button } from '../../components/button/button';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-sign-page',
+  selector: 'app-sign',
   imports: [ReactiveFormsModule, RouterLink, Header, Button, FormInput],
-  templateUrl: './sign-page.html',
-  styleUrl: './sign-page.scss',
+  templateUrl: './sign.html',
+  styleUrl: './sign.scss',
 })
 export class SignPage {
   /**
