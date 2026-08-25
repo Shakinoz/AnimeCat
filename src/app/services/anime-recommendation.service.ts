@@ -5,16 +5,16 @@ import { IUser } from '../models/user.interface';
 import { ITierList } from '../models/user-anime.interface';
 
 /**
- * Recommendation category displayed in the UI.
- * - safest_choice : highest compatibility with the current profile
- * - popular_choice: compatible but more mainstream
- * - discovery     : less obvious but still relevant
+ * Category type used to distinguish the three kinds of suggestions shown to the user.
+ * - safest_choice: the most compatible choice for the current profile
+ * - popular_choice: a compatible choice that is more mainstream
+ * - discovery: a less obvious but still relevant selection
  */
 export type RecommendationType = 'safest_choice' | 'popular_choice' | 'discovery';
 
 /**
- * Genre score ready to display or log.
- * Keeps MAL id for computation and name for UI output.
+ * Represents a genre with a score ready to be displayed or logged.
+ * The MAL identifier is kept for calculations, while the name is used in the UI.
  */
 export interface RankedGenreScore {
   genreId: number;
@@ -23,8 +23,8 @@ export interface RankedGenreScore {
 }
 
 /**
- * Final recommendation payload.
- * `matchingGenres` explains why the anime was selected.
+ * Full structure of a final recommendation.
+ * The matchingGenres field explains why this anime was selected.
  */
 export interface AnimeRecommendation {
   anime: Anime;
@@ -35,8 +35,8 @@ export interface AnimeRecommendation {
 }
 
 /**
- * Full recommendation engine output.
- * The three suggestion slots are nullable when the candidate pool is too small.
+ * Complete output of the recommendation engine.
+ * The three slots can be null if the candidate pool is too small.
  */
 export interface RecommendationResult {
   safestChoice: AnimeRecommendation | null;
@@ -46,7 +46,8 @@ export interface RecommendationResult {
 }
 
 /**
- * Ranked recommendation entry for list/carousel views.
+ * Represents a ranked recommendation for a list or carousel.
+ * Only the information needed for display is kept here.
  */
 export interface RankedAnimeRecommendation {
   anime: Anime;
@@ -56,8 +57,8 @@ export interface RankedAnimeRecommendation {
 }
 
 /**
- * Input payload required by the recommendation pipeline.
- * Reuses existing project types to avoid model duplication.
+ * Input data required by the recommendation pipeline.
+ * Existing project types are reused here to avoid duplicating models.
  */
 export interface RecommendationInput {
   currentUser: IUser;
@@ -68,8 +69,8 @@ export interface RecommendationInput {
 }
 
 /**
- * Internal structure used during scoring.
- * Not exposed outside this service.
+ * Internal structure used during score calculation.
+ * It is not exposed outside the service.
  */
 interface ScoredAnime {
   anime: Anime;
@@ -80,8 +81,8 @@ interface ScoredAnime {
 @Injectable({ providedIn: 'root' })
 export class AnimeRecommendationService {
   /**
-   * Tier-list weighting coefficients.
-   * Values follow: S > A > B > C.
+   * Weight values applied according to the user's tier list.
+   * The order is intentionally simple: S > A > B > C.
    */
   private readonly TIER_SCORES = {
     S: 5,
@@ -91,12 +92,10 @@ export class AnimeRecommendationService {
   } as const;
 
   /**
-   * Main recommendation entry point.
-   * Pipeline:
-   * 1) build the genre preference profile
-   * 2) exclude non-recommendable anime (seen / rejected)
-   * 3) score remaining candidates
-   * 4) pick three complementary recommendations
+   * Main entry point of the recommendation engine.
+   * This method gathers the user's preferences from swipe scores and tier-list placements,
+   * removes anime that were already seen or rejected, assigns a score to each candidate,
+   * and selects three complementary suggestions.
    */
   generateRecommendations(input: RecommendationInput): RecommendationResult {
     const genreScoreMap = this.buildGenreProfile(input);
@@ -133,8 +132,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Generates a ranked recommendation list for carousels.
-   * Reuses the exact same scoring logic as the 3-card mode.
+   * Creates an ordered list of recommendations for carousels or lists.
+   * It reuses the same scoring logic as the three-card version,
+   * but returns more results to feed the UI.
    */
   generateTopRecommendations(input: RecommendationInput, limit = 12): RankedAnimeRecommendation[] {
     if (!Number.isFinite(limit) || limit <= 0) {
@@ -172,7 +172,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Builds 2-genre and 3-genre combinations, with a single-genre fallback.
+   * Builds groups of genres as pairs or trios.
+   * This helps identify anime that match several interests at once.
+   * Duplicate values are removed and the number of generated combinations is limited.
    */
   buildGenreCombinations(genreIds: number[]): number[][] {
     if (!genreIds.length) return [];
@@ -208,7 +210,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Returns unique anime IDs present in tier lists (S/A/B/C).
+   * Retrieves all anime IDs that appear in the user's tier list.
+   * This makes it easier to find anime that the user has already evaluated.
    */
   getTierAnimeIds(tierList: ITierList): number[] {
     return [
@@ -222,7 +225,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Deduplicates anime by MAL ID, keeping the first valid occurrence.
+   * Removes duplicate anime entries while keeping the first valid occurrence.
+   * This avoids processing the same anime multiple times.
    */
   dedupeAnimes(animes: Anime[]): Anime[] {
     const byId = new Map<number, Anime>();
@@ -238,9 +242,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Builds the final genre preference profile by merging:
-   * - persisted Swipe scores
-   * - implicit preferences from tier-list ranks
+   * Builds the overall profile of the user's preferred genres.
+   * It combines two sources: saved swipe scores and tier-list choices,
+   * which add extra weight depending on how highly the anime was ranked.
    */
   private buildGenreProfile(input: RecommendationInput): Map<number, number> {
     const genreScores = new Map<number, number>();
@@ -274,9 +278,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Builds exclusion set from:
-   * - anime already marked as seen
-   * - anime explicitly rejected in Swipe
+   * Creates the set of anime that should be excluded from recommendations.
+   * It removes anime already marked as seen as well as anime explicitly rejected during swipe.
    */
   private buildExcludedAnimeIds(currentUser: IUser, rejectedIds: Set<number>): Set<number> {
     const excluded = new Set<number>();
@@ -291,8 +294,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Builds an animeId -> tier map (S/A/B/C) from the user's tier list.
-   * This enables O(1) lookups while computing the profile.
+   * Builds a mapping from anime ID to tier.
+   * This makes it easy to find the anime's tier during profile calculation.
    */
   private buildTierByAnimeMap(currentUser: IUser): Map<number, keyof typeof this.TIER_SCORES> {
     const tierByAnimeId = new Map<number, keyof typeof this.TIER_SCORES>();
@@ -306,11 +309,11 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Scores one candidate anime across four dimensions:
-   * - genre affinity
-   * - positive genre combination bonus
-   * - quality score
-   * - normalized popularity
+   * Evaluates a candidate anime using several criteria:
+   * - its closeness to the user's preferred genres
+   * - whether it matches several interests at once
+   * - its overall rating
+   * - its relative popularity
    */
   private scoreAnime(anime: Anime, genreScores: Map<number, number>): ScoredAnime {
     const genreEntries = this.extractGenreEntries(anime);
@@ -338,7 +341,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Bonus rewarding anime that match multiple positively scored genres.
+   * Adds a bonus if an anime matches several positively scored genres.
+   * This favors anime that satisfy multiple interests at once.
    */
   private calculateCombinationBonus(
     animeGenres: Array<{ id: number; name: string }>,
@@ -360,7 +364,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Converts raw rating (typically /10) into scoring contribution.
+   * Converts a raw rating into a small score contribution.
+   * The value is capped to prevent a very high rating from dominating too strongly.
    */
   private normalizeScore(score: number): number {
     if (!Number.isFinite(score) || score <= 0) return 0;
@@ -368,9 +373,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Normalizes popularity into a bounded score.
-   * Prefers `members` (higher means more popular).
-   * Falls back to inverted `popularity` rank when needed.
+   * Normalizes an anime's popularity so it can be compared with other criteria.
+   * It prefers the number of members when available; otherwise it uses the popularity ranking.
    */
   private normalizePopularity(anime: Anime): number {
     if (anime.members && anime.members > 0) {
@@ -386,8 +390,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Raw popularity score for popular-choice sorting.
-   * Higher value means higher popularity.
+   * Computes a raw popularity value used to rank more popular choices.
+   * A higher value means the anime is more popular.
    */
   private rawPopularity(anime: Anime): number {
     if (anime.members && anime.members > 0) return anime.members;
@@ -396,7 +400,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Safest choice: top compatibility with slight controlled randomness.
+   * Selects the safest recommendation.
+   * It first looks at the best scores and then adds a small random factor
+   * to avoid always producing the exact same result.
    */
   private getSafestChoice(scoredAnimes: ScoredAnime[]): AnimeRecommendation {
     const sorted = [...scoredAnimes].sort((a, b) => b.score - a.score);
@@ -413,8 +419,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Popular choice: still compatible, but ranked by popularity,
-   * and distinct from safest choice.
+   * Selects a popular recommendation.
+   * It keeps a good level of compatibility but favors more well-known anime.
+   * It also avoids picking exactly the same anime as the safest suggestion.
    */
   private getPopularChoice(
     scoredAnimes: ScoredAnime[],
@@ -441,8 +448,9 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Discovery choice: less popular but relevant,
-   * distinct from the two other suggestions.
+   * Selects a discovery recommendation.
+   * The goal is to offer an anime that is less obvious than the first two choices,
+   * while still being related to the user's tastes.
    */
   private getDiscoveryChoice(
     scoredAnimes: ScoredAnime[],
@@ -484,8 +492,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Rank-weighted random pick.
-   * Higher-ranked entries stay favored while preserving variety.
+   * Chooses one anime from several candidates while giving a bias toward the best scores.
+   * It is not completely random, otherwise the best choices would sometimes be ignored.
    */
   private weightedRandomSelection(animes: ScoredAnime[]): ScoredAnime {
     if (!animes.length) {
@@ -506,8 +514,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Sorts genres from highest to lowest affinity score,
-   * while keeping UI-friendly labels.
+   * Sorts genres from the highest to the lowest compatibility score.
+   * The goal is to display them neatly in the interface.
    */
   private sortGenreScores(genreScores: Map<number, number>): RankedGenreScore[] {
     return Array.from(genreScores.entries())
@@ -520,7 +528,8 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Builds a human-readable explanation for end users.
+   * Creates a human-readable explanation for the end user.
+   * Depending on the genres found, it explains simply why an anime was chosen.
    */
   private buildExplanation(matchingGenres: string[], type: RecommendationType): string {
     if (matchingGenres.length === 0) {
@@ -541,14 +550,16 @@ export class AnimeRecommendationService {
   }
 
   /**
-   * Extracts genre IDs from an anime (MAL ID first).
+   * Extracts the genre IDs from an anime.
+   * It first retrieves the genres associated with the anime and then keeps only those with a valid identifier.
    */
   private extractGenreIds(anime: Anime): number[] {
     return this.extractGenreEntries(anime).map((genre) => genre.id);
   }
 
   /**
-   * Extracts genres as `{ id, name }` entries for scoring and explanations.
+   * Extracts the genres of an anime in a simple form: ID and name.
+   * This structure is used both for calculations and for displayed explanations.
    */
   private extractGenreEntries(anime: Anime): Array<{ id: number; name: string }> {
     return (anime.genres ?? [])

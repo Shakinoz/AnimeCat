@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule, SlicePipe } from '@angular/common';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { catchError, forkJoin, map, of } from 'rxjs';
+import { catchError, forkJoin, from, map, mergeMap, of, toArray } from 'rxjs';
 import { TenraiService } from '../../services/tenrai.service';
 import { StorageService } from '../../services/storage.service';
 import { NotificationService } from '../../services/notification.service';
@@ -13,6 +13,12 @@ import { Anime } from '@tutkli/jikan-ts';
 import { Header } from '../../components/header/header';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { POPULAR_DATA as popularData } from '../../data/popular-data';
+import { TRENDING_DATA as trendingData } from '../../data/trending-data';
+import {
+  CATALOG_DATA_P1 as catalogDataP1,
+  CATALOG_DATA_P2 as catalogDataP2,
+  CATALOG_DATA_P3 as catalogDataP3,
+} from '../../data/catalog-data';
 import { Button } from '../../components/button/button';
 import { CdkDrag, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
 import { AnimeCard } from '../../components/anime-card/anime-card';
@@ -44,6 +50,8 @@ export class SwipePage {
   private static readonly MB_DRAG_Y_THRESHOLD = -50;
   private static readonly DT_MAX_TILT_DEG = 14;
   private static readonly MB_MAX_TILT_DEG = 10;
+  /** Number of pages available from the popularity endpoint to draw a random deck from. */
+  private static readonly POPULAR_PAGE_POOL = 10;
 
   animes: Anime[] = [];
   currentIndex = 0;
@@ -148,33 +156,51 @@ export class SwipePage {
   }
 
   private loadAnimes(): void {
-    // Initial load uses popular anime, then shuffles for natural card variety.
+    // Draw from a random page each time so the deck varies between sessions.
     this.isLoading.set(true);
     this.finished.set(false);
     this.recommendations.set(null);
 
-    this.tenrai.getMostPopular(1, 100).subscribe({
+    const randomPage = 1 + Math.floor(Math.random() * SwipePage.POPULAR_PAGE_POOL);
+
+    this.tenrai.getMostPopular(randomPage, 50).subscribe({
       next: (res) => {
-        const source = res.data?.length
-          ? res.data
-          : ((popularData.data as unknown as Anime[]) ?? []);
+        const source = res.data?.length ? res.data : this.buildLocalFallbackPool();
 
         this.animes = this.shuffleAnimes(source);
         this.currentIndex = 0;
 
         if (!res.data?.length) {
-          this.notify.show('API unavailable: local popular list loaded.', false);
+          this.notify.show('API unavailable: local anime list loaded.', false);
         }
 
         this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Swipe load error', err);
-        this.animes = this.shuffleAnimes((popularData.data as unknown as Anime[]) ?? []);
+        this.animes = this.shuffleAnimes(this.buildLocalFallbackPool());
         this.currentIndex = 0;
-        this.notify.show('API unavailable: local popular list loaded.', false);
+        this.notify.show('API unavailable: local anime list loaded.', false);
         this.isLoading.set(false);
       },
+    });
+  }
+
+  /** Merges and dedupes all local datasets to widen the offline fallback pool. */
+  private buildLocalFallbackPool(): Anime[] {
+    const merged = [
+      ...(popularData.data as unknown as Anime[]),
+      ...(trendingData.data as unknown as Anime[]),
+      ...(catalogDataP1.data as unknown as Anime[]),
+      ...(catalogDataP2.data as unknown as Anime[]),
+      ...(catalogDataP3.data as unknown as Anime[]),
+    ];
+
+    const seen = new Set<number>();
+    return merged.filter((anime) => {
+      if (seen.has(anime.mal_id)) return false;
+      seen.add(anime.mal_id);
+      return true;
     });
   }
 
@@ -333,15 +359,19 @@ export class SwipePage {
       ? this.tenrai.getByIds(tierAnimeIds, false, 2).pipe(catchError(() => of([] as Anime[])))
       : of([] as Anime[]);
 
+    // Combos are fetched with limited concurrency to avoid Tenrai's rate limit (HTTP 429)
+    // that a fully parallel forkJoin would trigger with up to 12 simultaneous requests.
     const candidates$ = genreCombos.length
-      ? forkJoin(
-          genreCombos.map((combo) =>
-            this.tenrai.getByGenres(combo, 1, 25).pipe(
-              map((result) => result.data),
-              catchError(() => of([] as Anime[])),
-            ),
+      ? from(genreCombos).pipe(
+          mergeMap(
+            (combo) =>
+              this.tenrai.getByGenres(combo, 1, 25).pipe(
+                map((result) => result.data),
+                catchError(() => of([] as Anime[])),
+              ),
+            3,
           ),
-        ).pipe(
+          toArray(),
           map((groups) => groups.flat()),
           map((animes) => this.recommendationService.dedupeAnimes(animes)),
         )

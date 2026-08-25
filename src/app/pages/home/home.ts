@@ -116,12 +116,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.heroAnime = this.trending()[this.heroIndex];
   }
 
-  /** Selects a specific hero item by index. */
-  setHeroIndex(index: number): void {
-    this.heroIndex = index;
-    this.heroAnime = this.trending()[index];
-  }
-
   /** Returns the cover URL for a given anime. */
   cover(anime: Anime) {
     return this.tenrai.getCoverUrl(anime);
