@@ -52,6 +52,8 @@ export class SwipePage {
   private static readonly MB_MAX_TILT_DEG = 10;
   /** Number of pages available from the popularity endpoint to draw a random deck from. */
   private static readonly POPULAR_PAGE_POOL = 10;
+  /** Number of cards shown per swipe deck. */
+  private static readonly DECK_SIZE = 10;
 
   animes: Anime[] = [];
   currentIndex = 0;
@@ -167,7 +169,7 @@ export class SwipePage {
       next: (res) => {
         const source = res.data?.length ? res.data : this.buildLocalFallbackPool();
 
-        this.animes = this.shuffleAnimes(source);
+        this.animes = this.shuffleAnimes(source).slice(0, SwipePage.DECK_SIZE);
         this.currentIndex = 0;
 
         if (!res.data?.length) {
@@ -178,7 +180,10 @@ export class SwipePage {
       },
       error: (err) => {
         console.error('Swipe load error', err);
-        this.animes = this.shuffleAnimes(this.buildLocalFallbackPool());
+        this.animes = this.shuffleAnimes(this.buildLocalFallbackPool()).slice(
+          0,
+          SwipePage.DECK_SIZE,
+        );
         this.currentIndex = 0;
         this.notify.show('API unavailable: local anime list loaded.', false);
         this.isLoading.set(false);
